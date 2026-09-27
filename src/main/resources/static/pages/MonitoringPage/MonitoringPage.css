@@ -1,0 +1,409 @@
+/* Monitoring page styles. Self-contained (like every other page's own CSS file — see
+   PrimarySalesPage.css's own header comment for why this codebase inlines each page's styles rather
+   than sharing component stylesheets). Table/badge look deliberately mirrors RolesPage.css's own
+   .users-table/.users-status-badge — same audit-log-table shape, just a different prefix. */
+
+.monitoring-section {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.section-container {
+    margin-bottom: 0.5rem;
+}
+
+.section-header {
+    margin-bottom: 0.6rem;
+}
+
+.monitoring-section-title {
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: var(--color-text-secondary);
+    margin: 0;
+}
+
+/* ==================== 1. Usage Overview ==================== */
+.monitoring-charts-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+}
+
+.monitoring-chart-card {
+    box-shadow: var(--shadow-card);
+    padding: 0.55rem 0.7rem 0.35rem;
+    max-height: 12.5rem;
+    overflow-y: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.monitoring-chart-card::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    height: 0;
+}
+
+.monitoring-chart-title {
+    display: block;
+    font-size: 0.68rem;
+    font-weight: 600;
+    color: var(--color-text-secondary);
+    margin-bottom: 0.3rem;
+}
+
+.monitoring-chart {
+    width: 100%;
+    height: 180px;
+}
+
+.monitoring-chart-empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 180px;
+    color: var(--color-text-secondary);
+    font-size: 0.75rem;
+}
+
+/* ==================== Attempts / token tables (shared shape) ==================== */
+.monitoring-card {
+    box-shadow: var(--shadow-card);
+    border-radius: 18px;
+    overflow: hidden;
+}
+
+.monitoring-table-wrap {
+    overflow-x: auto;
+    max-height: 420px;
+    overflow-y: auto;
+}
+
+/* ==================== 2. Audit ==================== */
+.monitoring-audit-card {
+    width: 90%;
+}
+
+.monitoring-audit-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    padding: 0.4rem 0.6rem;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.monitoring-audit-header-left,
+.monitoring-audit-header-right {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+}
+
+.monitoring-audit-filter-group {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.monitoring-audit-label {
+    font-size: 0.62rem;
+    font-weight: 600;
+    color: var(--color-text-secondary);
+}
+
+.monitoring-audit-select,
+.monitoring-audit-search {
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    padding: 0.2rem 0.4rem;
+    font-size: 0.66rem;
+    font-family: inherit;
+    color: var(--color-text-primary);
+    background-color: var(--color-card-bg);
+}
+
+.monitoring-audit-search {
+    min-width: 7.5rem;
+}
+
+/* Success/Failed status pill — same two-state pill shape as .sales-date-filter-mode-toggle below,
+   just a plain client-side toggle (no data wired up yet, see this section's own HTML comment). */
+.monitoring-audit-status-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.1rem;
+    background-color: var(--color-card-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    padding: 0.1rem;
+    box-shadow: var(--shadow-card);
+}
+
+.monitoring-audit-status-btn {
+    border: none;
+    background: transparent;
+    padding: 0.14rem 0.5rem;
+    border-radius: 999px;
+    font-size: 0.62rem;
+    font-weight: 500;
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.monitoring-audit-status-btn:hover:not(.active) {
+    color: var(--color-primary);
+}
+
+.monitoring-audit-status-btn.active {
+    background-color: var(--color-primary);
+    color: #fff;
+}
+
+.monitoring-audit-date-filter-cluster {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+/* Fixed to roughly 5 data rows' worth of height (header row included) — same hidden-scrollbar
+   convention as SiteStatusPage.css's own .site-status-store-list-body: scrollable via wheel/touch/
+   drag to reach any further rows, just with no visible scrollbar track/thumb. Scoped to #auditTableWrap
+   only — the generic .monitoring-table-wrap rule (max-height:420px, visible scrollbar) still backs
+   every other section's own table untouched. */
+#auditTableWrap {
+    max-height: 10.5rem;
+    overflow-y: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+#auditTableWrap::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    height: 0;
+}
+
+#auditTableWrap .monitoring-table thead th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+#auditTableWrap .monitoring-table tbody tr {
+    background-color: color-mix(in srgb, var(--color-info) 6%, var(--color-card-bg));
+}
+
+/* ==================== 2. Audit — Date filter (copied from SecondarySalesPage.css's own "1.
+   Overview" date filter per explicit request — same #idPrefix-driven markup initSalesDateFilter
+   generates, so the class names below must match exactly; kept as its own copy rather than a
+   shared stylesheet per this app's own per-page-CSS convention, see this file's own header note on
+   SalesDateFilter.js's own per-instance idPrefix). ==================== */
+.sales-date-filter {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    flex-wrap: wrap;
+}
+
+.sales-date-filter-mode-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.1rem;
+    background-color: var(--color-card-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    padding: 0.1rem;
+    box-shadow: var(--shadow-card);
+}
+
+.sales-date-filter-mode-btn {
+    border: none;
+    background: transparent;
+    padding: 0.14rem 0.45rem;
+    border-radius: 999px;
+    font-size: 0.6rem;
+    font-weight: 500;
+    color: var(--color-primary);
+    cursor: pointer;
+    transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.sales-date-filter-mode-btn:hover:not(.active) {
+    color: var(--color-primary-hover);
+}
+
+.sales-date-filter-mode-btn.active {
+    background-color: var(--color-primary);
+    color: #fff;
+}
+
+.sales-date-filter-body {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    flex-wrap: wrap;
+}
+
+.sales-date-filter-body:empty {
+    display: none;
+}
+
+.sales-date-filter-input {
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    padding: 0.14rem 0.3rem;
+    font-size: 0.6rem;
+    font-family: inherit;
+    color: var(--color-text-primary);
+    background-color: var(--color-card-bg);
+}
+
+.sales-date-filter-range-type {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.1rem;
+    background-color: var(--color-card-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    padding: 0.1rem;
+    box-shadow: var(--shadow-card);
+}
+
+.sales-date-filter-range-type-btn {
+    border: none;
+    background: transparent;
+    padding: 0.16rem 0.45rem;
+    border-radius: 999px;
+    font-size: 0.6rem;
+    font-weight: 500;
+    color: var(--color-text-secondary);
+    cursor: pointer;
+}
+
+.sales-date-filter-range-type-btn:hover:not(.active) {
+    color: var(--color-primary);
+}
+
+.sales-date-filter-range-type-btn.active {
+    background-color: var(--color-primary);
+    color: #fff;
+}
+
+.sales-date-filter-range-inputs {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.sales-date-filter-range-sep {
+    font-size: 0.6rem;
+    color: var(--color-text-secondary);
+}
+
+.sales-date-filter-clear {
+    border: none;
+    background: transparent;
+    color: var(--color-text-secondary);
+    font-size: 0.78rem;
+    line-height: 1;
+    padding: 0.1rem;
+    cursor: pointer;
+}
+
+.sales-date-filter-clear:hover {
+    color: var(--color-danger);
+}
+
+@media (max-width: 640px) {
+    .sales-date-filter {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+.monitoring-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.72rem;
+}
+
+.monitoring-table th,
+.monitoring-table td {
+    padding: 0.4rem 0.6rem;
+    text-align: left;
+    white-space: nowrap;
+}
+
+.monitoring-table thead th {
+    font-size: 0.62rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: var(--color-text-secondary);
+    background-color: var(--color-sidebar-bg);
+    border-bottom: 1px solid var(--color-border);
+    position: sticky;
+    top: 0;
+}
+
+.monitoring-table tbody tr:not(:last-child) td {
+    border-bottom: 1px solid var(--color-border);
+}
+
+.monitoring-table td.monitoring-empty {
+    text-align: center;
+    color: var(--color-text-secondary);
+    padding: 1.25rem 0.6rem;
+    white-space: normal;
+}
+
+.monitoring-badge {
+    display: inline-block;
+    font-size: 0.66rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    padding: 0.18rem 0.5rem;
+    border-radius: 999px;
+}
+
+.monitoring-badge.success {
+    background-color: color-mix(in srgb, var(--color-success) 15%, var(--color-card-bg));
+    color: var(--color-success);
+}
+
+.monitoring-badge.failure {
+    background-color: color-mix(in srgb, var(--color-danger) 15%, var(--color-card-bg));
+    color: var(--color-danger);
+}
+
+.monitoring-badge.neutral {
+    background-color: color-mix(in srgb, var(--color-text-secondary) 18%, var(--color-card-bg));
+    color: var(--color-text-secondary);
+}
+
+.monitoring-badge.info {
+    background-color: color-mix(in srgb, var(--color-info) 15%, var(--color-card-bg));
+    color: var(--color-info);
+}
+
+.monitoring-reason {
+    white-space: normal;
+    max-width: 320px;
+    color: var(--color-text-secondary);
+}
+
+@media (max-width: 900px) {
+    .monitoring-charts-row {
+        grid-template-columns: 1fr;
+    }
+}

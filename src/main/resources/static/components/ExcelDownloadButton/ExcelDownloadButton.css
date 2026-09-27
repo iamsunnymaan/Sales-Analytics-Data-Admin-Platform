@@ -1,0 +1,105 @@
+/* Shared look for every "download as CSV" funnel-button-opens-a-popup control app-wide (Dashboard's
+   FY Overview, Primary/Secondary Sales' Ranking/Research/Reports/Site Report, TeamPerformance's
+   Team Report/Site Report, SiteStatus's Research/Ranking). Previously byte-identical copies lived
+   separately in each page's own CSS file — consolidated here.
+
+   NOT included here: the `.product-snapshot-download-btn:hover`/`[aria-expanded="true"]` rule —
+   Primary/Secondary/TeamPerformance style the button as "active" while its popup is open (not just
+   on :hover), Dashboard/SiteStatus only style it on :hover. That's a real, pre-existing difference
+   between pages, so each page keeps that one small rule in its own CSS rather than it being forced
+   to one behavior here. */
+
+.product-snapshot-download-wrap {
+    position: relative;
+    display: inline-flex;
+}
+
+.product-snapshot-download-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--color-border);
+    background-color: var(--color-background);
+    border-radius: 6px;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.72rem;
+    color: var(--color-text-primary);
+    cursor: pointer;
+}
+
+/* Compact square icon-only variant of .product-snapshot-download-btn — filled with a primary
+   background and white icon. */
+.region-summary-download-btn {
+    width: 1.6rem;
+    height: 1.6rem;
+    padding: 0;
+    background-color: var(--color-primary);
+    color: #fff;
+}
+
+.region-summary-download-btn:hover {
+    color: #fff;
+    border-color: var(--color-primary);
+}
+
+.product-snapshot-download-popup {
+    position: absolute;
+    top: calc(100% + 0.35rem);
+    right: 0;
+    z-index: 5;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    width: 11.5rem;
+    /* Base surface (background/border/radius) comes from Shared/css/card.css. */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+    padding: 0.6rem;
+}
+
+.product-snapshot-download-popup-title {
+    font-size: 0.68rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+}
+
+.product-snapshot-download-range {
+    width: 100%;
+    font-size: 0.68rem;
+    font-weight: 500;
+    color: var(--color-text-primary);
+    background-color: var(--color-background);
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    padding: 0.3rem 0.5rem;
+    cursor: pointer;
+}
+
+.product-snapshot-download-range-input {
+    width: 100%;
+    font-size: 0.68rem;
+    font-family: inherit;
+    color: var(--color-text-primary);
+    background-color: var(--color-card-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    padding: 0.28rem 0.5rem;
+}
+
+.product-snapshot-download-confirm-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+    border: none;
+    background-color: var(--color-primary);
+    border-radius: 6px;
+    padding: 0.35rem 0.6rem;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: #fff;
+    cursor: pointer;
+}
+
+.product-snapshot-download-confirm-btn:hover {
+    background-color: var(--color-primary-hover);
+}

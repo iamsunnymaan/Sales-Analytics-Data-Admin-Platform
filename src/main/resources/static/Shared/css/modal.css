@@ -1,0 +1,63 @@
+/* Shared modal chrome — backdrop, panel shell, header, and the small "×" close-button style used
+   by every fixed-position popup modal app-wide. Each modal keeps its own selector for whatever
+   varies per instance (z-index, backdrop padding/opacity, panel max-width/box-shadow, close-button
+   font-size) — this file only centralizes what was byte- or near-identical across all of them. */
+
+.product-research-modal-backdrop,
+.top-projection-modal-backdrop,
+.import-preview-overlay,
+.notes-modal-backdrop {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.product-research-modal,
+.top-projection-modal,
+.import-preview-modal,
+.notes-modal {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-height: 85vh;
+    background-color: var(--color-card-bg);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.product-research-modal-header,
+.top-projection-modal-header,
+.import-preview-header,
+.notes-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.product-research-modal-header {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    background-color: color-mix(in srgb, var(--color-primary) 10%, var(--color-card-bg));
+}
+
+.product-research-modal-close,
+.top-projection-modal-close,
+.notes-modal-close {
+    border: none;
+    background: transparent;
+    padding: 0.1rem 0.35rem;
+    line-height: 1;
+    color: var(--color-text-secondary);
+    cursor: pointer;
+}
+
+.product-research-modal-close:hover,
+.top-projection-modal-close:hover,
+.notes-modal-close:hover {
+    color: var(--color-danger);
+}

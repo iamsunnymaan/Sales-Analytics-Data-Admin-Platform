@@ -1,0 +1,35 @@
+/* Super Admin page styles. Self-contained, per this codebase's own per-page-CSS convention (see
+   PrimarySalesPage.css's own header comment for why). Base section shape mirrors MonitoringPage.css's
+   own .section-container/.section-header/-title exactly, just a different prefix. Both sections that
+   used to live on this page ("1. System / DB Tools", "2. Advanced Audit") were removed per explicit
+   request — frontend+backend, see SuperAdminPage.html/.js and AuthBootstrapSeeder's PERMISSION_TREE.
+   The base classes below are kept as this page's shell/scaffolding for whatever section comes next. */
+
+.superadmin-section {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.section-container {
+    margin-bottom: 0.5rem;
+}
+
+.section-header {
+    margin-bottom: 0.6rem;
+}
+
+.superadmin-section-title {
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: var(--color-text-secondary);
+    margin: 0;
+}
+
+.superadmin-placeholder {
+    font-size: 0.78rem;
+    color: var(--color-text-secondary);
+    margin: 0;
+}

@@ -1,0 +1,126 @@
+<!-- Login / entry screen. Standalone page (no sidebar shell) — this is the first thing a user sees
+     before reaching the app. Single centered card: brand header, welcome message, a Password/OTP
+     sliding-pill toggle, User ID, then whichever credential field matches the selected mode
+     (Password, or OTP with its own Send OTP button), and a Login button. Wired to the real backend
+     (AuthController: POST /api/auth/send-otp, POST /api/auth/login — see LoginPage.js) — a
+     successful login is cached in sessionStorage and redirects into the app root ("/"); a failed
+     one shows the server's error message in #loginFormError instead of proceeding. Reuses the same
+     --color-* tokens as every other page (variables.css) so it stays visually consistent. No manual
+     dark/light toggle here (there's no sidebar to host QuickAccessPanel's control) — theme-init.js
+     still applies whatever was last persisted under "hob-theme" so the page doesn't flash the
+     wrong theme, it's just not switchable from this screen. -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Sign In - IB Department</title>
+    <script src="/Shared/js/theme-init.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="/Shared/css/variables.css">
+    <link rel="stylesheet" href="/pages/LoginPage/LoginPage.css">
+</head>
+<body>
+    <div class="login-shell">
+        <div class="login-blob login-blob-a"></div>
+        <div class="login-blob login-blob-b"></div>
+
+        <div class="login-card">
+            <div class="login-card-header">
+                <div class="login-brand-row">
+                    <span class="login-brand-icon"><i class="bi bi-hexagon-fill"></i></span>
+                    <span class="login-brand-text">House of Beauty</span>
+                </div>
+            </div>
+
+            <div class="login-welcome">
+                <h1 class="login-welcome-title">Welcome to IB Team</h1>
+                <p class="login-welcome-subtitle">Sign in securely to continue to your account.</p>
+            </div>
+
+            <div class="login-mode-toggle" id="loginModeToggle" role="tablist">
+                <button type="button" class="login-mode-option active" data-mode="password" id="loginModePasswordBtn" role="tab" aria-selected="true">Password</button>
+                <button type="button" class="login-mode-option" data-mode="otp" id="loginModeOtpBtn" role="tab" aria-selected="false">OTP</button>
+                <div class="login-mode-slider" id="loginModeSlider"></div>
+            </div>
+
+            <form id="loginForm" novalidate>
+                <div class="login-form-error d-none" id="loginFormError" role="alert"></div>
+
+                <div class="login-field">
+                    <label for="loginUserId" class="login-label">User ID</label>
+                    <div class="login-input-group">
+                        <i class="bi bi-person-fill login-input-icon"></i>
+                        <input type="text" class="login-input" id="loginUserId" name="userId" placeholder="Enter your user ID" autocomplete="username" required>
+                    </div>
+                    <div class="login-field-error" id="loginUserIdError">Please enter your user ID.</div>
+                </div>
+
+                <div class="login-field" id="loginPasswordGroup">
+                    <label for="loginPassword" class="login-label">Password</label>
+                    <div class="login-input-group">
+                        <i class="bi bi-lock-fill login-input-icon"></i>
+                        <input type="password" class="login-input" id="loginPassword" name="password" placeholder="Enter your password" autocomplete="current-password">
+                        <button type="button" class="login-input-suffix-btn" id="loginTogglePassword" aria-label="Show password" title="Show password">
+                            <i class="bi bi-eye" id="loginTogglePasswordIcon"></i>
+                        </button>
+                    </div>
+                    <div class="login-field-error" id="loginPasswordError">Please enter your password.</div>
+                    <button type="button" class="login-forgot-link" id="loginForgotPasswordLink">Forgot password?</button>
+                </div>
+
+                <div class="login-field d-none" id="loginOtpGroup">
+                    <label for="loginOtp" class="login-label">OTP</label>
+                    <div class="login-otp-row">
+                        <div class="login-input-group login-otp-input-group">
+                            <i class="bi bi-shield-lock-fill login-input-icon"></i>
+                            <input type="text" class="login-input" id="loginOtp" name="otp" placeholder="Enter OTP" inputmode="numeric" autocomplete="one-time-code" maxlength="6">
+                        </div>
+                        <button type="button" class="login-otp-btn" id="loginSendOtpBtn">Send OTP</button>
+                    </div>
+                    <div class="login-field-error" id="loginOtpError">Please enter the OTP.</div>
+                    <div class="login-otp-hint d-none" id="loginOtpHint">OTP sent. It's valid for 5 minutes.</div>
+                </div>
+
+                <button type="submit" class="login-submit-btn" id="loginSubmitBtn">
+                    <span class="login-submit-label">Login</span>
+                    <span class="spinner-border spinner-border-sm login-submit-spinner d-none" id="loginSubmitSpinner" role="status" aria-hidden="true"></span>
+                </button>
+            </form>
+
+            <!-- Swapped in over the login form when "Forgot password?" is clicked. Asks for the
+                 account's registered email (POST /api/auth/forgot-password) and, on success, shows
+                 a generic confirmation — no email/SMS provider is wired up yet (see AuthService),
+                 so the actual reset link is only logged server-side for now, never shown here. -->
+            <form id="forgotPasswordForm" class="d-none" novalidate>
+                <div class="login-forgot-intro">
+                    <p class="login-forgot-intro-text">Enter the email registered to your account and we'll send you a link to reset your password.</p>
+                </div>
+
+                <div class="login-form-error d-none" id="forgotPasswordError" role="alert"></div>
+                <div class="login-form-success d-none" id="forgotPasswordSuccess" role="status"></div>
+
+                <div class="login-field" id="forgotEmailGroup">
+                    <label for="forgotEmail" class="login-label">Email</label>
+                    <div class="login-input-group">
+                        <i class="bi bi-envelope-fill login-input-icon"></i>
+                        <input type="email" class="login-input" id="forgotEmail" name="email" placeholder="Enter your registered email" autocomplete="email" required>
+                    </div>
+                    <div class="login-field-error" id="forgotEmailError">Please enter your email.</div>
+                </div>
+
+                <button type="submit" class="login-submit-btn" id="forgotPasswordSubmitBtn">
+                    <span class="login-submit-label">Send Reset Link</span>
+                    <span class="spinner-border spinner-border-sm login-submit-spinner d-none" id="forgotPasswordSpinner" role="status" aria-hidden="true"></span>
+                </button>
+                <button type="button" class="login-forgot-back-btn" id="backToLoginLink">
+                    <i class="bi bi-arrow-left"></i> Back to Login
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script src="/pages/LoginPage/LoginPage.js"></script>
+</body>
+</html>

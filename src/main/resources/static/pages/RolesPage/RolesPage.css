@@ -1,0 +1,858 @@
+/* Roles & Users page styles. Self-contained (like every other page's own CSS file — see
+   PrimarySalesPage.css's own header comment for why this codebase inlines each page's styles rather
+   than sharing component stylesheets). The `.users-*` rules (2. User Details, folded in from the
+   old standalone Users page) keep their own prefix rather than being renamed to `.roles-*`, since
+   RolesPage.js/RolesPage.html still reference them under that name. */
+
+.roles-section {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.section-container {
+    margin-bottom: 0.5rem;
+}
+
+.section-header {
+    margin-bottom: 0.6rem;
+}
+
+.roles-section-title {
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: var(--color-text-secondary);
+    margin: 0;
+}
+
+/* ==================== 1. Filter Header ==================== */
+/* Base surface (background/border/radius) comes from Shared/css/card.css. */
+.roles-filter-header-card {
+    padding: 0.75rem 1rem;
+    box-shadow: var(--shadow-card);
+}
+
+.roles-filter-header-row {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.roles-new-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    border: none;
+    background-color: var(--color-primary);
+    color: #fff;
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 0.36rem 0.75rem;
+    border-radius: 18px;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+}
+
+.roles-new-btn:hover {
+    background-color: var(--color-primary-hover);
+}
+
+/* ==================== 2. User Details (folded in from the old standalone Users page) ==================== */
+.users-details-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+}
+
+.users-details-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+.users-search {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    background-color: var(--color-card-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    padding: 0.28rem 0.6rem;
+    min-width: 200px;
+}
+
+.users-search i {
+    color: var(--color-text-secondary);
+    font-size: 0.68rem;
+}
+
+.users-search input {
+    border: none;
+    outline: none;
+    background: transparent;
+    font-size: 0.7rem;
+    color: var(--color-text-primary);
+    width: 100%;
+}
+
+.users-new-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    border: none;
+    background-color: var(--color-primary);
+    color: #fff;
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 0.36rem 0.75rem;
+    border-radius: 18px;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+}
+
+.users-new-btn:hover {
+    background-color: var(--color-primary-hover);
+}
+
+/* Base surface (background/border/radius) comes from Shared/css/card.css. */
+.users-card {
+    box-shadow: var(--shadow-card);
+    border-radius: 18px;
+    overflow: hidden;
+}
+
+.users-table-wrap {
+    overflow-x: auto;
+}
+
+.users-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.72rem;
+}
+
+.users-table th,
+.users-table td {
+    padding: 0.4rem 0.5rem;
+    text-align: left;
+    white-space: nowrap;
+}
+
+.users-table thead th {
+    font-size: 0.62rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: var(--color-text-secondary);
+    background-color: var(--color-sidebar-bg);
+    border-bottom: 1px solid var(--color-border);
+}
+
+.users-table tbody tr:not(:last-child) td {
+    border-bottom: 1px solid var(--color-border);
+}
+
+.users-table td.users-empty {
+    text-align: center;
+    color: var(--color-text-secondary);
+    padding: 1.25rem 0.6rem;
+    white-space: normal;
+}
+
+.users-name-cell {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+}
+
+.users-name-primary {
+    font-weight: 600;
+    color: var(--color-text-primary);
+}
+
+.users-name-secondary {
+    font-size: 0.7rem;
+    color: var(--color-text-secondary);
+}
+
+.users-role-badge {
+    display: inline-block;
+    background-color: color-mix(in srgb, var(--color-primary) 12%, var(--color-card-bg));
+    color: var(--color-primary);
+    font-size: 0.68rem;
+    font-weight: 600;
+    padding: 0.15rem 0.5rem;
+    border-radius: 999px;
+    margin: 0 0.2rem 0.2rem 0;
+    white-space: nowrap;
+}
+
+.users-status-badge {
+    display: inline-block;
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    padding: 0.2rem 0.55rem;
+    border-radius: 999px;
+}
+
+.users-status-badge.active {
+    background-color: color-mix(in srgb, var(--color-success) 15%, var(--color-card-bg));
+    color: var(--color-success);
+}
+
+.users-status-badge.inactive {
+    background-color: color-mix(in srgb, var(--color-text-secondary) 18%, var(--color-card-bg));
+    color: var(--color-text-secondary);
+}
+
+.users-status-badge.locked {
+    background-color: color-mix(in srgb, var(--color-danger) 15%, var(--color-card-bg));
+    color: var(--color-danger);
+}
+
+.users-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.users-action-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.9rem;
+    height: 1.9rem;
+    border: 1px solid var(--color-border);
+    background-color: var(--color-card-bg);
+    color: var(--color-text-secondary);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.users-action-btn:hover {
+    color: var(--color-primary);
+    border-color: var(--color-primary);
+}
+
+.users-action-btn.danger:hover {
+    color: var(--color-danger);
+    border-color: var(--color-danger);
+}
+
+/* ---- New User / Edit Profile modal ---- */
+.users-modal-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 1400;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.4);
+    padding: 1rem;
+}
+
+.users-modal {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 420px;
+    max-height: 90vh;
+    background-color: var(--color-card-bg);
+    border-radius: 10px;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25);
+    overflow: hidden;
+}
+
+.users-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.7rem 1rem;
+    background-color: var(--color-sidebar-bg);
+    border-bottom: 1px solid var(--color-border);
+}
+
+.users-modal-title {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #fff;
+}
+
+.users-modal-close {
+    border: none;
+    background: transparent;
+    font-size: 1.3rem;
+    line-height: 1;
+    color: rgba(255, 255, 255, 0.75);
+    cursor: pointer;
+    padding: 0.1rem 0.35rem;
+}
+
+.users-modal-close:hover {
+    color: var(--color-danger);
+}
+
+.users-modal-body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+    padding: 0.85rem 1rem;
+    overflow-y: auto;
+}
+
+.users-modal-error {
+    background-color: color-mix(in srgb, var(--color-danger) 12%, var(--color-card-bg));
+    color: var(--color-danger);
+    font-size: 0.72rem;
+    padding: 0.4rem 0.6rem;
+    border-radius: 6px;
+}
+
+.users-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.22rem;
+}
+
+.users-field label {
+    font-size: 0.68rem;
+    font-weight: 600;
+    color: var(--color-text-secondary);
+}
+
+.users-field-hint {
+    font-size: 0.62rem;
+    color: var(--color-text-secondary);
+}
+
+.users-input {
+    width: 100%;
+    box-sizing: border-box;
+    border: 1px solid var(--color-border);
+    background-color: var(--color-background);
+    color: var(--color-text-primary);
+    font-size: 0.76rem;
+    padding: 0.38rem 0.55rem;
+    border-radius: 6px;
+}
+
+.users-input:focus {
+    outline: none;
+    border-color: var(--color-primary);
+}
+
+.users-input:disabled {
+    opacity: 1;
+    -webkit-text-fill-color: var(--color-text-primary);
+    color: var(--color-text-primary);
+    cursor: not-allowed;
+}
+
+.users-status-toggle {
+    display: inline-flex;
+    background-color: var(--color-background);
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    padding: 0.1rem;
+    width: fit-content;
+}
+
+.users-status-toggle-btn {
+    border: none;
+    background: transparent;
+    color: var(--color-text-secondary);
+    font-size: 0.65rem;
+    font-weight: 600;
+    padding: 0.2rem 0.6rem;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.users-status-toggle-btn.active[data-value="true"] {
+    background-color: var(--color-success);
+    color: #fff;
+}
+
+.users-status-toggle-btn.active[data-value="false"] {
+    background-color: var(--color-text-secondary);
+    color: #fff;
+}
+
+.users-field.has-error .users-input {
+    border-color: var(--color-danger);
+}
+
+.users-input-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.users-input-wrap .users-input {
+    padding-right: 2.2rem;
+}
+
+.users-input-toggle {
+    position: absolute;
+    right: 0.5rem;
+    border: none;
+    background: transparent;
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    padding: 0.2rem;
+    line-height: 1;
+}
+
+.users-role-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1rem;
+}
+
+.users-role-checkbox {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 0.74rem;
+    color: var(--color-text-primary);
+    cursor: pointer;
+}
+
+.users-modal-actions {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.users-submit-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    border: none;
+    background-color: var(--color-primary);
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 600;
+    padding: 0.5rem 1.3rem;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+}
+
+.users-submit-btn:hover {
+    background-color: var(--color-primary-hover);
+}
+
+.users-submit-btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.users-submit-spinner {
+    width: 0.85rem;
+    height: 0.85rem;
+    border: 2px solid rgba(255, 255, 255, 0.4);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: users-spin 0.6s linear infinite;
+}
+
+@keyframes users-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@media (max-width: 640px) {
+    .users-details-header {
+        flex-wrap: wrap;
+    }
+
+    .users-details-header-actions {
+        flex-wrap: wrap;
+        width: 100%;
+    }
+
+    .users-search {
+        min-width: 0;
+        flex: 1 1 100%;
+    }
+}
+
+/* ==================== 3. Roles Details ==================== */
+.roles-details-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+}
+
+.roles-card {
+    box-shadow: var(--shadow-card);
+    border-radius: 18px;
+    overflow: hidden;
+}
+
+.roles-table-wrap {
+    overflow-x: auto;
+}
+
+.roles-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.72rem;
+}
+
+.roles-table th,
+.roles-table td {
+    padding: 0.4rem 0.5rem;
+    text-align: left;
+    white-space: nowrap;
+}
+
+.roles-table thead th {
+    font-size: 0.62rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: var(--color-text-secondary);
+    background-color: var(--color-sidebar-bg);
+    border-bottom: 1px solid var(--color-border);
+}
+
+.roles-table tbody tr:not(:last-child) td {
+    border-bottom: 1px solid var(--color-border);
+}
+
+.roles-table td.roles-empty {
+    text-align: center;
+    color: var(--color-text-secondary);
+    padding: 1.25rem 0.6rem;
+    white-space: normal;
+}
+
+.roles-description-cell {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 160px;
+    cursor: default;
+}
+
+.roles-table td:nth-child(3) {
+    white-space: normal;
+    max-width: 320px;
+}
+
+.roles-name-primary {
+    font-weight: 600;
+    color: var(--color-text-primary);
+}
+
+.roles-permission-badge {
+    display: inline-block;
+    background-color: color-mix(in srgb, var(--color-primary) 12%, var(--color-card-bg));
+    color: var(--color-primary);
+    font-size: 0.68rem;
+    font-weight: 600;
+    padding: 0.15rem 0.5rem;
+    border-radius: 999px;
+    margin: 0 0.2rem 0.2rem 0;
+    white-space: nowrap;
+}
+
+.roles-permission-more {
+    background-color: color-mix(in srgb, var(--color-text-secondary) 18%, var(--color-card-bg));
+    color: var(--color-text-secondary);
+    cursor: default;
+}
+
+.roles-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.roles-action-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.9rem;
+    height: 1.9rem;
+    border: 1px solid var(--color-border);
+    background-color: var(--color-card-bg);
+    color: var(--color-text-secondary);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.roles-action-btn:hover {
+    color: var(--color-primary);
+    border-color: var(--color-primary);
+}
+
+.roles-action-btn.danger:hover {
+    color: var(--color-danger);
+    border-color: var(--color-danger);
+}
+
+/* ==================== Modal ==================== */
+.roles-modal-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 1400;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.4);
+    padding: 1rem;
+}
+
+.roles-modal {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 420px;
+    max-height: 90vh;
+    background-color: var(--color-card-bg);
+    border-radius: 10px;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25);
+    overflow: hidden;
+}
+
+.roles-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.7rem 1rem;
+    background-color: var(--color-sidebar-bg);
+    border-bottom: 1px solid var(--color-border);
+}
+
+.roles-modal-title {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #fff;
+}
+
+.roles-modal-close {
+    border: none;
+    background: transparent;
+    font-size: 1.3rem;
+    line-height: 1;
+    color: rgba(255, 255, 255, 0.75);
+    cursor: pointer;
+    padding: 0.1rem 0.35rem;
+}
+
+.roles-modal-close:hover {
+    color: var(--color-danger);
+}
+
+.roles-modal-body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+    padding: 0.85rem 1rem;
+    overflow-y: auto;
+}
+
+.roles-modal-error {
+    background-color: color-mix(in srgb, var(--color-danger) 12%, var(--color-card-bg));
+    color: var(--color-danger);
+    font-size: 0.72rem;
+    padding: 0.4rem 0.6rem;
+    border-radius: 6px;
+}
+
+.roles-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.22rem;
+}
+
+.roles-field label {
+    font-size: 0.68rem;
+    font-weight: 600;
+    color: var(--color-text-secondary);
+}
+
+.roles-field-hint {
+    font-size: 0.62rem;
+    color: var(--color-text-secondary);
+}
+
+.roles-input {
+    width: 100%;
+    box-sizing: border-box;
+    border: 1px solid var(--color-border);
+    background-color: var(--color-background);
+    color: var(--color-text-primary);
+    font-size: 0.76rem;
+    padding: 0.38rem 0.55rem;
+    border-radius: 6px;
+    font-family: inherit;
+    resize: vertical;
+}
+
+.roles-input:focus {
+    outline: none;
+    border-color: var(--color-primary);
+}
+
+.roles-permission-list {
+    max-height: 320px;
+    overflow-y: auto;
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    padding: 0.35rem 0.5rem;
+}
+
+/* Hierarchical Page -> Section -> Feature permission tree. Each level nests one .perm-node inside
+   the previous level's .perm-node-children, indentation coming from that wrapper's own padding —
+   see the cascade logic (setDescendantChecked/updateAncestorStates) in RolesPage.js, which relies
+   on this exact DOM shape (":scope > .perm-node-children > .perm-node") to walk parent/child. */
+.perm-node-children {
+    padding-left: 1.35rem;
+    display: none;
+}
+
+.perm-node.expanded > .perm-node-children {
+    display: block;
+}
+
+.perm-node-row {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.28rem 0.2rem;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.perm-node-row:hover {
+    background-color: var(--color-sidebar-bg);
+}
+
+.perm-node-toggle,
+.perm-node-toggle-spacer {
+    flex: 0 0 auto;
+    width: 18px;
+    height: 18px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    background: none;
+    padding: 0;
+    color: var(--color-text-secondary);
+    font-size: 0.7rem;
+    cursor: pointer;
+}
+
+.perm-node-checkbox {
+    flex: 0 0 auto;
+    cursor: pointer;
+    accent-color: var(--color-primary);
+}
+
+.perm-node-label {
+    font-size: 0.78rem;
+    color: var(--color-text-primary);
+}
+
+.perm-node--page > .perm-node-row .perm-node-label {
+    font-weight: 600;
+}
+
+.perm-node--section > .perm-node-row .perm-node-label {
+    font-weight: 500;
+}
+
+.perm-node--feature > .perm-node-row .perm-node-label {
+    color: var(--color-text-secondary);
+}
+
+/* The "page:"/"section:"/"feature:" prefix each row's label starts with (RolesPage.js's
+   permissionDisplayLabel) — kept smaller/lighter than the actual name so the name stays the
+   visually dominant part of the row. */
+.perm-node-kind {
+    font-size: 0.68rem;
+    font-weight: 400;
+    color: var(--color-text-secondary);
+    opacity: 0.75;
+}
+
+/* Feature rows (see RolesPage.js's SECTION_FEATURE_KEYS/renderFeatureNode) — a real checkbox like
+   every other level, saving to IAM_Role_Feature_Grants rather than the Page/Section permission set;
+   the puzzle-piece icon is purely a visual cue distinguishing "Feature" from "Section" at a glance. */
+.perm-node-ref-icon {
+    flex: 0 0 auto;
+    font-size: 0.68rem;
+    color: var(--color-text-secondary);
+    opacity: 0.7;
+}
+
+.roles-modal-actions {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.roles-submit-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    border: none;
+    background-color: var(--color-primary);
+    color: #fff;
+    font-size: 0.82rem;
+    font-weight: 600;
+    padding: 0.5rem 1.3rem;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+}
+
+.roles-submit-btn:hover {
+    background-color: var(--color-primary-hover);
+}
+
+.roles-submit-btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.roles-submit-spinner {
+    width: 0.85rem;
+    height: 0.85rem;
+    border: 2px solid rgba(255, 255, 255, 0.4);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: roles-spin 0.6s linear infinite;
+}
+
+@keyframes roles-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@media (max-width: 640px) {
+    .roles-details-header {
+        flex-wrap: wrap;
+    }
+
+    .roles-description-cell,
+    .roles-table td:nth-child(3) {
+        max-width: 140px;
+    }
+}

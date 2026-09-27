@@ -1,0 +1,754 @@
+/* Explorer page styles. Per explicit request, the section-specific CSS that used to live in
+   separate components/* stylesheets (DatabaseInfo, TableData) is inlined below instead — this
+   page is the only place either was ever used; class names are already fully namespaced so
+   there's no collision risk. TableList.css stays a separate shared stylesheet, still linked in
+   ExplorerPage.html, since DataUploadPage.html uses it too. */
+
+/* ==================== Tables section (compact override) ==================== */
+/* Per explicit request, a smaller/denser take on TableList.css's shared chip-grid + info-panel
+   layout — Explorer-only: every rule here is scoped under #tableListSection (this page's own
+   element id), so DataUploadPage's "Available Tables" section — same shared component/CSS classes,
+   different page — is completely untouched. Shrinks text size and the section's own padding/gaps,
+   not the underlying grid proportions (still 80:20). */
+#tableListSection .section-title {
+    font-size: 0.68rem;
+}
+
+#tableListSection .table-list-columns .table-list-grid {
+    padding: 0.4rem 0.55rem;
+    gap: 0.4rem;
+}
+
+#tableListSection .table-chip {
+    padding: 0.32rem 0.65rem;
+    font-size: 0.68rem;
+}
+
+#tableListSection .table-chip i {
+    font-size: 0.7rem;
+}
+
+#tableListSection .table-info-panel {
+    padding: 0.35rem 0.45rem;
+    gap: 0.3rem;
+}
+
+#tableListSection .table-info-empty {
+    font-size: 0.58rem;
+}
+
+#tableListSection .table-info-name-line {
+    font-size: 0.68rem;
+}
+
+#tableListSection .table-info-updated-line {
+    font-size: 0.58rem;
+}
+
+#tableListSection .table-info-dup-badge {
+    padding: 0.18rem 0.4rem;
+    font-size: 0.56rem;
+}
+
+/* ==================== Connection status badge ==================== */
+/* Pinned to the top-right corner of the page content. */
+.explorer-page-header {
+    display: flex;
+    justify-content: flex-end;
+    /* margin-bottom: 1rem; */
+}
+
+/* Styles for the connection status badge (dot + Connected/Disconnected text). */
+.db-connection-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-weight: 600;
+    font-size: 0.78rem;
+    color: var(--color-text-secondary);
+}
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: var(--color-text-secondary);
+}
+
+.db-connection-status.connected {
+    color: var(--color-success);
+}
+
+.db-connection-status.connected .status-dot {
+    background-color: var(--color-success);
+}
+
+.db-connection-status.disconnected {
+    color: var(--color-warning);
+}
+
+.db-connection-status.disconnected .status-dot {
+    background-color: var(--color-warning);
+}
+
+/* Common ancestor of the page's 2 .section-container groups (Tables, Table Data) — provides the
+   gap BETWEEN sections via flex, same pattern PrimarySalesPage.css's own .target-achievement-section
+   uses, now that .section-container/.table-list-section no longer carry their own inter-section
+   margin (zeroed below). */
+.explorer-sections {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+/* Outer section boundary — wraps each section's title (.section-header) and its existing card
+   (.section-content) into one structural group, same pattern PrimarySalesPage.css's own
+   .section-container follows (no box look — border/radius/background/padding disabled per that
+   same explicit request). #tableListSection keeps its own .table-list-section class too (shared
+   TableList.css look), just with its old margin-bottom zeroed since .explorer-sections' own gap
+   does that job now. */
+.section-container {
+    /* border: 1px solid var(--color-border); */
+    /* border-radius: 18px; */
+    /* background-color: var(--color-card-bg); */
+    /* padding: 1rem; */
+}
+
+.section-header {
+    /* margin: 0 0 0.6rem; */
+}
+
+.section-content {
+    margin: 0;
+}
+
+/* TableList.css's own shared .table-list-section rule (also used by DataUploadPage) carries
+   margin-bottom: 1rem — zeroed here, scoped to just this page's instance via the ID, so
+   DataUploadPage's own copy of that component is untouched. */
+#tableListSection {
+    margin-bottom: 0;
+}
+
+/* ==================== Table Data grid ==================== */
+/* Styles for the Explorer data grid: header/search/download/menu bar, table, inline edit
+   inputs/action buttons, and pagination controls. */
+.table-data-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 0.6rem;
+    flex-wrap: wrap;
+}
+
+/* Same typography as PrimarySalesPage.css's .target-achievement-subtitle ("1. Overview", "2. Daily
+   Sales Trends", …) and TableList.css's own "Tables" heading right above this one — small,
+   uppercase, secondary-colored section labels, for a consistent look across pages. */
+.table-data-header .section-title {
+    font-size: 0.68rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--color-text-secondary);
+    margin: 0;
+}
+
+/* text-transform/letter-spacing reset — both are inherited from the parent .section-title
+   (uppercase, per the "Table Data" label's own styling above), which should only apply to that
+   static label text, not to the actual table name/row count sitting next to it. */
+.table-data-title-name {
+    font-size: 0.74rem;
+    font-weight: 700;
+    color: var(--color-primary);
+    text-transform: none;
+    letter-spacing: normal;
+}
+
+.table-data-row-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 1.1rem;
+    padding: 0.08rem 0.38rem;
+    border-radius: 999px;
+    background-color: var(--color-card-bg);
+    border: 1px solid var(--color-border);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    text-transform: none;
+    letter-spacing: normal;
+    color: var(--color-primary);
+    font-size: 0.55rem;
+    font-weight: 600;
+    vertical-align: middle;
+}
+
+.table-data-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.table-data-search {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    background-color: var(--color-card-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    padding: 0.28rem 0.6rem;
+    min-width: 170px;
+}
+
+.table-data-search i {
+    color: var(--color-text-secondary);
+    font-size: 0.68rem;
+}
+
+.table-data-search input {
+    border: none;
+    outline: none;
+    background: transparent;
+    font-size: 0.7rem;
+    color: var(--color-text-primary);
+    width: 100%;
+}
+
+.table-data-search input:disabled {
+    cursor: not-allowed;
+}
+
+.table-data-download {
+    position: relative;
+}
+
+.table-data-menu {
+    position: relative;
+}
+
+.table-data-menu-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.7rem;
+    height: 1.7rem;
+    background-color: var(--color-card-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    font-size: 0.76rem;
+}
+
+.table-data-menu-btn:hover:not(:disabled) {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+}
+
+.table-data-menu-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.table-data-refresh-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.7rem;
+    height: 1.7rem;
+    background-color: var(--color-card-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    font-size: 0.76rem;
+}
+
+.table-data-refresh-btn:hover:not(:disabled) {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+}
+
+.table-data-refresh-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Base surface (background/border/radius) comes from Shared/css/card.css. */
+.table-data-menu-panel {
+    position: absolute;
+    top: calc(100% + 0.4rem);
+    right: 0;
+    z-index: 10;
+    width: 180px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    padding: 0.3rem;
+}
+
+.menu-panel-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    width: 100%;
+    border: none;
+    background: transparent;
+    padding: 0.45rem 0.6rem;
+    font-size: 0.78rem;
+    color: var(--color-text-primary);
+    border-radius: 6px;
+    cursor: pointer;
+    text-align: left;
+}
+
+.menu-panel-item:hover {
+    background-color: var(--color-background);
+    color: var(--color-primary);
+}
+
+.menu-panel-item:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.menu-panel-item:disabled:hover {
+    background-color: transparent;
+    color: var(--color-text-primary);
+}
+
+.menu-panel-item-active {
+    color: var(--color-primary);
+    background-color: rgba(27, 77, 62, 0.08);
+}
+
+.table-data-download-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    background-color: var(--color-card-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    padding: 0.28rem 0.6rem;
+    font-size: 0.7rem;
+    font-weight: 500;
+    color: var(--color-text-primary);
+    cursor: pointer;
+}
+
+.table-data-download-btn:hover:not(:disabled) {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+}
+
+.table-data-download-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.table-data-download-panel {
+    box-sizing: border-box;
+    position: absolute;
+    top: calc(100% + 0.4rem);
+    right: 0;
+    z-index: 10;
+    width: 220px;
+    max-width: calc(100vw - 2rem);
+    /* Base surface (background/border/radius) comes from Shared/css/card.css. */
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    padding: 0.65rem;
+}
+
+.download-panel-group {
+    margin-bottom: 0.55rem;
+    padding-bottom: 0.55rem;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.download-panel-group:last-of-type {
+    margin-bottom: 0.5rem;
+    padding-bottom: 0;
+    border-bottom: none;
+}
+
+.download-panel-label {
+    display: block;
+    font-size: 0.65rem;
+    font-weight: 600;
+    color: var(--color-text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    margin-bottom: 0.3rem;
+}
+
+.download-panel-options {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    font-size: 0.78rem;
+    color: var(--color-text-primary);
+}
+
+.download-panel-options label {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.15rem 0.25rem;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.download-panel-options label:hover:not(:has(input:disabled)) {
+    background-color: var(--color-background);
+}
+
+.download-panel-options input[type="radio"] {
+    accent-color: var(--color-primary);
+    cursor: pointer;
+}
+
+/* "Date range" row option — unclickable (and visibly muted) when the selected table has no
+   date/datetime column, since there'd be nothing to filter on. */
+.download-panel-options label:has(input:disabled) {
+    color: var(--color-text-secondary);
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
+.download-panel-options label:has(input:disabled) input {
+    cursor: not-allowed;
+}
+
+/* Reason the "Date range" option is greyed out — visible inline instead of hiding behind a
+   hover-only tooltip, so it reads correctly on touch devices too. */
+.download-panel-hint {
+    margin-left: auto;
+    font-size: 0.62rem;
+    font-style: italic;
+    white-space: nowrap;
+}
+
+.download-panel-select {
+    box-sizing: border-box;
+    width: 100%;
+    padding: 0.3rem 0.4rem;
+    font-size: 0.75rem;
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+    outline: none;
+    color: var(--color-text-primary);
+    background-color: var(--color-card-bg);
+}
+
+/* Tells the user which column "Date range" filters on when there's only one and the column
+   picker itself is hidden — without it, the field group was two unlabeled date inputs. */
+.download-panel-date-single-hint {
+    font-size: 0.65rem;
+    color: var(--color-text-secondary);
+    margin-bottom: 0.35rem;
+}
+
+.download-panel-date-single-hint strong {
+    color: var(--color-text-primary);
+    font-weight: 600;
+}
+
+/* Inline validation message for the date-range fields, shown next to what's wrong instead of
+   only in the far-away top-of-card banner. */
+.download-panel-error {
+    font-size: 0.65rem;
+    color: var(--color-danger);
+    margin: -0.3rem 0 0.5rem;
+}
+
+.download-panel-range {
+    display: flex;
+    gap: 0.4rem;
+    margin-bottom: 0.55rem;
+}
+
+.download-panel-range label {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    font-size: 0.65rem;
+    color: var(--color-text-secondary);
+    flex: 1;
+    min-width: 0;
+}
+
+.download-panel-range input {
+    box-sizing: border-box;
+    padding: 0.25rem 0.35rem;
+    font-size: 0.72rem;
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+    outline: none;
+    width: 100%;
+    min-width: 0;
+}
+
+/* Native <input type="date"> enforces its own minimum rendering width for the calendar icon +
+   MM/DD/YYYY segments (browser-dependent, but reliably wider than the ~85px a side-by-side flex
+   pair gets inside this 200px-wide panel) — that's what was pushing the To field outside the
+   panel's edge. Stacking From/To into full-width rows instead of squeezing them side by side
+   gives each date picker the ~180px it actually needs. */
+.download-panel-range-stacked {
+    flex-direction: column;
+}
+
+.download-panel-range-stacked label {
+    flex: none;
+}
+
+.download-panel-range-stacked input {
+    min-width: 0;
+    max-width: 100%;
+}
+
+.download-panel-submit {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+    width: 100%;
+    background-color: var(--color-primary);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 0.42rem;
+    font-size: 0.78rem;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.download-panel-submit:hover {
+    background-color: var(--color-primary-hover);
+}
+
+.table-data-message {
+    display: none;
+    padding: 0.35rem 0.6rem;
+    border-radius: 6px;
+    font-size: 0.7rem;
+    font-weight: 500;
+    margin-bottom: 0.4rem;
+}
+
+.table-data-message.success {
+    display: block;
+    background-color: rgba(22, 128, 60, 0.1);
+    color: var(--color-success);
+}
+
+.table-data-message.error {
+    display: block;
+    background-color: rgba(220, 38, 38, 0.1);
+    color: var(--color-danger);
+}
+
+/* Base surface (background/border/radius) comes from Shared/css/card.css. */
+.table-data-card {
+    overflow: hidden;
+}
+
+.table-data-scroll {
+    max-height: 280px;
+    overflow-y: auto;
+    overflow-x: auto;
+    /* Scrollbars hidden on both axes — scrolling itself (wheel/drag/trackpad) still works.
+       scrollbar-width covers Firefox, the ::-webkit-scrollbar rule below covers Chrome/Edge/Safari. */
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.table-data-scroll::-webkit-scrollbar {
+    display: none;
+}
+
+.table-data-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table-data-table th,
+.table-data-table td {
+    padding: 0.35rem 0.55rem;
+    font-size: 0.7rem;
+    text-align: left;
+    white-space: nowrap;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.table-data-table thead th {
+    position: sticky;
+    top: 0;
+    /* CHANGED 2026-08-11: was a subtle rgba(27,77,62,0.08) tint with --color-primary text — now a
+       solid --color-primary bar with white text, so the header row reads as clearly distinct from
+       the data rows at a glance instead of blending into the card. */
+    background-color: var(--color-primary);
+    color: #fff;
+    font-weight: 600;
+    z-index: 1;
+}
+
+.table-data-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.table-data-table tbody tr:hover {
+    background-color: var(--color-background);
+}
+
+.th-content {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.table-data-empty {
+    text-align: center;
+    color: var(--color-text-secondary);
+    padding: 0.9rem 0.8rem;
+    font-size: 0.7rem;
+    white-space: normal;
+}
+
+.table-data-actions-header {
+    text-align: right;
+}
+
+.table-data-actions-cell {
+    white-space: nowrap;
+    text-align: right;
+}
+
+.row-action-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.3rem;
+    height: 1.3rem;
+    border: 1px solid var(--color-border);
+    background-color: var(--color-card-bg);
+    color: var(--color-text-secondary);
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.65rem;
+    margin-left: 0.3rem;
+}
+
+.row-action-btn:hover:not(:disabled) {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+}
+
+.row-action-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.row-save-btn {
+    color: var(--color-success);
+    border-color: var(--color-success);
+}
+
+.row-cancel-btn {
+    color: var(--color-danger);
+    border-color: var(--color-danger);
+}
+
+.row-delete-btn {
+    color: var(--color-danger);
+    border-color: var(--color-danger);
+}
+
+.cell-edit-input {
+    width: 100%;
+    min-width: 90px;
+    padding: 0.2rem 0.35rem;
+    font-size: 0.7rem;
+    border: 1px solid var(--color-primary);
+    border-radius: 4px;
+    outline: none;
+    color: var(--color-text-primary);
+    background-color: var(--color-card-bg);
+}
+
+.table-data-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.4rem 0.6rem;
+    border-top: 1px solid var(--color-border);
+    font-size: 0.65rem;
+    color: var(--color-text-secondary);
+}
+
+.table-data-pagination .pagination-info {
+    white-space: nowrap;
+}
+
+.table-data-pagination .pagination-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.table-data-pagination button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    border: 1px solid var(--color-border);
+    background-color: var(--color-card-bg);
+    color: var(--color-text-primary);
+    border-radius: 6px;
+    padding: 0.2rem 0.45rem;
+    font-size: 0.65rem;
+    cursor: pointer;
+}
+
+.table-data-pagination button:hover:not(:disabled) {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+}
+
+.table-data-pagination button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* ==================== Responsive (tablet/mobile) ==================== */
+/* Two breakpoints app-wide, matching Sidebar.css/app.css: <=1024px tablet (sidebar becomes a
+   compact icon rail), <=640px mobile (sidebar becomes an off-canvas drawer). The data table itself
+   already scrolls horizontally inside .table-data-scroll (see above) at any width, so a wide
+   table never breaks the page layout — these rules are about the surrounding controls. */
+@media (max-width: 640px) {
+    .explorer-page-header {
+        justify-content: flex-start;
+    }
+
+    .table-data-header-actions {
+        width: 100%;
+    }
+
+    .table-data-search {
+        min-width: 0;
+        flex: 1 1 100%;
+    }
+
+    .table-data-menu-panel,
+    .table-data-download-panel {
+        left: 0;
+        right: auto;
+        max-width: calc(100vw - 3.5rem);
+    }
+
+    .download-panel-range {
+        flex-direction: column;
+    }
+
+    .table-data-pagination {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+}

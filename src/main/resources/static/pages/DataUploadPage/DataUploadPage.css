@@ -1,0 +1,1327 @@
+/* Upload Data page styles. Per explicit request, the section-specific CSS that used to live in
+   separate components/* stylesheets (FileImport, ImportHistory) is inlined below instead — this
+   page is the only place either was ever used; class names are already fully namespaced so
+   there's no collision risk. TableList.css stays a separate shared stylesheet, still linked in
+   DataUploadPage.html, since ExplorerPage.html uses it too — including this page's own "Available
+   Tables" chip grid + info panel layout, which per later explicit request now lives entirely in
+   TableList.css (.table-list-columns/.table-info-*) so both pages' table pickers stay visually
+   identical, not just similarly named. */
+
+/* ==================== Tables section (compact override) ==================== */
+/* Same compact override as ExplorerPage.css's own "Tables section (compact override)" block, per
+   explicit request to keep both pages' table pickers equally dense — scoped under #tableListSection
+   here too (this page's own document), so this stays a per-page override rather than moving into
+   the shared TableList.css, matching how the rest of this file already handles page-specific
+   sizing on top of shared component classes. */
+/* Common ancestor of the page's 3 numbered .section-container groups (see below) — provides the
+   gap BETWEEN sections via flex, same pattern PrimarySalesPage.css's own .target-achievement-section
+   uses, now that .section-container/.table-list-section/.file-import-section no longer carry their
+   own inter-section margin (each zeroed below). */
+.data-upload-sections {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+/* Outer section boundary — wraps each numbered section's title (.section-header) and its existing
+   card (.section-content) into one structural group, same pattern PrimarySalesPage.css's own
+   .section-container follows (no box look — border/radius/background/padding disabled per that
+   same explicit request). #tableListSection/#fileImportSection keep their own .table-list-section/
+   .file-import-section class too (shared TableList.css look + this page's own --font-mono custom
+   property respectively), just with their old margin-bottom zeroed since .data-upload-sections' own
+   gap does that job now. */
+.section-container {
+    /* border: 1px solid var(--color-border); */
+    /* border-radius: 18px; */
+    /* background-color: var(--color-card-bg); */
+    /* padding: 1rem; */
+}
+
+.section-header {
+    /* margin: 0 0 0.6rem; */
+}
+
+.section-content {
+    margin: 0;
+}
+
+/* TableList.css's own shared .table-list-section rule (also used by ExplorerPage) carries
+   margin-bottom: 1rem — zeroed here, scoped to just this page's instance via the ID, so
+   ExplorerPage's own copy of that component is untouched. */
+#tableListSection {
+    margin-bottom: 0;
+}
+
+#tableListSection .section-title {
+    font-size: 0.68rem;
+}
+
+#tableListSection .table-list-columns .table-list-grid {
+    padding: 0.4rem 0.55rem;
+    gap: 0.4rem;
+}
+
+#tableListSection .table-chip {
+    padding: 0.32rem 0.65rem;
+    font-size: 0.68rem;
+}
+
+#tableListSection .table-chip i {
+    font-size: 0.7rem;
+}
+
+#tableListSection .table-info-panel {
+    padding: 0.35rem 0.45rem;
+    gap: 0.3rem;
+}
+
+#tableListSection .table-info-empty {
+    font-size: 0.58rem;
+}
+
+#tableListSection .table-info-name-line {
+    font-size: 0.68rem;
+}
+
+#tableListSection .table-info-updated-line {
+    font-size: 0.58rem;
+}
+
+#tableListSection .table-info-dup-badge {
+    padding: 0.18rem 0.4rem;
+    font-size: 0.56rem;
+}
+
+/* ==================== File Import (upload + preview) ==================== */
+/* Styles for the upload dropzone, live upload-progress bar, and the Data Preview card
+   (summary tiles and the row-by-row invalid/duplicate table). */
+.file-import-section {
+    /* Monospace stack for the pipeline's stepper/tally/chunk labels — matches the design-system
+       mockup's "Plex Mono" role without pulling in a webfont just for this one page. */
+    --font-mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+    margin-bottom: 0;
+}
+
+/* Matches PrimarySalesPage's numbered "1. Overview" subtitle style (.target-achievement-subtitle)
+   for visual consistency across pages — small, uppercase, letter-spaced, secondary-colored, rather
+   than a plain large heading. #tableListSection's own equivalent heading is the compact-override
+   block at the top of this file, which scopes to just this page (ExplorerPage also uses that
+   component and keeps its own look). */
+.file-import-section .section-title {
+    font-size: 0.68rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--color-text-secondary);
+    margin: 0 0 0.5rem;
+}
+
+.file-import-grid {
+    display: flex;
+    gap: 0.7rem;
+    align-items: stretch;
+}
+
+/* Base surface (background/border/radius) comes from Shared/css/card.css. */
+.file-import-card {
+    padding: 0.65rem 0.8rem;
+}
+
+.file-import-upload-card {
+    flex: 3 1 0;
+    min-width: 210px;
+    max-width: 260px;
+    align-self: flex-start;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+
+.file-import-progress-card {
+    flex: 7 1 0;
+    min-width: 0;
+    min-height: 280px;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+/* The class rule above sets display:flex unconditionally, which otherwise beats the browser's
+   default display:none for [hidden] (author CSS always overrides the UA stylesheet) — so the
+   card would stay rendered as an empty box even while hidden. This wins on specificity instead. */
+.file-import-progress-card[hidden] {
+    display: none;
+}
+
+.file-import-progress-inner {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+@media (max-width: 900px) {
+    .file-import-grid {
+        flex-direction: column;
+    }
+
+    .file-import-upload-card,
+    .file-import-progress-card {
+        flex: 1 1 auto;
+    }
+}
+
+.file-import-card-title {
+    margin: 0;
+    font-size: 0.76rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+}
+
+.file-import-card-title #uploadSelectedTableLabel {
+    color: var(--color-primary);
+}
+
+.file-import-progress-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.6rem;
+}
+
+.file-import-progress-close-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.5rem;
+    height: 1.5rem;
+    flex: none;
+    border: none;
+    background: transparent;
+    color: var(--color-text-secondary);
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.76rem;
+}
+
+.file-import-progress-close-btn:hover {
+    background-color: var(--color-background);
+    color: var(--color-text-primary);
+}
+
+.file-import-progress-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    flex: none;
+}
+
+.file-import-download-wrap {
+    position: relative;
+}
+
+.file-import-progress-download-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.5rem;
+    height: 1.5rem;
+    flex: none;
+    border: none;
+    background: transparent;
+    color: var(--color-text-secondary);
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.76rem;
+}
+
+.file-import-progress-download-btn:hover {
+    background-color: var(--color-background);
+    color: var(--color-primary);
+}
+
+/* Only shown once there's at least one invalid/duplicate row to download — see
+   updateDownloadButtonVisibility() in DataUploadPage.js. */
+.file-import-progress-download-btn.scanning {
+    color: var(--color-primary);
+    pointer-events: none;
+}
+
+.file-import-progress-download-btn.scanning i {
+    animation: file-import-download-spin 0.9s linear infinite;
+}
+
+@keyframes file-import-download-spin {
+    to { transform: rotate(360deg); }
+}
+
+.file-import-message {
+    display: none;
+    padding: 0.35rem 0.6rem;
+    border-radius: 6px;
+    font-size: 0.68rem;
+    font-weight: 500;
+}
+
+.file-import-message.success {
+    display: block;
+    background-color: rgba(22, 128, 60, 0.1);
+    color: var(--color-success);
+}
+
+.file-import-message.error {
+    display: block;
+    background-color: rgba(220, 38, 38, 0.1);
+    color: var(--color-danger);
+}
+
+.file-import-dropzone {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.35rem;
+    text-align: center;
+    padding: 0.85rem 0.65rem;
+    border: 2px dashed var(--color-border);
+    border-radius: 8px;
+    background-color: var(--color-background);
+    transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.file-import-dropzone.dragover {
+    border-color: var(--color-primary);
+    background-color: rgba(27, 77, 62, 0.06);
+}
+
+.file-import-dropzone-icon {
+    font-size: 1.3rem;
+    color: var(--color-text-secondary);
+}
+
+.file-import-dropzone-text {
+    margin: 0;
+    font-size: 0.68rem;
+    color: var(--color-text-secondary);
+}
+
+.file-import-dropzone-filename {
+    font-size: 0.66rem;
+    font-weight: 600;
+    color: var(--color-primary);
+    word-break: break-all;
+}
+
+.file-import-browse-btn {
+    margin-top: 0.3rem;
+    background-color: var(--color-card-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    padding: 0.28rem 0.65rem;
+    font-size: 0.66rem;
+    font-weight: 500;
+    color: var(--color-text-primary);
+    cursor: pointer;
+}
+
+.file-import-browse-btn:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+}
+
+.file-import-info-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+}
+
+.file-import-info-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+}
+
+.file-import-info-label {
+    font-size: 0.55rem;
+    color: var(--color-text-secondary);
+    white-space: nowrap;
+}
+
+.file-import-info-value {
+    font-size: 0.6rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+}
+
+.file-import-template-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.3rem;
+    background-color: transparent;
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    padding: 0.26rem 0.45rem;
+    font-size: 0.58rem;
+    font-weight: 500;
+    color: var(--color-text-primary);
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.file-import-template-btn:hover:not(:disabled) {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+}
+
+.file-import-template-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.file-import-upload-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.3rem;
+    background-color: var(--color-primary);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 0.36rem;
+    font-size: 0.68rem;
+    font-weight: 500;
+    cursor: pointer;
+    margin-top: auto;
+}
+
+.file-import-upload-btn:hover:not(:disabled) {
+    background-color: var(--color-primary-hover);
+}
+
+.file-import-upload-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.file-import-progress-empty {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 0.5rem;
+    color: var(--color-text-secondary);
+    font-size: 0.72rem;
+    padding: 1.6rem 1.1rem;
+}
+
+.file-import-progress-empty i {
+    font-size: 1.45rem;
+    opacity: 0.5;
+}
+
+.file-import-progress-empty p {
+    margin: 0;
+    max-width: 22rem;
+}
+
+.file-import-progress-loading {
+    gap: 0.4rem;
+}
+
+/* CHANGED: the live Validate/Commit view is now a "pipeline" block — a phase stepper, a speed
+   line + thin progress bar, a 3-tile tally row, and (once the backend reports real per-chunk
+   progress — see ImportProcessJobTracker.ChunkSlot / ChunkStatusResponse) a chunk-lane grid —
+   mirroring the design-system mockup's Data Preview panel. Still built by
+   buildRowProgressPlaceholder and updated live by updateRowProgress in DataUploadPage.js; only the
+   markup/classes changed, not the polling/SSE plumbing underneath.
+   CHANGED 2026-08-11 (superseded by the above): replaces the old spinner (.file-import-spinner-icon
+   / @keyframes file-import-spin, both removed) with a live progress bar. */
+.file-import-pipeline {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.75rem;
+    padding: 0.2rem 0.1rem;
+}
+
+/* ---- phase stepper ---- */
+.file-import-stepper {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.file-import-step {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    color: var(--color-text-secondary);
+    white-space: nowrap;
+}
+
+.file-import-step-dot {
+    width: 0.48rem;
+    height: 0.48rem;
+    border-radius: 50%;
+    border: 1.5px solid var(--color-border);
+    flex: none;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.file-import-step.done .file-import-step-dot {
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
+}
+
+.file-import-step.active {
+    color: var(--color-text-primary);
+}
+
+.file-import-step.active .file-import-step-dot {
+    border-color: var(--color-primary);
+    background-color: var(--color-card-bg);
+    box-shadow: 0 0 0 3px rgba(27, 77, 62, 0.14);
+    animation: file-import-step-pulse 1.4s ease-in-out infinite;
+}
+
+.file-import-step.failed {
+    color: var(--color-danger);
+}
+
+.file-import-step.failed .file-import-step-dot {
+    background-color: var(--color-danger);
+    border-color: var(--color-danger);
+}
+
+.file-import-step-rule {
+    flex: 1;
+    height: 1px;
+    min-width: 0.5rem;
+    background-color: var(--color-border);
+}
+
+@keyframes file-import-step-pulse {
+    0%, 100% { box-shadow: 0 0 0 3px rgba(27, 77, 62, 0.14); }
+    50% { box-shadow: 0 0 0 5px rgba(27, 77, 62, 0.14); }
+}
+
+/* ---- speed line + progress bar ---- */
+.speed-line {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+}
+
+.speed-line .label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+}
+
+.speed-line .label b {
+    font-family: var(--font-mono);
+    font-weight: 700;
+}
+
+.speed-line .stats {
+    font-family: var(--font-mono);
+    font-weight: 700;
+    font-size: 0.76rem;
+    color: var(--color-text-secondary);
+    white-space: nowrap;
+}
+
+.tnum {
+    font-variant-numeric: tabular-nums;
+}
+
+.progress-track {
+    width: 100%;
+    height: 0.4rem;
+    border-radius: 999px;
+    background-color: color-mix(in srgb, var(--color-primary) 12%, transparent);
+    overflow: hidden;
+    margin-top: 0.3rem;
+}
+
+.progress-fill {
+    height: 100%;
+    width: 0%;
+    background-color: var(--color-primary);
+    border-radius: 999px;
+    transition: width 0.18s linear;
+}
+
+.progress-fill.failed {
+    background-color: var(--color-danger);
+}
+
+/* ---- tally row (processed / valid / invalid) ---- */
+.file-import-tally-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.5rem;
+}
+
+.file-import-tally {
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    padding: 0.32rem 0.5rem;
+}
+
+.file-import-tally-k {
+    font-family: var(--font-mono);
+    font-size: 0.52rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--color-text-secondary);
+}
+
+.file-import-tally-v {
+    font-size: 0.92rem;
+    font-weight: 700;
+    line-height: 1.3;
+    color: var(--color-text-primary);
+}
+
+.file-import-tally-valid .file-import-tally-v {
+    color: var(--color-success);
+}
+
+.file-import-tally-invalid .file-import-tally-v {
+    color: var(--color-danger);
+}
+
+/* ---- chunk lanes (real per-chunk progress; see ImportProcessJobTracker.ChunkSlot) ---- */
+.file-import-lanes {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    max-height: calc(1.6rem * 6);
+    overflow-y: auto;
+    scrollbar-width: none;
+    &::-webkit-scrollbar {
+        display: none;
+    }
+}
+
+.file-import-lane {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.file-import-lane-idx {
+    font-family: var(--font-mono);
+    font-size: 0.52rem;
+    color: var(--color-text-secondary);
+    width: 1.4rem;
+    flex: none;
+}
+
+.file-import-lane-chunks {
+    display: flex;
+    gap: 0.25rem;
+    flex: 1;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+    &::-webkit-scrollbar {
+        display: none;
+    }
+}
+
+.file-import-chunk {
+    flex: 1 0 2rem;
+    min-width: 2rem;
+    height: 1.3rem;
+    border-radius: 4px;
+    border: 1.5px solid var(--color-border);
+    position: relative;
+    overflow: hidden;
+    background-color: var(--color-card-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-mono);
+    font-size: 0.52rem;
+    color: var(--color-text-secondary);
+    transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.file-import-chunk-fill {
+    position: absolute;
+    inset: 0;
+    width: 0%;
+    background-color: color-mix(in srgb, var(--color-primary) 12%, transparent);
+    transition: width 0.15s linear;
+    z-index: 0;
+}
+
+.file-import-chunk span {
+    position: relative;
+    z-index: 1;
+}
+
+.file-import-chunk.running {
+    border-color: var(--color-primary);
+}
+
+.file-import-chunk.passed {
+    background-color: rgba(22, 128, 60, 0.1);
+    border-color: var(--color-success);
+    color: var(--color-success);
+    font-weight: 600;
+}
+
+.file-import-chunk.flagged {
+    background-color: rgba(217, 119, 6, 0.1);
+    border-color: var(--color-warning);
+    color: var(--color-warning);
+    font-weight: 600;
+}
+
+.file-import-chunk.aborted {
+    background-image: repeating-linear-gradient(135deg, var(--color-border) 0 6px, transparent 6px 12px);
+    color: var(--color-text-secondary);
+    opacity: 0.7;
+}
+
+/* ---- live invalid-rows preview (grows as the chunk engine actually finds bad rows) ---- */
+.file-import-live-grid-label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--color-text-secondary);
+    margin-bottom: 0.35rem;
+}
+
+.file-import-live-grid-wrap {
+    overflow: auto;
+    max-height: calc(1.8rem * 7);
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    scrollbar-width: none;
+    &::-webkit-scrollbar {
+        display: none;
+    }
+}
+
+.file-import-progress-error {
+    display: flex;
+    flex: 1;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: 0.6rem;
+    text-align: left;
+    padding: 0.8rem;
+    margin: auto;
+    width: 100%;
+    max-width: 380px;
+    color: var(--color-danger);
+    background-color: rgba(220, 38, 38, 0.08);
+    border-radius: 6px;
+}
+
+.file-import-progress-error-icon {
+    font-size: 1.05rem;
+    margin-top: 0.1rem;
+    flex: none;
+}
+
+.file-import-progress-error-text {
+    font-size: 0.7rem;
+    line-height: 1.5;
+    font-weight: 500;
+    color: var(--color-text-primary);
+    word-break: break-word;
+}
+
+/* Hard-stop display when validation hits the 10-invalid-row cap (ImportLimits.MAX_INVALID_ROWS) —
+   see DataUploadPage.js's buildInvalidLimitContent(). No review table, no Import button: the whole
+   upload failed and the only next step is fixing the file and uploading again. */
+
+/* The "⋮" row inside the hard-stop table (buildCappedRowsTable) separating the leading rows from
+   the final (10th) one — a single cell spanning every column instead of a normal data row. */
+.file-import-limit-ellipsis-cell {
+    text-align: center;
+    color: var(--color-text-secondary);
+    background-color: var(--color-background);
+}
+
+.file-import-limit-footer {
+    font-size: 0.66rem;
+    color: var(--color-text-secondary);
+}
+
+.file-import-progress-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    flex: 1;
+}
+
+.file-import-progress-title {
+    margin: 0;
+    font-size: 0.76rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    word-break: break-word;
+}
+
+/* CHANGED (this turn): the live upload speed bar now renders inside the (tall) Data Preview card
+   alongside the Validate/Commit phase bars (see buildRowProgressPlaceholder in DataUploadPage.js) —
+   centered the same way .file-import-validating is, instead of the compact top-aligned block it used
+   to be in the narrow left Upload card. */
+.file-import-upload-progress {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.3rem;
+    margin: auto;
+    width: 100%;
+    max-width: 340px;
+    padding: 0.85rem 0.65rem;
+}
+
+.file-import-upload-progress-label {
+    font-size: 0.68rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+}
+
+.file-import-upload-progress-bar {
+    width: 100%;
+    height: 0.35rem;
+    border-radius: 999px;
+    background-color: var(--color-background);
+    border: 1px solid var(--color-border);
+    overflow: hidden;
+    margin: 0.35rem 0;
+}
+
+.file-import-upload-progress-bar-fill {
+    height: 100%;
+    width: 0%;
+    background-color: var(--color-primary);
+    border-radius: 999px;
+    transition: width 0.15s ease;
+}
+
+/* Shown once the byte transfer itself reaches 100% but the server is still scanning/parsing/storing
+   the file (see the onUploadProgress percent >= 100 branch in DataUploadPage.js) — an animated stripe
+   instead of a flat, unmoving full bar, so that gap doesn't read as a stalled/frozen upload. */
+.file-import-upload-progress-bar-fill.processing {
+    background-image: linear-gradient(135deg, rgba(255, 255, 255, 0.35) 25%, transparent 25%,
+        transparent 50%, rgba(255, 255, 255, 0.35) 50%, rgba(255, 255, 255, 0.35) 75%, transparent 75%, transparent);
+    background-size: 1rem 1rem;
+    animation: file-import-upload-processing-stripes 0.9s linear infinite;
+}
+
+@keyframes file-import-upload-processing-stripes {
+    from { background-position: 0 0; }
+    to { background-position: 1rem 0; }
+}
+
+.file-import-upload-progress-detail {
+    font-size: 0.6rem;
+    color: var(--color-text-secondary);
+}
+
+.file-import-summary {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(88px, 1fr));
+    gap: 0.35rem;
+}
+
+.file-import-tile {
+    background-color: var(--color-background);
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    padding: 0.26rem 0.45rem;
+    display: flex;
+    align-items: baseline;
+    gap: 0.25rem;
+}
+
+.file-import-tile-value {
+    font-size: 0.76rem;
+    font-weight: 700;
+    color: var(--color-text-primary);
+}
+
+.file-import-tile-label {
+    font-size: 0.58rem;
+    color: var(--color-text-secondary);
+}
+
+.file-import-tile.tile-valid .file-import-tile-value {
+    color: var(--color-success);
+}
+
+.file-import-tile.tile-invalid .file-import-tile-value {
+    color: var(--color-danger);
+}
+
+.file-import-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.08rem 0.34rem;
+    border-radius: 999px;
+    font-size: 0.55rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.file-import-badge.status-valid {
+    background-color: rgba(22, 128, 60, 0.1);
+    color: var(--color-success);
+}
+
+.file-import-badge.status-invalid {
+    background-color: rgba(220, 38, 38, 0.1);
+    color: var(--color-danger);
+}
+
+.file-import-badge.status-duplicate {
+    background-color: rgba(217, 119, 6, 0.1);
+    color: var(--color-warning);
+}
+
+.file-import-row-invalid td {
+    background-color: rgba(220, 38, 38, 0.04);
+}
+
+.file-import-row-duplicate td {
+    background-color: rgba(217, 119, 6, 0.04);
+}
+
+.file-import-cell-invalid {
+    background-color: rgba(220, 38, 38, 0.18) !important;
+    font-weight: 600;
+    color: var(--color-danger);
+}
+
+.file-import-issue-icon {
+    color: var(--color-danger);
+    margin-left: 0.3rem;
+    font-size: 0.64rem;
+    cursor: pointer;
+}
+
+.file-import-issue-icon:hover {
+    color: var(--color-danger);
+    opacity: 0.75;
+}
+
+.file-import-issue-icon:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+    border-radius: 3px;
+}
+
+.file-import-issue-icon-copied {
+    color: var(--color-success) !important;
+    opacity: 1;
+}
+
+.file-import-table-empty {
+    text-align: center;
+    color: var(--color-text-secondary);
+    padding: 0.85rem 0.65rem;
+    font-size: 0.68rem;
+}
+
+.file-import-table-note {
+    margin-top: 0.3rem;
+    font-size: 0.58rem;
+    color: var(--color-text-secondary);
+}
+
+.file-import-progress-table-wrapper {
+    overflow: auto;
+    /* header row + 6 data rows at ~1.8rem each */
+    max-height: calc(1.8rem * 7);
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    scrollbar-width: none;
+    &::-webkit-scrollbar {
+        display: none;
+    }
+}
+
+.file-import-progress-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+}
+
+.file-import-progress-table th,
+.file-import-progress-table td {
+    padding: 0.32rem 0.45rem;
+    text-align: left;
+    white-space: nowrap;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.file-import-progress-table thead th {
+    position: sticky;
+    top: 0;
+    background-color: color-mix(in srgb, var(--color-primary) 12%, transparent);
+    color: var(--color-text-secondary);
+    font-weight: 600;
+    font-size: 0.55rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    z-index: 1;
+}
+
+.file-import-next-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.3rem;
+    align-self: flex-end;
+    margin-top: auto;
+    background-color: var(--color-primary);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 0.36rem 0.75rem;
+    font-size: 0.68rem;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.file-import-next-btn:hover:not(:disabled) {
+    background-color: var(--color-primary-hover);
+}
+
+.file-import-next-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* ==================== Import History ==================== */
+/* Styles for the Upload History table and the file preview modal. */
+.import-history-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.85rem;
+    margin-bottom: 0.5rem;
+}
+
+.import-history-header .section-title {
+    font-size: 0.68rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--color-text-secondary);
+    margin: 0;
+}
+
+.import-history-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+}
+
+.import-history-refresh-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.5rem;
+    height: 1.5rem;
+    background-color: var(--color-card-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    font-size: 0.76rem;
+}
+
+.import-history-refresh-btn:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+}
+
+.import-history-message {
+    display: none;
+    padding: 0.35rem 0.6rem;
+    border-radius: 6px;
+    font-size: 0.68rem;
+    font-weight: 500;
+    margin-bottom: 0.4rem;
+}
+
+.import-history-message.success {
+    display: block;
+    background-color: rgba(22, 128, 60, 0.1);
+    color: var(--color-success);
+}
+
+.import-history-message.error {
+    display: block;
+    background-color: rgba(220, 38, 38, 0.1);
+    color: var(--color-danger);
+}
+
+/* Base surface (background/border/radius) comes from Shared/css/card.css. */
+.import-history-card {
+    overflow: hidden;
+}
+
+.import-history-scroll {
+    max-height: 240px;
+    overflow-y: auto;
+    overflow-x: auto;
+    scrollbar-width: none;
+    &::-webkit-scrollbar {
+        display: none;
+    }
+}
+
+.import-history-empty {
+    text-align: center;
+    color: var(--color-text-secondary);
+    padding: 0.85rem 0.65rem;
+    font-size: 0.68rem;
+}
+
+.import-history-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.68rem;
+}
+
+.import-history-table th,
+.import-history-table td {
+    padding: 0.35rem 0.55rem;
+    text-align: left;
+    white-space: nowrap;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.import-history-table thead th {
+    position: sticky;
+    top: 0;
+    background-color: var(--color-card-bg);
+    color: var(--color-text-secondary);
+    font-weight: 600;
+    z-index: 1;
+}
+
+.import-history-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.import-history-table tbody tr:hover {
+    background-color: var(--color-background);
+}
+
+.import-history-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.08rem 0.38rem;
+    border-radius: 999px;
+    font-size: 0.58rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.status-pending {
+    background-color: rgba(217, 119, 6, 0.1);
+    color: var(--color-warning);
+}
+
+.status-complete {
+    background-color: rgba(22, 128, 60, 0.1);
+    color: var(--color-success);
+}
+
+.status-error {
+    background-color: rgba(220, 38, 38, 0.1);
+    color: var(--color-danger);
+}
+
+.import-history-view-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    border: 1px solid var(--color-border);
+    background-color: var(--color-card-bg);
+    color: var(--color-text-secondary);
+    border-radius: 6px;
+    padding: 0.2rem 0.45rem;
+    font-size: 0.62rem;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.import-history-view-btn:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+}
+
+/* Shared modal chrome (backdrop centering, panel shell, header base) comes from
+   Shared/css/modal.css — only what's unique to this modal stays here. The close button
+   (.import-preview-close-btn) is a distinct icon-button design, not the shared "×" text style
+   used by the other modals, so it isn't part of Shared/css/modal.css. */
+.import-preview-overlay {
+    background-color: rgba(23, 34, 30, 0.5);
+    z-index: 1000;
+    padding: 1rem;
+}
+
+.import-preview-modal {
+    max-width: 640px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+}
+
+.import-preview-header h3 {
+    margin: 0;
+    font-size: 0.92rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+}
+
+.import-preview-close-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.75rem;
+    height: 1.75rem;
+    border: none;
+    background: transparent;
+    color: var(--color-text-secondary);
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.import-preview-close-btn:hover {
+    background-color: var(--color-background);
+    color: var(--color-text-primary);
+}
+
+.import-preview-body {
+    padding: 0.85rem 1rem;
+    overflow-y: auto;
+    flex: 1;
+    scrollbar-width: none;
+    &::-webkit-scrollbar {
+        display: none;
+    }
+}
+
+.import-preview-meta {
+    font-size: 0.72rem;
+    color: var(--color-text-secondary);
+    margin-bottom: 0.6rem;
+}
+
+.import-preview-table-wrapper {
+    overflow: auto;
+    /* header row + 6 data rows at ~2rem each */
+    max-height: calc(2rem * 7);
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    scrollbar-width: none;
+    &::-webkit-scrollbar {
+        display: none;
+    }
+}
+
+.import-preview-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.72rem;
+}
+
+.import-preview-table th,
+.import-preview-table td {
+    padding: 0.4rem 0.55rem;
+    text-align: left;
+    white-space: nowrap;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.import-preview-table thead th {
+    position: sticky;
+    top: 0;
+    background-color: var(--color-background);
+    color: var(--color-text-secondary);
+    font-weight: 600;
+    z-index: 1;
+}
+
+.import-preview-empty {
+    text-align: center;
+    color: var(--color-text-secondary);
+    padding: 1.1rem 0.8rem;
+    font-size: 0.76rem;
+}
+
+.import-preview-footer {
+    padding: 0.7rem 1rem;
+    border-top: 1px solid var(--color-border);
+    display: flex;
+    justify-content: flex-end;
+}
+
+.import-preview-download-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    background-color: var(--color-primary);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 0.4rem 0.8rem;
+    font-size: 0.76rem;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.import-preview-download-btn:hover {
+    background-color: var(--color-primary-hover);
+}
+
+/* ==================== Responsive (tablet/mobile) ==================== */
+/* Two breakpoints app-wide, matching Sidebar.css/app.css: <=1024px tablet (sidebar becomes a
+   compact icon rail), <=640px mobile (sidebar becomes an off-canvas drawer). .file-import-grid
+   already stacks at <=900px (see above); this fills in the remaining narrow-viewport gaps. */
+@media (max-width: 640px) {
+    .file-import-upload-card {
+        min-width: 0;
+        max-width: none;
+    }
+
+    .file-import-info-row {
+        justify-content: flex-start;
+    }
+
+    .import-history-header {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+
+    .import-preview-header,
+    .import-preview-body,
+    .import-preview-footer {
+        padding-left: 0.75rem;
+        padding-right: 0.75rem;
+    }
+}

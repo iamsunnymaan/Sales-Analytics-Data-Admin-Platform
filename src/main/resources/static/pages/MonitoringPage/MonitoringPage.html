@@ -1,0 +1,188 @@
+<!-- Monitoring — security/usage audit trail: password-reset tokens, OTPs, a Usage Overview graph
+     (login activity by hour of day + most-active users), and "2. Audit" — one Type/Status/Search/
+     Date-filtered table covering all 4 attempt kinds (login, download, upload, unauthorized). Those
+     4 used to be their own separate always-visible sections here; they were removed per explicit
+     request and folded into Audit instead (per a later explicit request) — don't re-add them as
+     their own standalone sections. Audit sits in the page's 2nd position (right after Usage
+     Overview) per explicit request — don't move it back down unasked. "Sessions (Refresh Tokens)"
+     was removed per explicit request too (it only ever showed rows from another application
+     sharing this database — house_of_beauty itself never issues one, see
+     IamLoginRefreshTokenRepository's own header comment) — don't re-add it unasked. See
+     MonitoringPage.js. -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Monitoring - IB Department</title>
+    <script src="/Shared/js/auth-guard.js"></script>
+    <script src="/Shared/js/sidebar-collapse-init.js"></script>
+    <script src="/Shared/js/theme-init.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="/Shared/css/variables.css">
+    <link rel="stylesheet" href="/Shared/css/app.css">
+    <link rel="stylesheet" href="/Shared/css/card.css">
+    <link rel="stylesheet" href="/components/Sidebar/Sidebar.css">
+    <link rel="stylesheet" href="/components/QuickAccessPanel/QuickAccessPanel.css">
+    <link rel="stylesheet" href="/pages/MonitoringPage/MonitoringPage.css">
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.1/dist/echarts.min.js"></script>
+</head>
+<body>
+    <div class="app-shell">
+        <nav class="app-sidebar" id="appSidebar"></nav>
+        <script src="/components/Sidebar/SidebarBootstrap.js"></script>
+        <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+        <button type="button" class="sidebar-toggle-btn" id="sidebarToggle" aria-label="Open menu" aria-expanded="false" title="Menu">
+            <i class="bi bi-list"></i>
+        </button>
+
+        <main class="app-main">
+            <section class="monitoring-section">
+
+                <!-- 1. Usage Overview — which hour of day sees more/less login activity, and whose
+                     usage — both derived from real successful-login timestamps (GET
+                     /api/monitoring/usage-stats), not simulated. -->
+                <div class="section-container" id="usageOverviewSectionContainer" data-permission="page:monitoring.login-attempts" hidden>
+                    <div class="section-header">
+                        <p class="monitoring-section-title">1. Usage Overview</p>
+                    </div>
+                    <div class="section-content">
+                        <div class="monitoring-charts-row">
+                            <div class="monitoring-card monitoring-chart-card">
+                                <span class="monitoring-chart-title">Logins by Hour of Day (last 30 days)</span>
+                                <div class="monitoring-chart" id="usageHourChart"></div>
+                            </div>
+                            <div class="monitoring-card monitoring-chart-card">
+                                <span class="monitoring-chart-title">Most Active Users (last 30 days)</span>
+                                <div class="monitoring-chart" id="usageUserChart"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. Audit — Type/Status filters left, Search/Date filter right, a single table
+                     below driven by MonitoringPage.js's own AUDIT_TYPE_CONFIG (Type picks which of
+                     MonitoringController's 4 attempt endpoints to read; Status/Search/Date filter
+                     client-side over the result). Date filter is the same #idPrefix-driven
+                     initSalesDateFilter widget (SalesDateFilter.js) SecondarySalesPage's own
+                     "1. Overview" uses, per explicit request; Search bar and Date filter both carry
+                     the same global feature:search-bar/feature:date-filter keys those widgets
+                     already use everywhere else. -->
+                <div class="section-container" id="auditSectionContainer" data-permission="page:monitoring.audit" hidden>
+                    <div class="section-header">
+                        <p class="monitoring-section-title">2. Audit</p>
+                    </div>
+                    <div class="section-content">
+                        <div class="monitoring-card monitoring-audit-card">
+                            <div class="monitoring-audit-header">
+                                <div class="monitoring-audit-header-left">
+                                    <div class="monitoring-audit-filter-group">
+                                        <label class="monitoring-audit-label" for="auditTypeSelect">Type</label>
+                                        <select class="monitoring-audit-select" id="auditTypeSelect">
+                                            <option value="login">Login</option>
+                                            <option value="unauthorized">Unauthorized Login</option>
+                                            <option value="download">Download</option>
+                                            <option value="upload">Upload</option>
+                                        </select>
+                                    </div>
+                                    <div class="monitoring-audit-status-toggle" id="auditStatusToggle">
+                                        <button type="button" class="monitoring-audit-status-btn active" data-status="success">Success</button>
+                                        <button type="button" class="monitoring-audit-status-btn" data-status="failed">Failed</button>
+                                    </div>
+                                </div>
+                                <div class="monitoring-audit-header-right">
+                                    <input type="text" class="monitoring-audit-search" id="auditSearchInput" placeholder="e.g. admin" autocomplete="off" data-feature="feature:search-bar">
+                                    <div class="monitoring-audit-date-filter-cluster" data-feature="feature:date-filter">
+                                        <div class="sales-date-filter" id="auditDateFilter">
+                                            <div class="sales-date-filter-mode-toggle" id="auditDateFilterModeToggle">
+                                                <button type="button" class="sales-date-filter-mode-btn" data-mode="filter"><i class="bi bi-funnel"></i> Filter</button>
+                                            </div>
+                                        </div>
+                                        <div class="sales-date-filter-body" id="auditDateFilterBody"></div>
+                                        <button type="button" class="sales-date-filter-clear" id="auditDateFilterClearBtn" title="Clear date filter">
+                                            <i class="bi bi-x-circle"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Columns change per Type (see auditColumnsByType in MonitoringPage.js) —
+                                 thead+tbody are both fully rebuilt on every fetch/filter change,
+                                 unlike the other sections' own static per-type thead. -->
+                            <div class="monitoring-table-wrap" id="auditTableWrap">
+                                <table class="monitoring-table">
+                                    <thead id="auditTableHead"></thead>
+                                    <tbody id="auditTableBody">
+                                        <tr><td class="monitoring-empty">Loading…</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. Password Reset Tokens — always empty today, see MonitoringService's own
+                     header comment: no "forgot password" email flow exists yet. -->
+                <div class="section-container" id="passwordResetTokensSectionContainer" data-permission="page:monitoring.password-reset-tokens" hidden>
+                    <div class="section-header">
+                        <p class="monitoring-section-title">3. Password Reset Tokens</p>
+                    </div>
+                    <div class="section-content">
+                        <div class="monitoring-card">
+                            <div class="monitoring-table-wrap">
+                                <table class="monitoring-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Token ID</th>
+                                            <th>User</th>
+                                            <th>Used</th>
+                                            <th>Created</th>
+                                            <th>Expires</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="passwordResetTokensBody">
+                                        <tr><td colspan="5" class="monitoring-empty">Loading…</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4. Recent OTPs -->
+                <div class="section-container" id="otpsSectionContainer" data-permission="page:monitoring.otps" hidden>
+                    <div class="section-header">
+                        <p class="monitoring-section-title">4. Recent OTPs</p>
+                    </div>
+                    <div class="section-content">
+                        <div class="monitoring-card">
+                            <div class="monitoring-table-wrap">
+                                <table class="monitoring-table">
+                                    <thead>
+                                        <tr>
+                                            <th>OTP ID</th>
+                                            <th>User</th>
+                                            <th>Purpose</th>
+                                            <th>Used</th>
+                                            <th>Created</th>
+                                            <th>Expires</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="otpsBody">
+                                        <tr><td colspan="6" class="monitoring-empty">Loading…</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </section>
+        </main>
+    </div>
+
+    <div class="quick-access-panel" id="quickAccessPanel"></div>
+
+    <script type="module" src="/pages/MonitoringPage/MonitoringPage.js"></script>
+</body>
+</html>

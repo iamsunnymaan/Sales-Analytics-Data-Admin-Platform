@@ -1,0 +1,261 @@
+<!-- Single source of truth for the quick-access panel's markup. Fetched at runtime by
+     QuickAccessPanel.js's initQuickAccessPanel() and injected into each page's empty
+     <div id="quickAccessPanel"></div> placeholder (see any pages/*/*.html) — pages never
+     duplicate this HTML themselves, same fetch-and-inject pattern as Sidebar.html.
+     #quickAccessThemeToggle and #quickAccessNotesBtn are wired to real behavior — the theme
+     button flips the whole app between day/night mode, and Notes opens the real notes popup
+     below. -->
+<button type="button" class="quick-access-tab" id="quickAccessToggle" aria-expanded="false" aria-label="Open quick access panel" title="Quick Access">
+    <i class="bi bi-chevron-left"></i>
+</button>
+<div class="quick-access-icons">
+    <button type="button" class="quick-access-icon-btn" id="quickAccessTopProjectionBtn" title="Projection Form" aria-label="Projection Form">
+        <i class="bi bi-graph-up-arrow"></i>
+    </button>
+    <button type="button" class="quick-access-icon-btn" id="quickAccessNotesBtn" title="Notes" aria-label="Notes">
+        <i class="bi bi-journal-text"></i>
+    </button>
+    <!-- Icon/title/aria-pressed are set for real by QuickAccessPanel.js's updateThemeButton() on
+         load and after every click — the moon markup here is just the pre-JS fallback. -->
+    <button type="button" class="quick-access-icon-btn quick-access-theme-btn" id="quickAccessThemeToggle" title="Switch to night mode" aria-label="Switch to night mode" aria-pressed="false">
+        <i class="bi bi-moon-stars"></i>
+    </button>
+</div>
+
+<!-- Projection Form popup — a sibling of .quick-access-icons above, not a child of it. It gets
+     moved to a direct child of <body> by QuickAccessPanel.js right after this markup loads, since
+     .quick-access-panel's own `transform` (see QuickAccessPanel.css) would otherwise become this
+     modal's containing block instead of the real viewport, breaking `position: fixed` for a
+     full-screen overlay. Backed by GET/POST /api/top-projection/grid — see TopProjectionController.
+     The current calendar month's entries here feed the Overview section's real Projection figure
+     (see TopProjectionService's header comment).
+
+     A Brand toggle and a Channel toggle up top (both apply together), then a table with one row per
+     real Brand+Channel+Sub_Channel+Partner combo Site_Master has matching both — see
+     TopProjectionService#getGrid/#loadSiteCombos. Projection Value always starts blank (a
+     fresh-entry form); Last Value shows that combo's existing stored value, read-only, for
+     reference. A Total row sums both Projection Value (live, as rows are edited) and Last Value
+     (each currently-shown row's existing stored value), and one Submit at the bottom saves every
+     row with a value in it at once (POST .../grid)
+     — untouched rows are left alone, not overwritten with a blank. The table is truncated
+     automatically the moment the calendar rolls into a new month (see
+     TopProjectionService#truncateIfMonthRolledOver), so this is always a fresh, current-month-only
+     form, never an accumulating log. A submission whose combo Site_Master no longer has (e.g. after
+     a re-upload renames/removes it) is pruned automatically the next time the grid loads — see
+     TopProjectionService#pruneOrphanedSubmissions. -->
+<div class="top-projection-modal-backdrop" id="topProjectionModalBackdrop" hidden>
+    <div class="top-projection-modal top-projection-modal--grid" role="dialog" aria-modal="true" aria-labelledby="topProjectionModalTitle">
+        <div class="top-projection-modal-header">
+            <div class="top-projection-modal-header-text">
+                <span class="top-projection-modal-title" id="topProjectionModalTitle">Projection Form</span>
+                <!-- Always the current month/year label from the server (e.g. "August 2026") —
+                     never a raw date, never user-editable; see TopProjectionGridResponse. -->
+                <span class="top-projection-modal-month" id="topProjectionModalMonth">—</span>
+            </div>
+            <button type="button" class="top-projection-modal-close" id="topProjectionModalClose" aria-label="Close">&times;</button>
+        </div>
+
+        <div class="top-projection-modal-body scroll-hidden" id="topProjectionModalBody">
+            <!-- Row 1: Brand toggle + Channel toggle side by side in one compact row (per explicit
+                 request) rather than stacked. Brand — "All" loads every real Brand's combos
+                 combined, ABH/Kylie loads just that brand's. This component's own toggle styling
+                 (not a page's .brand-header-pill/-item — the Quick Access Panel loads on every page,
+                 some of which never load a page CSS that defines that class, see
+                 .top-projection-brand-toggle in QuickAccessPanel.css). Channel toggle's non-"All"
+                 buttons are populated at runtime from GET /api/top-projection/channels — real
+                 Site_Master Channel-column values only (e.g. Online/Offline today), matched in
+                 TopProjectionService#loadSiteCombos purely against Site_Master.Channel, never
+                 Sub_Channel — see loadChannelOptions in QuickAccessPanel.js. Both toggles apply
+                 together (a row must match both). -->
+            <div class="top-projection-filters-row">
+                <div class="top-projection-filter-row">
+                    <span class="top-projection-filter-label">Brand</span>
+                    <div class="top-projection-brand-toggle" id="topProjectionBrandToggle">
+                        <button type="button" class="top-projection-brand-toggle-item active" data-brand="all">All</button>
+                        <button type="button" class="top-projection-brand-toggle-item" data-brand="ABH">ABH</button>
+                        <button type="button" class="top-projection-brand-toggle-item" data-brand="Kylie">Kylie</button>
+                    </div>
+                </div>
+
+                <div class="top-projection-filter-row">
+                    <span class="top-projection-filter-label">Channel</span>
+                    <div class="top-projection-brand-toggle" id="topProjectionChannelToggle">
+                        <button type="button" class="top-projection-brand-toggle-item active" data-channel="all">All</button>
+                    </div>
+                </div>
+
+                <!-- Purely informational — real Site_Master Sales_Type values (via GET
+                     /api/top-projection/sale-types, see loadSaleTypeOptions in QuickAccessPanel.js),
+                     but every button is `disabled` and Primary Sales is always the one marked
+                     active: Primary_Sales_Projection (what this whole popup edits) is permanently
+                     scoped server-side to Sales_Type = 'Primary Sales' (see TopProjectionService's
+                     own getGrid/getAvailableChannels), so this isn't a real switchable filter, just
+                     a label confirming what's already true. -->
+                <div class="top-projection-filter-row">
+                    <span class="top-projection-filter-label">Sale Type</span>
+                    <div class="top-projection-brand-toggle" id="topProjectionSaleTypeToggle">
+                        <button type="button" class="top-projection-brand-toggle-item" data-sale-type="all" disabled>All</button>
+                        <button type="button" class="top-projection-brand-toggle-item active" data-sale-type="Primary Sales" disabled>Primary Sales</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Row 3: the grid itself. Only the Projection Value column is ever editable, and it
+                 always starts blank (a fresh-entry form, never pre-filled — see
+                 TopProjectionGridRow's own comment); Last Value is the same combo's existing stored
+                 value shown read-only for reference. Sn is just this row's position (1..N) in the
+                 table, not the underlying database id. Every other cell (Sn/Brand/Channel/
+                 Sub-Channel/Partner/Month/Last Value/Submitted At) is plain read-only text. -->
+            <div class="top-projection-grid-wrap scroll-hidden" id="topProjectionGridWrap">
+                <table class="top-projection-grid-table">
+                    <thead>
+                        <tr>
+                            <th>Sn</th>
+                            <th>Brand</th>
+                            <th>Channel</th>
+                            <th>Sub-Channel</th>
+                            <th>Partner</th>
+                            <th>Month</th>
+                            <th>Projection Value</th>
+                            <th>Last Value</th>
+                            <th>Submitted At</th>
+                        </tr>
+                    </thead>
+                    <tbody id="topProjectionGridBody"></tbody>
+                    <tfoot>
+                        <tr class="top-projection-grid-total-row">
+                            <td colspan="6">Total</td>
+                            <td id="topProjectionGridTotal">—</td>
+                            <td id="topProjectionGridLastValueTotal">—</td>
+                            <td></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+
+            <p class="top-projection-status" id="topProjectionStatus" hidden></p>
+            <p class="top-projection-error" id="topProjectionError" hidden></p>
+        </div>
+
+        <!-- Bottom row: Submit only. No "View Projection Table"/confirm views — a bulk grid save has
+             no single "just submitted" row to recap the way the old one-row popup did; instead,
+             right after a save, the status line above shows what was saved and every changed row
+             gets a New/Updated tag (comparing each row's pre-save snapshot to what the reload came
+             back with — a row with no id before is "New", one whose value differs from before is
+             "Updated") — both stay up until the next Submit/brand switch/reopen naturally refreshes
+             them, no separate dismiss control. -->
+        <div class="top-projection-modal-actions">
+            <button type="button" class="top-projection-submit-btn" id="topProjectionSubmitBtn">
+                <i class="bi bi-check2"></i>
+                <span>Submit</span>
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Notes popup — a sibling of .quick-access-icons above, moved to a direct child of <body> by
+     QuickAccessPanel.js for the same position:fixed reason as the Projection Form popup above.
+     Pure client-side (browser localStorage, see wireNotesModal in
+     QuickAccessPanel.js) — no backend, so notes are per-browser/device, not shared across users.
+     Two views inside one modal, toggled via `hidden`: the LIST (default) and the EDITOR (opened by
+     "+" or by clicking a note). #notesReminderToast below is a separate sibling popup, not nested
+     in this backdrop, since a reminder needs to surface even while this modal itself is closed. -->
+<div class="notes-modal-backdrop" id="notesModalBackdrop" hidden>
+    <div class="notes-modal" role="dialog" aria-modal="true" aria-labelledby="notesModalTitle">
+        <div class="notes-modal-header">
+            <div class="notes-modal-header-text">
+                <!-- Only shown while the editor view is open — see showListView/showEditorView. -->
+                <button type="button" class="notes-back-btn" id="notesBackBtn" aria-label="Back to notes list" hidden>
+                    <i class="bi bi-arrow-left"></i>
+                </button>
+                <span class="notes-modal-title" id="notesModalTitle">Notes</span>
+            </div>
+            <div class="notes-modal-header-actions">
+                <button type="button" class="notes-new-btn" id="notesNewBtn" title="New note" aria-label="New note">
+                    <i class="bi bi-plus-lg"></i>
+                </button>
+                <button type="button" class="notes-modal-close" id="notesModalClose" aria-label="Close">&times;</button>
+            </div>
+        </div>
+
+        <div class="notes-modal-body">
+            <!-- LIST VIEW — one card per note, newest-updated first with pinned notes always on
+                 top (see sortedNotes/renderList in QuickAccessPanel.js). Clicking a card (outside
+                 its own pin/delete buttons) opens it in the editor. -->
+            <div class="notes-list-view" id="notesListView">
+                <ul class="notes-list scroll-hidden" id="notesList">
+                    <li class="notes-list-empty" id="notesListEmpty">No notes yet. Click + to add one.</li>
+                </ul>
+            </div>
+
+            <!-- EDITOR VIEW — Title/Content/dates still autosave (debounced, see scheduleSave in
+                 QuickAccessPanel.js) as you type, so nothing typed is ever lost, but the explicit
+                 Save button below is what a user actually clicks to submit — it flushes the
+                 debounce, commits right away, and returns to the notes list, same as Back/Close.
+                 Due date is a plain date (no alert of its own, just a badge back in the list —
+                 including an overdue tint); Reminder is a specific date+time that fires the
+                 toast/notification below once it passes. -->
+            <div class="notes-editor-view" id="notesEditorView" hidden>
+                <input type="text" class="notes-editor-title" id="notesEditorTitle" placeholder="Title" maxlength="120">
+                <textarea class="notes-editor-content" id="notesEditorContent" placeholder="Write a note…"></textarea>
+                <!-- Capped at 50 words (see enforceWordLimit in QuickAccessPanel.js, run on every
+                     "input") — a plain maxlength on the <textarea> only caps character count, not
+                     word count, so the limit has to be enforced in JS instead. -->
+                <span class="notes-editor-word-count" id="notesEditorWordCount">0 / 50 words</span>
+
+                <div class="notes-editor-fields">
+                    <label class="notes-editor-field">
+                        <span class="notes-editor-label"><i class="bi bi-calendar-event"></i> Due date</span>
+                        <input type="date" class="notes-editor-input" id="notesEditorDueDate">
+                    </label>
+                    <!-- Reminder gets its own full-width, slightly larger treatment (bigger text,
+                         accent left border, helper line) rather than squeezing a date+time picker
+                         into a half-width column next to Due date — a datetime-local needs more
+                         visual room to read clearly than a date-only field does. -->
+                    <label class="notes-editor-field">
+                        <span class="notes-editor-label"><i class="bi bi-alarm"></i> Reminder</span>
+                        <input type="datetime-local" class="notes-editor-input notes-editor-input--reminder" id="notesEditorReminder">
+                        <span class="notes-editor-hint">You'll get an alert at this date and time.</span>
+                    </label>
+                </div>
+
+                <p class="notes-editor-meta" id="notesEditorMeta"></p>
+
+                <!-- The explicit "submit" action per request — Back/Close still flush+save
+                     automatically too, so leaving without clicking this never loses anything. -->
+                <button type="button" class="notes-save-btn" id="notesSaveBtn">
+                    <i class="bi bi-check2"></i>
+                    <span>Save</span>
+                </button>
+
+                <div class="notes-editor-footer">
+                    <button type="button" class="notes-editor-pin-btn" id="notesEditorPinBtn" title="Pin note" aria-label="Pin note" aria-pressed="false">
+                        <i class="bi bi-pin-angle"></i>
+                    </button>
+                    <!-- Always visible on every device/breakpoint (see updateNotifyBtnState in
+                         QuickAccessPanel.js) — label/icon/disabled state reflect whether
+                         Notification is supported and already granted; requesting permission is
+                         only ever triggered by this explicit click, never automatically on page
+                         load. -->
+                    <button type="button" class="notes-editor-notify-btn" id="notesEditorNotifyBtn" title="Get a browser notification when a reminder is due, even if this tab isn't focused">
+                        <i class="bi bi-bell"></i> <span>Enable Alerts</span>
+                    </button>
+                    <span class="notes-saved-badge" id="notesSavedBadge" hidden>Saved</span>
+                    <button type="button" class="notes-editor-delete-btn" id="notesEditorDeleteBtn" title="Delete note" aria-label="Delete note">
+                        <i class="bi bi-trash"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Reminder alert toast — fixed to the viewport corner (not the quick-access strip), so a
+     reminder surfaces no matter what page section the user is looking at or whether the Notes
+     popup itself is open. Click anywhere on it (other than the × ) to jump straight to that note
+     in the editor; see checkReminders/showReminderToast in QuickAccessPanel.js. -->
+<div class="notes-reminder-toast" id="notesReminderToast" hidden>
+    <i class="bi bi-bell-fill"></i>
+    <span class="notes-reminder-toast-text" id="notesReminderToastText"></span>
+    <button type="button" class="notes-reminder-toast-close" id="notesReminderToastClose" aria-label="Dismiss">&times;</button>
+</div>

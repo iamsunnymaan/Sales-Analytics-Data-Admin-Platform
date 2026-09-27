@@ -1,0 +1,1544 @@
+/* Dashboard (index.html) page styles — replaces the old plain welcome message per explicit request
+   2026-09-02. Sections: "Filter Header", "1. Overview" (Financial Year table), "2. Daily Sales
+   Trends". Base card surface (background/border/radius) comes from Shared/css/card.css's shared
+   list.
+*/
+
+.dashboard-page-title {
+    margin: 0 0 1rem;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--color-text-primary);
+}
+
+
+/* ==================== 1. Overview (Financial Year table) ==================== */
+/* UI-first pass, per explicit request — static/hardcoded rows for now (Apr-26..Mar-27, FY 26-27),
+   no backend wiring yet. Table look borrowed from this same file's own (now-dead) .secondary-
+   overview-table convention: solid var(--color-primary)/var(--color-info) group header rows, white
+   header text, tabular-nums body. Primary Sales group tinted with --color-primary, Secondary Sales
+   with --color-info, so the two 4-column groups stay visually distinct without a group-divider
+   border (there's no "Total" column here to justify one the way that older table needed it). */
+.dashboard-fy-overview-card {
+    /* Fluid instead of a fixed 844px, so the card itself never forces horizontal page scroll on
+       tablet/mobile — it just shrinks to fit, while the table inside keeps its own independent
+       horizontal scroll (see .dashboard-fy-overview-table-wrap) once the shrunk card gets narrower
+       than the table's own min-width. */
+    width: 100%;
+max-width: 880px;
+    background-color: var(--color-card-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 18px;
+    box-shadow: var(--shadow-card);
+    /* padding: 0.5rem; */
+    overflow: hidden;
+}
+
+/* "Filter Header" section's own card — just wraps .dashboard-fy-overview-filter-row (moved here out
+   of the Overview card per explicit request, now its own section sitting above "1. Overview" instead
+   of inside it). width/max-width left commented out per explicit request (card sizes itself off
+   .section-content's own padding instead); background/border/radius come from the shared list in
+   Shared/css/card.css. */
+.dashboard-fy-overview-filter-header-card {
+    /* width: 116%; */
+    /* max-width: 886px; */
+    box-shadow: var(--shadow-card);
+}
+
+.dashboard-fy-overview-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding: 10px 10px 10px 10px;
+    /* margin-bottom: 0.5rem; */
+}
+
+.dashboard-fy-overview-field {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+/* Groups Year Filter + Download together so they hug the header's right edge as one unit, instead
+   of .dashboard-fy-overview-header's own justify-content: space-between spreading all three fields
+   apart individually (per explicit request). */
+.dashboard-fy-overview-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    flex-wrap: wrap;
+}
+
+.dashboard-fy-overview-label {
+    font-size: 0.6rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--color-text-secondary);
+}
+
+.dashboard-fy-overview-value {
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+}
+
+/* Sales Type / Brand / Channel filter row — reuses .brand-header-pill/.brand-header-item (the same
+   pill toggle look the Daily Sales Trends section's own Sales Type/Brand pills use) at a smaller
+   size. Lives in its own "Filter Header" section/card now (moved out of the Overview card per
+   explicit request), so padding is even on all sides rather than assuming a header sits above it.
+   Sales Type toggles a hide-primary/hide-secondary class on #dashboardFyOverviewTableWrap (see the
+   .dashboard-fy-overview-group-* rules below, in "1. Overview"); Brand/Channel just refetch scoped
+   data, no layout change of their own. */
+.dashboard-fy-overview-filter-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 10px;
+}
+
+/* Year Filter — moved into this row from "1. Overview"'s own card header per explicit request.
+   margin-left: auto pushes it to the row's right edge while Sales Type/Brand/Channel stay grouped on
+   the left, same "auto margin splits a flex row into a left group + a right item" trick
+   .dashboard-fy-overview-header-actions used before this field moved out of it. */
+.dashboard-fy-overview-filter-row .dashboard-fy-overview-year-filter {
+    margin-left: auto;
+}
+
+.dashboard-fy-overview-filter-row .dashboard-fy-overview-label {
+    font-size: 0.52rem;
+}
+
+.dashboard-fy-overview-filter-row .brand-header-pill {
+    gap: 0.1rem;
+    padding: 0.1rem;
+}
+
+.dashboard-fy-overview-filter-row .brand-header-item {
+    padding: 0.12rem 0.45rem;
+    font-size: 0.58rem;
+    white-space: nowrap;
+}
+
+/* Status filter field — .site-status-card-field/.site-status-filter-field/.site-status-card-label are
+   the Site Insight page's own classes (SiteStatusPage.css), copied here byte-for-byte per explicit
+   request (this codebase's own established convention: each page keeps its own copy of shared-look
+   styles rather than importing another page's CSS file wholesale) so this pill looks and behaves
+   identically to Site Insight's own Status toggle. .site-status-filter-pill/-item's own visual rules
+   already come from the shared components/StatusFilter/StatusFilter.css (linked in this page's
+   <head>), same as Site Insight — only the field/label wrapper classes need a local copy. */
+.site-status-card-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+}
+
+.site-status-card-label {
+    font-size: 0.6rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: var(--color-text-secondary);
+}
+
+/* Per explicit request, Status now flows inline with Sales Type/Brand/Channel/Year Filter instead of
+   being forced onto its own row (used to carry flex-basis: 100% for that — removed) — every filter in
+   this section sits on one single row now, wrapping only if the viewport is genuinely too narrow to
+   fit them all (same natural wrap .dashboard-fy-overview-filter-row already does for its other
+   fields). */
+.dashboard-fy-overview-filter-row .site-status-filter-field {
+    flex-direction: row;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.dashboard-fy-overview-filter-row .site-status-filter-field .site-status-card-label {
+    font-size: 0.52rem;
+}
+
+/* Sales Type = Primary/Secondary hides the other column-group entirely (header cells already carry
+   these same two classes in index.html; renderDashboardFyOverviewTable in Dashboard.js adds them to
+   every body/Total/YTD cell too) instead of just zeroing its numbers, so the visible table narrows to
+   one 4-column group. */
+#dashboardFyOverviewTableWrap.dashboard-fy-hide-primary .dashboard-fy-overview-group-primary {
+    display: none;
+}
+
+#dashboardFyOverviewTableWrap.dashboard-fy-hide-secondary .dashboard-fy-overview-group-secondary {
+    display: none;
+}
+
+/* Filter button + dropdown list (replaces the old always-visible FY pill toggle per explicit
+   request) — same funnel-icon-button-opens-a-panel convention .product-snapshot-filter-toggle/
+   .product-snapshot-download-popup use elsewhere on this page, just page-specific classes since this
+   section's button also carries its own current-selection label text (those others don't). */
+/* .dashboard-fy-year-filter*'s own visual rules now live in
+   components/FyYearFilter/FyYearFilter.css (see index.html's <head> for the <link>). */
+
+.dashboard-fy-overview-table-wrap {
+    overflow-x: auto;
+    /* Scrolling stays fully functional (wheel/trackpad/touch/keyboard) — same convention Shared/css/
+       app.css's own .scroll-hidden utility uses elsewhere, just inlined here since this table-wrap
+       isn't marked with that class in the markup. */
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.dashboard-fy-overview-table-wrap::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    height: 0;
+}
+
+.dashboard-fy-overview-table {
+    width: 100%;
+    min-width: 720px;
+    border-collapse: collapse;
+    font-size: 0.64rem;
+    font-variant-numeric: tabular-nums;
+    border: 1px solid var(--color-border);
+}
+
+.dashboard-fy-overview-table th,
+.dashboard-fy-overview-table td {
+    padding: 0.25rem 0.4rem;
+    text-align: center;
+    white-space: nowrap;
+    border: 1px solid var(--color-border);
+    font-weight: 600;
+}
+
+.dashboard-fy-overview-month-col {
+    text-align: left;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    background-color: var(--color-card-bg);
+}
+
+.dashboard-fy-overview-table thead tr:first-child th {
+    font-size: 0.6rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.dashboard-fy-overview-table thead tr:last-child th {
+    font-size: 0.54rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+/* Same fixed hex values Dashboard.js's own DAILY_TREND_COMPARE_SALES_TYPES uses for the "2. Daily
+   Sales Trends" graph's Primary Sales/Secondary Sales series (Compare > By Sales Type) — kept as
+   fixed hex here too, not the theme-aware --color-primary/--color-info vars, so this table's group
+   headers stay visually identical to that graph's own legend colors in both light and dark mode. */
+.dashboard-fy-overview-group-header.dashboard-fy-overview-group-primary,
+.dashboard-fy-overview-table thead tr:last-child th.dashboard-fy-overview-group-primary {
+    background-color: #16A34A;
+    color: #FFFFFF;
+}
+
+.dashboard-fy-overview-group-header.dashboard-fy-overview-group-secondary,
+.dashboard-fy-overview-table thead tr:last-child th.dashboard-fy-overview-group-secondary {
+    background-color: #2563EB;
+    color: #FFFFFF;
+}
+
+.dashboard-fy-overview-table tbody tr:not(:last-child) td {
+    border-bottom: 1px solid var(--color-border);
+}
+
+/* Data rows (Actual/Projection months) — same info-tinted surface .daily-trend-card uses elsewhere
+   on this page. Scoped to these two row classes (not a blanket tbody td rule) so it doesn't win over
+   .dashboard-fy-row--current/-total's own distinct highlight colors below. */
+.dashboard-fy-row--actual td,
+.dashboard-fy-row--projection td {
+    background-color: color-mix(in srgb, var(--color-info) 6%, var(--color-card-bg));
+}
+
+/* "Current" month (Sep-26 in the sample data) — highlighted so it reads as "where we are right now"
+   between the Actual rows above it and the Projection rows below. Reverted to the original 10%
+   warning tint per explicit request (kept the left accent bar below, which is a separate outline
+   rather than the row's own background color). */
+.dashboard-fy-row--current td {
+    background-color: color-mix(in srgb, var(--color-warning) 10%, var(--color-card-bg));
+    font-weight: 600;
+}
+
+.dashboard-fy-row--current td:first-child {
+    box-shadow: inset 3px 0 0 var(--color-warning);
+}
+
+/* Current month's own Primary Actual/Achi/Vs LY cells, ONLY while they're showing the real submitted
+   Primary_Sales_Projection total as a stand-in (no real Primary_Sales rows uploaded for the current
+   month yet — see renderDashboardFyOverviewTable's own isPrimaryProjected) — distinct text color
+   (--color-info, not used anywhere else in this row) so an estimated figure never reads as a
+   confirmed Actual. The moment real sales rows land for the month, these cells lose this class and
+   fall right back to the row's normal text color, per explicit request.
+*/
+.dashboard-fy-cell--projected {
+    color: var(--color-info) !important;
+    font-style: italic;
+}
+
+.dashboard-fy-cell--projected .dashboard-achi-pct {
+    color: var(--color-info) !important;
+    opacity: 0.75;
+}
+
+/* The real Last Year figure inside a Vs LY cell (renderYoyVariance's own .dashboard-delta-lastyear
+   span) is real sales data, never a projection — per explicit request, it must NOT pick up this
+   cell's own "projected" info-color/opacity just because the CURRENT side of the same Vs LY cell
+   happens to be a Primary_Sales_Projection stand-in. Higher specificity (2 classes) than the plain
+   .dashboard-delta-lastyear rule below wins without needing !important. */
+.dashboard-fy-cell--projected .dashboard-delta-lastyear {
+    color: var(--color-text-secondary);
+    opacity: 1;
+}
+
+/* Month cell for the previous/last-complete month's own row only — the "See Total" text-button sits
+   inline right after the month label (not stacked below it) specifically so this row's height stays
+   identical to every other row's (a stacked/2-line cell would make the whole row taller, since row
+   height follows its tallest cell) — per explicit request. */
+.dashboard-fy-overview-month-cell {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.4rem;
+    white-space: nowrap;
+}
+
+.dashboard-fy-see-total-btn {
+    border: none;
+    background: transparent;
+    padding: 0;
+    font-size: 0.56rem;
+    font-weight: 600;
+    color: var(--color-primary);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    cursor: pointer;
+}
+
+.dashboard-fy-see-total-btn:hover {
+    color: var(--color-primary-hover);
+}
+
+/* Year-to-date subtotal row (Apr -> last complete month) — revealed by the "See Total" button on that
+   same last-complete month's own row (per explicit request: the button lives there, not on the
+   current-month row), inserted directly after it — i.e. directly above the current-month row. Same
+   solid --color-primary/white-bold look as the full-year Total row at the bottom of this table
+   (.dashboard-fy-row--total), per explicit request — including the same achi-bar/text white overrides
+   that row needs for contrast against the solid background (see .dashboard-fy-row--total's own three
+   rules just below, mirrored here). */
+.dashboard-fy-row--ytd td {
+    background-color: var(--color-primary);
+    font-weight: 700;
+    color: #FFFFFF;
+}
+
+.dashboard-fy-row--ytd .dashboard-achi-track {
+    background-color: rgba(255, 255, 255, 0.3);
+}
+
+.dashboard-fy-row--ytd .dashboard-achi-fill {
+    background-color: #FFFFFF;
+}
+
+.dashboard-fy-row--ytd .dashboard-achi-pct {
+    color: #FFFFFF;
+}
+
+.dashboard-fy-row--ytd .dashboard-achi-variance {
+    color: #FFFFFF;
+}
+
+.dashboard-fy-row--total td {
+    background-color: var(--color-primary);
+    font-weight: 700;
+    color: #FFFFFF;
+}
+
+/* Achi. cell's own bar/text otherwise blend into this row's solid var(--color-primary) background
+   (the bar's fill color IS that same green, and the % text defaults to a muted gray with poor
+   contrast on it), per explicit request. */
+.dashboard-fy-row--total .dashboard-achi-track {
+    background-color: rgba(255, 255, 255, 0.3);
+}
+
+.dashboard-fy-row--total .dashboard-achi-fill {
+    background-color: #FFFFFF;
+}
+
+.dashboard-fy-row--total .dashboard-achi-pct {
+    color: #FFFFFF;
+}
+
+.dashboard-fy-row--total .dashboard-achi-variance {
+    color: #FFFFFF;
+}
+
+/* Month column only, on EVERY row (Actual/Current/Projection/Total alike) — kept at the plain card
+   background instead of picking up whichever accent color the rest of that row has, so it reads as
+   one distinct label column running down the table regardless of row type. 2 classes + element beats
+   every row-background rule above (each only 1 class + element), which is what makes this win
+   without needing a separate override per row type. */
+.dashboard-fy-overview-table td.dashboard-fy-overview-month-col {
+    background-color: var(--color-card-bg);
+    color: var(--color-text-primary);
+}
+
+/* Brief pre-JS/pre-fetch placeholder row (see index.html's own comment on #dashboardFyOverviewBody)
+   — replaces the old static mock rows that used to flash real-looking numbers on every refresh. */
+.dashboard-fy-row--loading td {
+    padding: 1rem 0.4rem;
+    text-align: center;
+    color: var(--color-text-secondary);
+    font-weight: 500;
+    background-color: var(--color-card-bg);
+}
+
+/* Same out-of-the-box .secondary-overview-title-row / .secondary-overview-subtitle classes
+   SecondarySalesPage.css uses for its own "4. Site Master Report" section header, plus the
+   .product-snapshot-download-wrap/-btn + .region-summary-download-btn download button and the
+   .reports-section-header / .section-loading-spinner card-header spinner — copied here rather than
+   imported, per this codebase's own convention (see file header comment) of each page keeping its
+   own copy of shared-look styles. */
+.secondary-overview-title-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    /* margin-bottom: 0.6rem; */
+    /* Unlike SecondarySalesPage's own copy of this class (whose .section-header is a plain block, so
+       this row already fills it edge-to-edge), Dashboard's own .section-header (above) is itself
+       display:flex — without this, this row would just be a shrink-to-fit flex ITEM inside it (sized
+       to its own title+button content, not the full section width), leaving the download button
+       sitting right next to the title instead of pinned to the card's right edge. */
+    width: 100%;
+}
+
+.secondary-overview-subtitle {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--color-text-secondary);
+    margin: 0;
+}
+
+/* Common ancestor of the page's numbered .section-container groups (see below) — provides the
+   gap BETWEEN sections via flex, same pattern PrimarySalesPage.css's own .target-achievement-section
+   uses, now that .section-container itself carries no margin. */
+.dashboard-sections {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+/* Outer section boundary — wraps each numbered section's title (.section-header) and its existing
+   card (.section-content) into one structural group, so the title reads as part of the section
+   instead of floating separately above it. No box look (border/radius/background/padding) per the
+   same explicit request PrimarySalesPage.css's own .section-container follows — purely structural. */
+.section-container {
+    /* border: 1px solid var(--color-border); */
+    /* border-radius: 18px; */
+    /* background-color: var(--color-card-bg); */
+    /* padding: 1rem; */
+    /* margin: 0 0 1.5rem; */
+}
+
+/* Sticks to the top of the scrollable .app-main once the user scrolls past it, so the Filter
+   Header's Brand/Channel/Date controls stay reachable without scrolling back up — per explicit
+   request. Returns to its normal in-flow position automatically once scrolled back above it (native
+   position:sticky behavior, no JS needed). background-color is opaque so page content scrolling
+   underneath doesn't show through; z-index keeps it above ordinary page content but still well
+   under the sidebar/modals (see Sidebar.css's own 1099-1500 range). top is negative, matching
+   .app-main's own padding-top (Shared/css/app.css) — sticky's own "top" offset is measured from
+   .app-main's padding edge, which sits inset by that padding, so without this the header would
+   stick with a permanent gap above it instead of touching the very top of the scroll viewport; see
+   the matching breakpoint below for .app-main's own responsive padding. */
+#dashboardFyOverviewFilterHeaderSectionContainer {
+    position: sticky;
+    top: -1.5rem;
+    z-index: 20;
+    background-color: var(--color-background);
+}
+
+@media (max-width: 1024px) {
+    #dashboardFyOverviewFilterHeaderSectionContainer {
+        top: -1.1rem;
+    }
+}
+
+@media (max-width: 640px) {
+    /* .app-main's own top padding here is reserved clearance for the fixed hamburger toggle button
+       (Sidebar.css's #sidebarToggle), not just spacing — pulling this flush to the very top like the
+       desktop/tablet breakpoints above would tuck it underneath that button instead. */
+    #dashboardFyOverviewFilterHeaderSectionContainer {
+        top: 0;
+    }
+}
+
+.section-header {
+    /* margin: 0 0 0.6rem; */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.section-content {
+    margin: 0;
+}
+
+/* "2. Daily Sales Trends" own outer boundary — per explicit request, padding OUTSIDE the
+   .daily-trend-card itself (i.e. on this section's .section-content, not the card) — scoped to just
+   .section-content (not the whole #dailyTrendSectionContainer) so the "2. Daily Sales Trends" title
+   in .section-header stays flush/unpadded like every other section's title, per explicit request. */
+#dailyTrendSectionContainer .section-content {
+    padding: 0.65rem 0.75rem;
+}
+
+/* "1. Overview" (Financial Year table) own outer boundary — same idea, scoped to just
+   .section-content (not the whole #dashboardOverviewFySectionContainer) so the title stays
+   flush/unpadded. .dashboard-fy-overview-card's own padding stays commented out (per its own
+   explicit request) so the card's table sits flush against its rounded corners. */
+#dashboardOverviewFySectionContainer .section-content {
+    padding: 0.65rem 0.75rem;
+}
+
+/* "Filter Header" section — same outer-boundary idea as the two rules above. */
+#dashboardFyOverviewFilterHeaderSectionContainer .section-content {
+    padding: 0.65rem 0.75rem;
+}
+
+/* "3. Partner Wise Target Vs Achievement" — same outer-boundary idea as the rules above. */
+#dashboardPartnerPerformanceSectionContainer .section-content {
+    padding: 0.65rem 0.75rem;
+}
+
+/* Base look for the download icon button + its popup comes from the shared
+   components/ExcelDownloadButton/ExcelDownloadButton.css (see its own <link> in this page's
+   <head>) — this page keeps only the one rule that genuinely differs from some other pages:
+   only :hover styles the button here (Primary/Secondary/TeamPerformance also style it while its
+   popup is open via [aria-expanded="true"]). */
+.product-snapshot-download-btn:hover {
+    color: var(--color-primary);
+    border-color: var(--color-primary);
+}
+
+.reports-section-header {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    /* margin-bottom: 0.6rem; */
+}
+
+/* Real circular ring loader — same look SecondarySalesPage.css's own .section-loading-spinner uses. */
+.section-loading-spinner {
+    display: none;
+    width: 0.85rem;
+    height: 0.85rem;
+    border: 0.15rem solid var(--color-border);
+    border-top-color: var(--color-primary);
+    border-radius: 50%;
+    animation: dashboard-loading-spin 0.7s linear infinite;
+}
+
+.is-loading .section-loading-spinner {
+    display: inline-block;
+}
+
+@keyframes dashboard-loading-spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* Achi. column progress bar — same look Secondary/Primary Reports tables already use, single-color
+   here (no per-brand slots — this table has no Brand dimension of its own). */
+.dashboard-achi-cell {
+    display: flex;
+    align-items: center;
+}
+
+.dashboard-achi-track {
+    flex: 1 1 auto;
+    height: 0.4rem;
+    min-width: 2.5rem;
+    border-radius: 999px;
+    background-color: var(--color-border);
+    overflow: hidden;
+}
+
+.dashboard-achi-fill {
+    display: block;
+    height: 100%;
+    border-radius: 999px;
+    background-color: var(--color-primary);
+    transition: width 0.2s ease;
+}
+
+.dashboard-achi-pct {
+    flex: 0 0 auto;
+    min-width: 2.6rem;
+    font-size: 0.68rem;
+    font-variant-numeric: tabular-nums;
+    color: var(--color-text-secondary);
+}
+
+.dashboard-achi-variance {
+    flex: 0 0 auto;
+    font-size: 0.68rem;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+}
+
+.dashboard-achi-variance.positive {
+    color: var(--color-success);
+}
+
+.dashboard-achi-variance.negative {
+    color: var(--color-danger);
+}
+
+.dashboard-delta {
+    display: inline-block;
+    font-weight: 600;
+    font-size: 0.72rem;
+}
+
+.dashboard-delta.positive {
+    color: var(--color-success);
+}
+
+.dashboard-delta.negative {
+    color: var(--color-danger);
+}
+
+/* The trailing Last Year figure inside .dashboard-delta (see renderYoyVariance in Dashboard.js) —
+   kept off the positive/negative trend color (that colors the variance/growth part only) since the
+   Last Year amount itself isn't "up" or "down". Uses the same theme-aware muted color as
+   .dashboard-achi-pct above instead of inheriting plain black, so it stays readable in dark mode. */
+.dashboard-delta-lastyear {
+    font-weight: 500;
+    color: var(--color-text-secondary);
+}
+
+/* --- 1. Overview — real backend-wired cross-tab, exact copy of SecondarySalesPage.css's own
+   "1. Overview" block (same GET /api/secondary-sales/overview backend via
+   SecondarySalesOverviewService, same renderSecondaryOverviewTable-shaped markup) — kept as this
+   page's own copy per this codebase's established convention (each page keeps its own copy of
+   shared-look styles rather than centralizing them). .secondary-overview-title-row/-subtitle
+   themselves are already defined above (this page's own pre-existing copy for its Insights/Site
+   Report section headers), not repeated here. */
+.secondary-overview-subtitle-group {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.secondary-overview-section {
+    margin-bottom: 0;
+}
+
+.secondary-overview-card {
+    width: 910px;
+    background-color: var(--color-card-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 18px;
+    padding: 0;
+    box-shadow: var(--shadow-card);
+    /* Clips the table's own square corners to the card's rounded ones, now that padding is 0 and
+       the table sits flush against the card edge. */
+    overflow: hidden;
+}
+
+.secondary-overview-table-wrap {
+    overflow-x: auto;
+    min-height: 14rem;
+}
+
+.secondary-overview-table {
+    width: 100%;
+    min-width: 640px;
+    border-collapse: collapse;
+    font-size: 0.74rem;
+    font-variant-numeric: tabular-nums;
+    border: 1px solid var(--color-border);
+}
+
+.secondary-overview-table th,
+.secondary-overview-table td {
+    padding: 0.4rem 0.6rem;
+    text-align: center;
+    white-space: nowrap;
+    border: 1px solid var(--color-border);
+}
+
+.secondary-overview-metric-header,
+.secondary-overview-metric-label {
+    text-align: left;
+    font-weight: 600;
+    color: var(--color-text-primary);
+}
+
+.secondary-overview-header-cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+}
+
+.secondary-overview-header-icon-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    line-height: 1;
+    gap: 0.15rem;
+}
+
+.secondary-overview-header-value {
+    white-space: nowrap;
+}
+
+.secondary-overview-header-icon {
+    font-size: 0.55rem;
+}
+
+.secondary-overview-header-icon-label {
+    font-size: 0.35rem;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    color: var(--color-text-secondary);
+    opacity: 0.75;
+    white-space: nowrap;
+}
+
+.secondary-overview-brand-header {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    padding-bottom: 0.3rem;
+    background-color: var(--color-primary);
+}
+
+.secondary-overview-brand-grandtotal {
+    color: var(--color-primary);
+}
+
+.secondary-overview-table thead tr:last-child th {
+    font-size: 0.6rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: var(--color-text-secondary);
+    background-color: var(--color-primary);
+}
+
+/* Brand/Channel header rows' own icon-label + value text — white, so it stays readable now that
+   both rows sit on a solid var(--color-primary) background (Metric's own corner header/body rows
+   are untouched, so their existing text colors are unaffected). */
+.secondary-overview-brand-header .secondary-overview-header-icon-label,
+.secondary-overview-brand-header .secondary-overview-header-value,
+.secondary-overview-table thead tr:last-child th .secondary-overview-header-icon-label,
+.secondary-overview-table thead tr:last-child th .secondary-overview-header-value {
+    color: #FFFFFF;
+    opacity: 0.9;
+}
+
+.secondary-overview-col-total {
+    background-color: rgba(27, 77, 62, 0.05);
+    font-weight: 600;
+}
+
+.secondary-overview-grandtotal-col {
+    background-color: rgba(27, 77, 62, 0.08);
+}
+
+.secondary-overview-grandtotal-total-col {
+    font-weight: 700;
+    color: var(--color-primary);
+}
+
+/* Total column's own header cells (both the Brand row and Channel row) — same var(--color-primary)
+   background every other brand column's header already gets, instead of the weaker
+   .secondary-overview-col-total/-grandtotal-col tint those two classes would otherwise win on
+   (same specificity as .secondary-overview-brand-header/thead tr:last-child th, later in the
+   cascade). Scoped to thead only, so the body rows below keep their own existing Total-column tint
+   untouched. */
+.secondary-overview-table thead .secondary-overview-brand-grandtotal,
+.secondary-overview-table thead .secondary-overview-grandtotal-col {
+    background-color: var(--color-primary);
+}
+
+.secondary-overview-group-divider {
+    border-left: 2px solid var(--color-border);
+}
+
+.secondary-overview-table tbody tr:not(:last-child) td {
+    border-bottom: 1px solid var(--color-border);
+}
+
+.secondary-overview-empty {
+    text-align: center;
+    color: var(--color-text-secondary);
+    padding: 1.5rem 1rem;
+    font-size: 0.78rem;
+}
+
+/* Overview's own date Filter cluster + Sales Date Filter widget — exact copy of
+   SecondarySalesPage.css's own .sales-date-filter*/
+.daily-trend-filter-cluster rules.
+.daily-trend-filter-cluster {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 0.4rem;
+    margin-left: auto;
+}
+
+.sales-date-filter {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.sales-date-filter-mode-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.15rem;
+    background-color: var(--color-card-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    padding: 0.15rem;
+    box-shadow: var(--shadow-card);
+}
+
+.sales-date-filter-mode-btn {
+    border: none;
+    background: transparent;
+    padding: 0.2rem 0.6rem;
+    border-radius: 999px;
+    font-size: 0.68rem;
+    font-weight: 500;
+    color: var(--color-primary);
+    cursor: pointer;
+    transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.sales-date-filter-mode-btn:hover:not(.active) {
+    color: var(--color-primary-hover);
+}
+
+.sales-date-filter-mode-btn.active {
+    background-color: var(--color-primary);
+    color: #fff;
+}
+
+.sales-date-filter-body {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.sales-date-filter-body:empty {
+    display: none;
+}
+
+.sales-date-filter-input {
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    padding: 0.2rem 0.4rem;
+    font-size: 0.68rem;
+    font-family: inherit;
+    color: var(--color-text-primary);
+    background-color: var(--color-card-bg);
+}
+
+/* Border + shadow match .sales-date-filter-mode-toggle's own pill treatment above, same visibility
+   fix applied to Secondary/Primary Sales/Site Status pages' own copy for UI/UX parity. */
+.sales-date-filter-range-type {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.15rem;
+    background-color: var(--color-card-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    padding: 0.15rem;
+    box-shadow: var(--shadow-card);
+}
+
+.sales-date-filter-range-type-btn {
+    border: none;
+    background: transparent;
+    padding: 0.22rem 0.6rem;
+    border-radius: 999px;
+    font-size: 0.68rem;
+    font-weight: 500;
+    color: var(--color-text-secondary);
+    cursor: pointer;
+}
+
+.sales-date-filter-range-type-btn:hover:not(.active) {
+    color: var(--color-primary);
+}
+
+.sales-date-filter-range-type-btn.active {
+    background-color: var(--color-primary);
+    color: #fff;
+}
+
+.sales-date-filter-range-inputs {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.sales-date-filter-range-sep {
+    font-size: 0.7rem;
+    color: var(--color-text-secondary);
+}
+
+.sales-date-filter-clear {
+    border: none;
+    background: transparent;
+    color: var(--color-text-secondary);
+    font-size: 0.9rem;
+    line-height: 1;
+    padding: 0.15rem;
+    cursor: pointer;
+}
+
+.sales-date-filter-clear:hover {
+    color: var(--color-danger);
+}
+
+@media (max-width: 640px) {
+    .sales-date-filter {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* ==================== 3. Partner Wise Target Vs Achievement ==================== */
+/* Frontend-only UI-first pass, per explicit request — static/hardcoded rows, no backend wiring yet
+   (see index.html's own comment on #dashboardPartnerBody). Table look borrowed from "1. Overview"'s
+   own .dashboard-fy-overview-table conventions, just 3 column-groups (YTD/Current Month/Full Year
+   Projection) instead of 2 (Primary/Secondary), and theme-aware var(--color-*) group header
+   backgrounds instead of the fixed hex Primary/Secondary uses (no chart-legend to stay in sync with
+   here, so there's no reason to opt out of dark-mode auto-adjustment). */
+.dashboard-partner-card {
+    width: 100%;
+    background-color: var(--color-card-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 18px;
+    box-shadow: var(--shadow-card);
+    overflow: hidden;
+}
+
+/* max-height caps the visible area to roughly 2 header rows + 10 body rows (per explicit request) —
+   any further partner rows scroll inside this same wrap instead of growing the card indefinitely;
+   the scrollbar itself stays hidden (same scrollbar-width/::-webkit-scrollbar trick already used for
+   the horizontal overflow below), so scrolling still works via wheel/trackpad/touch, just with no
+   visible scrollbar track. */
+.dashboard-partner-table-wrap {
+    overflow-x: auto;
+    overflow-y: auto;
+    max-height: 19rem;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.dashboard-partner-table-wrap::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    height: 0;
+}
+
+/* border-collapse: separate (not collapse) is the actual fix for the scroll bleed-through — with
+   collapse, the border pixel sitting between the sticky header's last row and the first (non-sticky,
+   scrolling) body row is a SHARED border the table itself paints once, owned ambiguously by both
+   rows; as the body row underneath moves, that shared pixel can end up repainted from the moving
+   row's own layer instead of the pinned header's, letting scrolled content show straight through the
+   gridline. With separate (+ border-spacing: 0 so cells still sit flush with no visible gap), every
+   cell paints its own complete, independent border on all four sides as part of its own opaque box —
+   nothing left for a scrolling neighbor to repaint over. Interior gridlines end up very slightly
+   thicker (two adjacent 1px borders instead of one shared one) — an acceptable trade for the header
+   no longer visibly showing whatever's scrolling underneath it. */
+.dashboard-partner-table {
+    width: 100%;
+    min-width: 960px;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: 0.64rem;
+    font-variant-numeric: tabular-nums;
+    border: 1px solid var(--color-border);
+}
+
+.dashboard-partner-table th,
+.dashboard-partner-table td {
+    padding: 0.25rem 0.4rem;
+    text-align: center;
+    white-space: nowrap;
+    border: 1px solid var(--color-border);
+    font-weight: 600;
+}
+
+.dashboard-partner-name-col {
+    width: 110px;
+    max-width: 110px;
+    text-align: left;
+    vertical-align: middle;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    background-color: var(--color-card-bg);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Pinned to the top of .dashboard-partner-table-wrap's own vertical scroll (added alongside the
+   10-row max-height above) so Partner + every group/column header stays readable while scrolling
+   through the rest of the partner rows, instead of scrolling out of view — per explicit request.
+   z-index stacks row 1 above row 2 so row 1's own box-shadow (added below) doesn't get drawn over by
+   row 2 as they overlap at the seam; both need an opaque background (already set per group below/on
+   .dashboard-partner-name-col) so body rows scrolling underneath don't show through. Row 1's height
+   is pinned to an exact rem value (box-sizing: border-box so padding/border count toward it) purely
+   so row 2's own sticky "top" can line up flush beneath it with no gap/overlap — the Partner header
+   cell (rowspan="2", excluded below) is left to size itself naturally off both rows combined. */
+.dashboard-partner-table thead th {
+    position: sticky;
+    z-index: 3;
+}
+
+.dashboard-partner-table thead tr:first-child th {
+    top: 0;
+    font-size: 0.6rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.dashboard-partner-table thead tr:first-child th:not(.dashboard-partner-name-col) {
+    height: 1.5rem;
+    box-sizing: border-box;
+}
+
+.dashboard-partner-table thead tr:last-child th {
+    top: 1.5rem;
+    z-index: 2;
+    font-size: 0.54rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.dashboard-partner-group-header.dashboard-partner-group-ytd,
+.dashboard-partner-table thead tr:last-child th.dashboard-partner-group-ytd {
+    background-color: var(--color-primary);
+    color: #FFFFFF;
+}
+
+.dashboard-partner-group-header.dashboard-partner-group-current,
+.dashboard-partner-table thead tr:last-child th.dashboard-partner-group-current {
+    background-color: var(--color-warning);
+    color: #FFFFFF;
+}
+
+.dashboard-partner-group-header.dashboard-partner-group-projection,
+.dashboard-partner-table thead tr:last-child th.dashboard-partner-group-projection {
+    background-color: var(--color-info);
+    color: #FFFFFF;
+}
+
+/* Info icon shifted here from the card's own footnote (per explicit request) — same formula text,
+   now shown via title tooltip on hover instead of a permanently visible line under the table. */
+.dashboard-partner-projection-info-icon {
+    margin-left: 0.3rem;
+    cursor: help;
+}
+
+.dashboard-partner-table tbody tr:not(:last-child) td {
+    border-bottom: 1px solid var(--color-border);
+}
+
+.dashboard-partner-table tbody td.dashboard-partner-group-ytd {
+    background-color: color-mix(in srgb, var(--color-primary) 6%, var(--color-card-bg));
+}
+
+.dashboard-partner-table tbody td.dashboard-partner-group-current {
+    background-color: color-mix(in srgb, var(--color-warning) 6%, var(--color-card-bg));
+}
+
+.dashboard-partner-table tbody td.dashboard-partner-group-projection {
+    background-color: color-mix(in srgb, var(--color-info) 6%, var(--color-card-bg));
+}
+
+/* Pinned to the bottom of .dashboard-partner-table-wrap's own vertical scroll (same trick the sticky
+   header above uses for the top) — per explicit request, the Total row stays visible while scrolling
+   through the partner rows instead of scrolling out of view. border-collapse: separate (set on the
+   table itself, see its own header comment) is what keeps this artifact-free — sticky + collapsed
+   borders is what caused the earlier scroll bleed-through bug fixed above. */
+.dashboard-partner-row--total td {
+    position: sticky;
+    bottom: 0;
+    z-index: 2;
+    background-color: var(--color-primary) !important;
+    font-weight: 700;
+    color: #FFFFFF;
+}
+
+.dashboard-partner-row--total .dashboard-delta.positive,
+.dashboard-partner-row--total .dashboard-delta.negative {
+    color: #FFFFFF;
+}
+
+/* Achi./Vs LY cells (renderAchiCell/renderYoyVariance, same as "1. Overview"'s own total row) would
+   otherwise blend into this row's solid var(--color-primary) background — same contrast fix as
+   .dashboard-fy-row--total's own rules for these exact same classes. */
+.dashboard-partner-row--total .dashboard-achi-track {
+    background-color: rgba(255, 255, 255, 0.3);
+}
+
+.dashboard-partner-row--total .dashboard-achi-fill {
+    background-color: #FFFFFF;
+}
+
+.dashboard-partner-row--total .dashboard-achi-pct,
+.dashboard-partner-row--total .dashboard-achi-variance,
+.dashboard-partner-row--total .dashboard-delta-lastyear {
+    color: #FFFFFF;
+}
+
+.dashboard-partner-table td.dashboard-partner-name-col {
+    background-color: var(--color-card-bg);
+    color: var(--color-text-primary);
+}
+
+.dashboard-partner-row--total td.dashboard-partner-name-col {
+    background-color: var(--color-primary);
+    color: #FFFFFF;
+}
+
+/* ==================== 2. Daily Sales Trends ==================== */
+/* Copied from SecondarySalesPage.css's own "2. Daily Sales Trends" block verbatim (brand pill +
+   daily-trend-* card/header/chart rules) — reference component per explicit request, reused
+   wherever possible instead of redesigned. .sales-date-filter-* base rules already exist above
+   (reused by "1. Overview" own date filter), so only the brand pill + daily-trend-specific rules +
+   the .daily-trend-brand-header compact-size overrides for those shared sales-date-filter-* rules
+   are new here. */
+.brand-header {
+    position: Static;
+    top: 0;
+    z-index: 15;
+    display: flex;
+    justify-content: center;
+    padding: 0 0 1.25rem;
+    background-color: var(--color-background);
+}
+
+.brand-header-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    background-color: var(--color-header-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    padding: 0.3rem;
+    box-shadow: var(--shadow-card);
+}
+
+.brand-header-item {
+    border: none;
+    background: transparent;
+    padding: 0.4rem 1.4rem;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.brand-header-item:hover {
+    color: var(--color-text-primary);
+}
+
+.brand-header-item.active {
+    background-color: var(--color-primary);
+    color: #fff;
+}
+
+/* Shown instead of All/brand buttons when Site_Master currently has no Brand data at all. Not a
+   button: no hover/active state, not clickable. */
+.brand-header-empty {
+    font-style: italic;
+    opacity: 0.7;
+    cursor: default;
+    pointer-events: none;
+}
+
+.brand-header-empty:hover {
+    color: var(--color-text-secondary);
+}
+
+.brand-header-filter-bar.brand-header {
+    flex-wrap: wrap;
+    justify-content: space-between;
+    row-gap: 0.4rem;
+    column-gap: 1.1rem;
+    margin-bottom: 0.6rem;
+    padding: 0.3rem 0.6rem;
+    box-shadow: var(--shadow-card);
+    background-color: var(--color-card-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+}
+
+.brand-header-filter-bar .brand-header-pill {
+    --color-background: #E2E9E4;
+    background-color: var(--color-background);
+    padding: 0.15rem;
+}
+
+.brand-header-filter-bar .brand-header-item {
+    padding: 0.2rem 0.65rem;
+    font-size: 0.68rem;
+}
+
+.daily-trend-card {
+    padding: 0.5rem;
+    box-shadow: var(--shadow-card);
+    border-radius: 18px;
+    background-color: color-mix(in srgb, var(--color-info) 6%, var(--color-card-bg));
+}
+
+#dailyTrendCard {
+    margin-bottom: 0;
+}
+
+.daily-trend-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-bottom: 0.35rem;
+}
+
+.daily-trend-header-text {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    flex: 1 1 auto;
+}
+
+.daily-trend-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.daily-trend-compare-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    border: 1px solid var(--color-border);
+    background-color: var(--color-background);
+    border-radius: 999px;
+    padding: 0.15rem 0.65rem;
+    font-size: 0.58rem;
+    font-weight: 600;
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.daily-trend-compare-toggle i {
+    font-size: 0.68rem;
+}
+
+.daily-trend-compare-toggle:hover:not(.active) {
+    color: var(--color-text-primary);
+    border-color: var(--color-primary);
+}
+
+.daily-trend-compare-toggle.active {
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
+    color: #fff;
+}
+
+/* Dims only the pill Compare mode is currently varying — Brand pill for "By Brand" compare, Sales
+   Type pill for "By Sales Type" compare (see initDailyTrendGraph's updateCompareModeClasses in
+   Dashboard.js) — the other pill stays usable as an extra filter on top of whichever dimension is
+   being compared. */
+.daily-trend-brand-header.compare-mode-brand .brand-header-pill:not(#dailyTrendSalesTypeToggle) {
+    opacity: 0.45;
+    pointer-events: none;
+}
+
+.daily-trend-brand-header.compare-mode-salesType #dailyTrendSalesTypeToggle {
+    opacity: 0.45;
+    pointer-events: none;
+}
+
+.daily-trend-chart-type-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.15rem;
+    background-color: var(--color-background);
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    padding: 0.12rem;
+}
+
+.daily-trend-chart-type-btn {
+    border: none;
+    background: transparent;
+    padding: 0.15rem 0.5rem;
+    border-radius: 999px;
+    font-size: 0.58rem;
+    font-weight: 600;
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.daily-trend-chart-type-btn:hover:not(.active) {
+    color: var(--color-text-primary);
+}
+
+.daily-trend-chart-type-btn.active {
+    background-color: var(--color-primary);
+    color: #fff;
+}
+
+.daily-trend-title {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+}
+
+.daily-trend-mode-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.1rem 0.4rem;
+    border-radius: 999px;
+    font-size: 0.58rem;
+    font-weight: 600;
+    color: var(--color-primary);
+    background-color: var(--color-background);
+    border: 1px solid var(--color-border);
+    white-space: nowrap;
+}
+
+.daily-trend-selection-summary {
+    display: flex;
+    justify-content: flex-end;
+    text-align: right;
+    font-size: 0.62rem;
+    font-weight: 500;
+    color: var(--color-text-secondary);
+    margin: 0.3rem 0 0.4rem;
+}
+
+.daily-trend-selection-summary-part + .daily-trend-selection-summary-part::before {
+    content: "\00b7";
+    margin: 0 0.35rem;
+    color: var(--color-border);
+}
+
+.daily-trend-selection-summary strong {
+    color: var(--color-text-primary);
+    font-weight: 600;
+}
+
+.daily-trend-brand-header.brand-header-filter-bar {
+    padding: 0.25rem 0.5rem;
+    margin-bottom: 0.5rem;
+    row-gap: 0.3rem;
+    column-gap: 0.75rem;
+}
+
+.daily-trend-filter-cluster {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 0.4rem;
+    margin-left: auto;
+}
+
+.daily-trend-brand-header .sales-date-filter-body {
+    justify-content: flex-end;
+}
+
+/* Groups the Brand pill with the new Sales Type pill (#dailyTrendSalesTypeToggle) as one left-aligned
+   unit — see this page's own HTML comment on why this wrapper exists. */
+.daily-trend-pill-group {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.daily-trend-brand-header .brand-header-pill {
+    padding: 0.1rem;
+}
+
+.daily-trend-brand-header .brand-header-item {
+    padding: 0.14rem 0.5rem;
+    font-size: 0.58rem;
+}
+
+.daily-trend-brand-header .sales-date-filter-mode-toggle,
+.daily-trend-brand-header .sales-date-filter-range-type {
+    padding: 0.1rem;
+}
+
+.daily-trend-brand-header .sales-date-filter-mode-btn,
+.daily-trend-brand-header .sales-date-filter-range-type-btn {
+    padding: 0.14rem 0.5rem;
+    font-size: 0.58rem;
+}
+
+.daily-trend-brand-header .sales-date-filter-input {
+    padding: 0.16rem 0.4rem;
+    font-size: 0.65rem;
+}
+
+.daily-trend-brand-header .sales-date-filter-range-sep {
+    font-size: 0.68rem;
+}
+
+.daily-trend-brand-header .sales-date-filter-clear {
+    font-size: 0.85rem;
+    padding: 0.12rem;
+}
+
+.daily-trend-chart-scroll {
+    width: 100%;
+    overflow-x: hidden;
+    overflow-y: hidden;
+}
+
+.daily-trend-chart {
+    width: 100%;
+    height: 200px;
+    position: relative;
+}
+
+@media (max-width: 640px) {
+    .daily-trend-chart {
+        height: 160px;
+    }
+}
+
+/* ==================== Responsive (tablet/mobile) ==================== */
+/* Same two breakpoints used app-wide (see Shared/css/app.css's own header comment): <=1024px
+   tablet (sidebar becomes a compact icon rail), <=640px mobile (sidebar becomes an off-canvas
+   drawer). Dark mode needs no page-specific work here — every color on this page already resolves
+   through the shared --color-* tokens (Shared/css/variables.css), which is what flips automatically
+   on the day/night toggle; the few fixed hex values in this file (group header greens/blues) are
+   deliberate exceptions already confirmed to work in both themes, not gaps. Every data table on
+   this page already has its own horizontal-scroll wrapper (.dashboard-fy-overview-table-wrap) so
+   narrow columns scroll instead of breaking the layout — no table-specific breakpoint needed for
+   those. */
+@media (max-width: 1024px) {
+    /* Daily Sales Trends' Filter: once opened, the From/To inputs should push a genuine new row
+       into the header's normal flow instead of squeezing onto the pill row and overflowing it.
+       Scoped to :has(...not(:empty)) so this only kicks in once the filter body actually has
+       content — while closed, the cluster stays content-sized and shares its row with the
+       brand/sales-type pills. */
+    .daily-trend-filter-cluster:has(.sales-date-filter-body:not(:empty)) {
+        width: 100%;
+    }
+
+    /* Touch-target bump for the compact Daily Sales Trends pills/filter toggle — the desktop sizing
+       above (padding: 0.14rem, aimed at a mouse pointer) is too small to comfortably tap. */
+    .daily-trend-brand-header .brand-header-item,
+    .daily-trend-brand-header .sales-date-filter-mode-btn {
+        padding: 0.32rem 0.6rem;
+    }
+
+    /* Same touch-target bump for the "Filter Header" section's own Sales Type/Brand/Channel/Status
+       pills (its own compact copy, .dashboard-fy-overview-filter-row .brand-header-item, was never
+       given this treatment when Filter Header got split into its own section — an oversight relative
+       to Daily Sales Trends' own identical pills just above, which already got it). */
+    .dashboard-fy-overview-filter-row .brand-header-item,
+    .dashboard-fy-overview-filter-row .site-status-filter-item {
+        padding: 0.32rem 0.6rem;
+    }
+
+    /* "3. Partner Wise Target Vs Achievement"'s own info icon — a bare inline <i>, small enough on
+       its own to be an awkward tap target on a touchscreen even though its only interaction (a title
+       tooltip) is hover-only on desktop; the bigger box here at least makes it comfortable to tap on
+       browsers/OSes that do show title tooltips on a tap-and-hold. */
+    .dashboard-partner-projection-info-icon {
+        display: inline-block;
+        padding: 0.3rem;
+        margin: -0.3rem -0.3rem -0.3rem 0;
+    }
+}
+
+@media (max-width: 640px) {
+    /* Stacks Financial Year / Year Filter instead of squeezing both onto one row on a phone. */
+    .dashboard-fy-overview-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    /* The Download field (see .dashboard-fy-overview-header-actions — Year Filter moved out of this
+       group into the "Filter Header" section's own filter row) stacks full-width below the Financial
+       Year field instead of squeezing onto one narrow row. */
+    .dashboard-fy-overview-header-actions {
+        width: 100%;
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .dashboard-fy-overview-download {
+        width: 100%;
+        justify-content: flex-end;
+    }
+
+    /* Year Filter's own margin-left: auto (see .dashboard-fy-overview-filter-row above) has nothing
+       to push against once the row wraps here — go full-width instead so it doesn't sit stranded at
+       an arbitrary indent. */
+    .dashboard-fy-overview-filter-row .dashboard-fy-overview-year-filter {
+        width: 100%;
+        margin-left: 0;
+        justify-content: space-between;
+    }
+
+    /* Once opened, the From/To inputs can still be wider than a narrow phone even after wrapping
+       onto their own line — cap each date/month/year input so two of them plus the separator and
+       Clear button are guaranteed to fit inside the header's width instead of overflowing it. */
+    .sales-date-filter-input {
+        flex: 1 1 auto;
+        min-width: 0;
+        max-width: 7.2rem;
+    }
+
+    /* Left-align instead of space-between once the pill group + filter cluster wrap onto separate
+       lines — space-between stretches a lone wrapped line's single item away from its natural edge. */
+    .brand-header-filter-bar.brand-header {
+        justify-content: flex-start;
+    }
+}

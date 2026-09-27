@@ -1,0 +1,3 @@
+/* IAM — reproduces RolesPage's "User Details"/"Roles Details" sections verbatim, so all real
+   styling (.roles-section, .users-*, .roles-*) comes from the shared /pages/RolesPage/RolesPage.css
+   include in IAMPage.html rather than being duplicated here. Nothing IAM-specific to override yet. */

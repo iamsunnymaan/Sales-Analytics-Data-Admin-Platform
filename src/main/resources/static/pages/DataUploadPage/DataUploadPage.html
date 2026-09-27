@@ -1,0 +1,169 @@
+<!-- Upload Data page: table picker + upload/preview card + upload history, wired up by
+     DataUploadPage.js. -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Upload Data - IB Department</title>
+    <script src="/Shared/js/auth-guard.js"></script>
+    <script src="/Shared/js/sidebar-collapse-init.js"></script>
+    <script src="/Shared/js/theme-init.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="/Shared/css/variables.css">
+    <link rel="stylesheet" href="/Shared/css/app.css">
+    <link rel="stylesheet" href="/Shared/css/card.css">
+    <link rel="stylesheet" href="/Shared/css/modal.css">
+    <link rel="stylesheet" href="/components/Sidebar/Sidebar.css">
+    <link rel="stylesheet" href="/components/TableList/TableList.css">
+    <link rel="stylesheet" href="/components/QuickAccessPanel/QuickAccessPanel.css">
+    <link rel="stylesheet" href="/pages/DataUploadPage/DataUploadPage.css">
+</head>
+<body>
+    <div class="app-shell">
+        <nav class="app-sidebar" id="appSidebar"></nav>
+        <script src="/components/Sidebar/SidebarBootstrap.js"></script>
+        <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+        <button type="button" class="sidebar-toggle-btn" id="sidebarToggle" aria-label="Open menu" aria-expanded="false" title="Menu">
+            <i class="bi bi-list"></i>
+        </button>
+
+        <main class="app-main">
+            <section class="data-upload-sections" id="dataUploadSections">
+            <div class="section-container table-list-section" id="tableListSection" data-permission="page:data-upload.available-tables" hidden>
+            <div class="section-header">
+                <h2 class="section-title">1. Available Tables</h2>
+            </div>
+
+            <div class="section-content">
+                <div class="table-list-columns">
+                    <div class="table-list-grid" id="tableListGrid">
+                        <span class="table-list-status">Loading tables…</span>
+                    </div>
+                    <div class="table-info-panel" id="tableInfoPanel"></div>
+                </div>
+            </div>
+            </div>
+
+            <div class="section-container file-import-section" id="fileImportSection" data-permission="page:data-upload.upload-verify" hidden>
+            <div class="section-header">
+                <h2 class="section-title">2. Upload and Verify</h2>
+            </div>
+
+            <div class="section-content">
+                <div class="file-import-grid">
+                    <div class="file-import-card file-import-upload-card">
+                        <h3 class="file-import-card-title">Upload Data: <span id="uploadSelectedTableLabel">No table selected</span></h3>
+
+                        <div class="file-import-dropzone" id="uploadDropzone">
+                            <i class="bi bi-cloud-arrow-up file-import-dropzone-icon"></i>
+                            <p class="file-import-dropzone-text">Drag and drop your file here</p>
+                            <span class="file-import-dropzone-filename" id="uploadSelectedFileName"></span>
+                            <button type="button" class="file-import-browse-btn" id="uploadBrowseBtn">Browse File</button>
+                            <input type="file" class="file-import-file-input" id="uploadFileInput" accept=".csv,.xlsx" hidden>
+                        </div>
+
+                        <div class="file-import-info-row">
+                            <div class="file-import-info-item">
+                                <span class="file-import-info-label">Supp. formats</span>
+                                <span class="file-import-info-value">CSV, XLSX</span>
+                            </div>
+                            <div class="file-import-info-item">
+                                <span class="file-import-info-label">Max.size</span>
+                                <span class="file-import-info-value">100 MB</span>
+                            </div>
+                            <button type="button" class="file-import-template-btn" id="uploadTemplateBtn" disabled data-feature="feature:template-download">
+                                <i class="bi bi-download"></i> Download Template
+                            </button>
+                        </div>
+
+                        <button type="button" class="file-import-upload-btn" id="uploadSubmitBtn" disabled>
+                            <i class="bi bi-cloud-upload"></i> Upload &amp; Validate
+                        </button>
+                        <div class="file-import-message" id="fileImportMessage"></div>
+                    </div>
+                    <div class="file-import-card file-import-progress-card" id="fileImportProgressCard" hidden>
+                        <div class="file-import-progress-header">
+                            <h3 class="file-import-card-title" id="fileImportProgressTitle">Data Preview</h3>
+                            <div class="file-import-progress-header-actions">
+                                <div class="file-import-download-wrap">
+                                    <button type="button" class="file-import-progress-download-btn"
+                                            id="fileImportDownloadBtn" title="Download the full data set (invalid cells in red)"
+                                            aria-label="Download the full data set with invalid cells highlighted in red" hidden>
+                                        <i class="bi bi-download"></i>
+                                    </button>
+                                </div>
+                                <button type="button" class="file-import-progress-close-btn" id="fileImportResetBtn"
+                                        title="Reset and start a fresh upload" aria-label="Reset and start a fresh upload">
+                                    <i class="bi bi-x-lg"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="file-import-progress-inner" id="fileImportProgressInner"></div>
+                    </div>
+                </div>
+            </div>
+            </div>
+
+            <div class="section-container" id="importHistorySection" data-permission="page:data-upload.upload-history" hidden>
+            <div class="section-header">
+                <div class="import-history-header">
+                    <h2 class="section-title">3. Upload History</h2>
+                    <div class="import-history-header-actions">
+                        <button type="button" class="import-history-refresh-btn" id="importHistoryRefreshBtn" title="Refresh">
+                            <i class="bi bi-arrow-clockwise"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-content">
+                <div class="import-history-message" id="importHistoryMessage"></div>
+                <div class="import-history-card">
+                    <div class="import-history-scroll" id="importHistoryScroll">
+                        <div class="import-history-empty" id="importHistoryEmpty">No uploads yet.</div>
+                        <table class="import-history-table" id="importHistoryTable" hidden>
+                            <thead>
+                                <tr>
+                                    <th>File</th>
+                                    <th>Table</th>
+                                    <th>Status</th>
+                                    <th>Rows</th>
+                                    <th>Duration</th>
+                                    <th>Uploaded</th>
+                                    <th>View</th>
+                                </tr>
+                            </thead>
+                            <tbody id="importHistoryBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            </div>
+            </section>
+        </main>
+    </div>
+
+    <div class="import-preview-overlay" id="importPreviewOverlay" hidden>
+        <div class="import-preview-modal">
+            <div class="import-preview-header">
+                <h3 id="importPreviewTitle">Preview</h3>
+                <button type="button" class="import-preview-close-btn" id="importPreviewCloseBtn" aria-label="Close">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            </div>
+            <div class="import-preview-body" id="importPreviewBody"></div>
+            <div class="import-preview-footer">
+                <button type="button" class="import-preview-download-btn" id="importPreviewDownloadBtn">
+                    <i class="bi bi-download"></i> Download
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="quick-access-panel" id="quickAccessPanel"></div>
+
+    <script type="module" src="/pages/DataUploadPage/DataUploadPage.js"></script>
+</body>
+</html>

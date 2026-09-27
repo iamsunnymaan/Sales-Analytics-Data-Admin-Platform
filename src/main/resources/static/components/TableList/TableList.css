@@ -1,0 +1,201 @@
+/* Styles for the table-picker chip grid. */
+.table-list-section {
+    margin-bottom: 1rem;
+}
+
+/* Same typography as PrimarySalesPage.css's .target-achievement-subtitle ("1. Overview", "2. Daily
+   Sales Trends", …) — small, uppercase, secondary-colored section labels, for a consistent look
+   between the two pages' section headers. */
+.table-list-section .section-title {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 0.75rem;
+    color: var(--color-text-secondary);
+}
+
+/* Base surface (background/border/radius) comes from Shared/css/card.css. */
+.table-list-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    padding: 1rem;
+}
+
+.table-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.45rem 0.9rem;
+    background-color: var(--color-background);
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--color-text-primary);
+    white-space: nowrap;
+    cursor: default;
+    transition: border-color 0.15s ease, background-color 0.15s ease, transform 0.1s ease;
+}
+
+.table-chip:hover {
+    border-color: var(--color-primary);
+    background-color: var(--color-card-bg);
+    transform: translateY(-1px);
+}
+
+.table-chip:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 1px;
+}
+
+.table-chip.active {
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
+    color: #fff;
+}
+
+.table-chip.active i {
+    color: #fff;
+}
+
+.table-chip i {
+    color: var(--color-primary);
+    font-size: 0.8rem;
+}
+
+.table-list-status {
+    color: var(--color-text-secondary);
+    font-size: 0.9rem;
+    padding: 0.25rem 0;
+}
+
+.table-list-status.table-list-error {
+    color: var(--color-danger);
+}
+
+/* ==================== Chip grid + info panel (80:20) ==================== */
+/* Splits the table-list section into two partitions inside one shared card surface, with a
+   vertical rule between them — the table chip grid on the left, a quick-reference info panel for
+   whichever table is currently selected on the right (see initTableInfoPanel above). Shared by
+   both DataUploadPage.html and ExplorerPage.html so the two pages' table pickers read as the same
+   component everywhere, not just visually similar. The card surface (background/border/radius)
+   moves here from .table-list-grid itself (see the override right below) since this wrapper is now
+   the single visible box. */
+.table-list-columns {
+    display: grid;
+    grid-template-columns: 80% 20%;
+    align-items: stretch;
+    background-color: var(--color-card-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+/* Card surface (background/border/radius) reset — a structural requirement of the two-partition
+   layout above (the outer .table-list-columns is now the single visible box). Padding/gap are
+   trimmed from this file's own plain .table-list-grid default to shrink the section's overall
+   height — the chip pills themselves (.table-chip) stay completely untouched. */
+.table-list-columns .table-list-grid {
+    display: flex;
+    background-color: transparent;
+    border: none;
+    border-radius: 0;
+    padding: 0.6rem 0.75rem;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.table-info-panel {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.4rem;
+    min-width: 0;
+    padding: 0.45rem 0.55rem;
+    border-left: 1px solid var(--color-border);
+}
+
+.table-info-empty {
+    margin: auto 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.3rem;
+    text-align: center;
+    color: var(--color-text-secondary);
+    font-size: 0.64rem;
+}
+
+.table-info-empty i {
+    font-size: 0.95rem;
+}
+
+.table-info-loading,
+.table-info-error {
+    margin: auto 0;
+    text-align: center;
+    font-size: 0.68rem;
+    color: var(--color-text-secondary);
+}
+
+.table-info-error {
+    color: var(--color-danger);
+}
+
+/* Row 01: icon + table name, with the last committed-import date/time (see TableSummaryResponse's
+   own doc on why this can read "No import yet" even for a table with real data — committed_at only
+   survives roughly a day) tucked directly underneath as one compact block. */
+.table-info-primary-row {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    min-width: 0;
+}
+
+.table-info-name-line {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.76rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    word-break: break-word;
+}
+
+.table-info-name-line i {
+    color: var(--color-primary);
+    flex: none;
+}
+
+.table-info-updated-line {
+    font-size: 0.62rem;
+    color: var(--color-text-secondary);
+}
+
+/* Row 02: duplicate-check status (see TableImportRules#alwaysInsertNew) — a rounded pill, colored by
+   state: green/"on" for a table whose normal duplicate check applies, amber/"off" for one where every
+   uploaded row always inserts as new. Same success/warning palette DataUploadPage.css's chunk-lane
+   status pills use (.file-import-chunk.passed/.flagged), for one consistent "safe vs. caution"
+   language across the app rather than a second one-off color pair. */
+.table-info-dup-badge {
+    align-self: flex-start;
+    padding: 0.22rem 0.5rem;
+    border-radius: 999px;
+    border: 1px solid transparent;
+    font-size: 0.6rem;
+    font-weight: 600;
+}
+
+.table-info-dup-on {
+    background-color: rgba(22, 128, 60, 0.1);
+    border-color: var(--color-success);
+    color: var(--color-success);
+}
+
+.table-info-dup-off {
+    background-color: rgba(217, 119, 6, 0.1);
+    border-color: var(--color-warning);
+    color: var(--color-warning);
+}

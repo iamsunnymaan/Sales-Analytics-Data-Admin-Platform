@@ -1,0 +1,67 @@
+/* Smooth cross-fade between full page navigations (e.g. clicking a sidebar link) instead of the
+   default hard flash/blink of a normal reload. Supported in Chromium-based browsers (Chrome 126+)
+   — browsers without support just fall back to an ordinary, instant navigation, no functional
+   impact either way. The sidebar deliberately does NOT get its own `view-transition-name` (see
+   the comment on .app-sidebar in Sidebar.css for why) — it rides along in this single default
+   transition group with the rest of the page, which is a plain cross-fade with no geometry
+   interpolation, so there's nothing for a fixed-width element like the sidebar to visibly
+   distort during. */
+@view-transition {
+    navigation: auto;
+}
+
+/* Base page layout shared by every page: full-height sidebar + scrollable main content area. */
+html, body {
+    height: 100%;
+    margin: 0;
+    background-color: var(--color-background);
+    color: var(--color-text-primary);
+}
+
+.app-shell {
+    display: flex;
+    height: 100vh;
+}
+
+.app-main {
+    flex: 1;
+    min-width: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 1.5rem;
+    scrollbar-width: none;
+    &::-webkit-scrollbar {
+        display: none;
+    }
+}
+
+/* Responsive breakpoints used app-wide: <=1024px tablet, <=640px mobile (see also Sidebar.css,
+   which switches the sidebar itself to a compact rail / off-canvas drawer at these same widths).
+   Main content padding shrinks to leave more room for cards/tables on smaller screens, and gets
+   extra top clearance on mobile to clear the fixed hamburger toggle button. */
+@media (max-width: 1024px) {
+    .app-main {
+        padding: 1.1rem;
+    }
+}
+
+@media (max-width: 640px) {
+    .app-main {
+        padding: 4rem 0.75rem 1rem;
+    }
+}
+
+/* Scrollable but no visible scrollbar track/thumb — wheel/trackpad/touch/keyboard scrolling all
+   stay fully functional, only the bar itself is hidden. Add alongside an element's own
+   overflow/max-height rules (this utility only covers the scrollbar-hiding part). */
+.scroll-hidden {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.scroll-hidden::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    height: 0;
+}
+

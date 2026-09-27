@@ -1,0 +1,589 @@
+Site_Code,Brand,Store_Name,City,State,Region,Channel,Sub_Channel,Partner,RM,AM,CM,SM,Opening_Date,Operational_Status,Sales_Type
+T2BL,Anastasia Beverly hills,AMBI,Gurugram,Haryana,North,Offline,Sephora,Sephora,Mohit,Mohit,Mohit,Mohit,,Active,Secondary Sales
+S0LJ,Anastasia Beverly hills,WH INCREF,Online,Online,Online,Online,Sephora,Sephora,Tanuj,Tanuj,Tanuj,Tanuj,,Active,Secondary Sales
+T2BJ,Anastasia Beverly hills,DLF,Delhi,Delhi,North,Offline,Sephora,Sephora,Mohit,Mohit,Mohit,Mohit,,Active,Secondary Sales
+T2BH,Anastasia Beverly hills,ELANTE,Chandigarh,Punjab,North,Offline,Sephora,Sephora,Mohit,Mohit,Mohit,Mohit,,Active,Secondary Sales
+T2BN,Anastasia Beverly hills,FORUM BLR,Bengaluru,Karnataka,South,Offline,Sephora,Sephora,Raja Shekhar,Raja Shekhar,Raja Shekhar,Raja Shekhar,,Active,Secondary Sales
+T2CM,Anastasia Beverly hills,FORUM SUJANA,Hyderabad,Telangana,South,Offline,Sephora,Sephora,Vinay,Vinay,Vinay,Vinay,,Active,Secondary Sales
+T4YE,Anastasia Beverly hills,MBD LUDHIANA,Ludhiana,Punjab,North,Offline,Sephora,Sephora,Mohit,Mohit,Mohit,Mohit,,Active,Secondary Sales
+T5AB,Anastasia Beverly hills,MOA BLR,Bengaluru,Karnataka,South,Offline,Sephora,Sephora,Raja Shekhar,Raja Shekhar,Raja Shekhar,Raja Shekhar,,Active,Secondary Sales
+T2CK,Anastasia Beverly hills,MOIN,Noida,Uttar Pradesh,North,Offline,Sephora,Sephora,Mohit,Mohit,Mohit,Mohit,,Active,Secondary Sales
+T4IR,Anastasia Beverly hills,MOM PUNE,Pune,Maharashtra,West,Offline,Sephora,Sephora,Rakesh Salian,Rakesh Salian,Rakesh Salian,Rakesh Salian,,Active,Secondary Sales
+T2BV,Anastasia Beverly hills,OBEROI,Mumbai,Maharashtra,West,Offline,Sephora,Sephora,Rakesh Salian,Rakesh Salian,Rakesh Salian,Rakesh Salian,,Active,Secondary Sales
+T2BO,Anastasia Beverly hills,ORION BLR,Bengaluru,Karnataka,South,Offline,Sephora,Sephora,Raja Shekhar,Raja Shekhar,Raja Shekhar,Raja Shekhar,,Active,Secondary Sales
+T2BW,Anastasia Beverly hills,PALLADIUM,Mumbai,Maharashtra,West,Offline,Sephora,Sephora,Rakesh Salian,Rakesh Salian,Rakesh Salian,Rakesh Salian,,Active,Secondary Sales
+T2BX,Anastasia Beverly hills,PAVILLION,Pune,Maharashtra,West,Offline,Sephora,Sephora,Rakesh Salian,Rakesh Salian,Rakesh Salian,Rakesh Salian,,Active,Secondary Sales
+T2CN,Anastasia Beverly hills,PMC CHENNAI,Chennai,Tamil Nadu,South,Offline,Sephora,Sephora,Raja Shekhar,Raja Shekhar,Raja Shekhar,Raja Shekhar,,Active,Secondary Sales
+T2BZ,Anastasia Beverly hills,PMC KURLA,Kurla,Maharashtra,West,Offline,Sephora,Sephora,Rakesh Salian,Rakesh Salian,Rakesh Salian,Rakesh Salian,,Active,Secondary Sales
+T2BY,Anastasia Beverly hills,PMC PUNE,Pune,Maharashtra,West,Offline,Sephora,Sephora,Rakesh Salian,Rakesh Salian,Rakesh Salian,Rakesh Salian,,Active,Secondary Sales
+T2CE,Anastasia Beverly hills,R CITY,Mumbai,Maharashtra,West,Offline,Sephora,Sephora,Rakesh Salian,Rakesh Salian,Rakesh Salian,Rakesh Salian,,Active,Secondary Sales
+T2BI,Anastasia Beverly hills,SCW,Delhi,Delhi,North,Offline,Sephora,Sephora,Mohit,Mohit,Mohit,Mohit,,Active,Secondary Sales
+T2CA,Anastasia Beverly hills,SEAWOODS,Mumbai,Maharashtra,West,Offline,Sephora,Sephora,Rakesh Salian,Rakesh Salian,Rakesh Salian,Rakesh Salian,,Active,Secondary Sales
+T2EI,Anastasia Beverly hills,SOUTH CITY,Kolkata,West Bengal,East,Offline,Sephora,Sephora,Gaurav,Gaurav,Gaurav,Gaurav,,Active,Secondary Sales
+T2CC,Anastasia Beverly hills,TI INDORE,Indore,Madhya Pradesh,West,Offline,Sephora,Sephora,Mohit,Mohit,Mohit,Mohit,,Active,Secondary Sales
+T2BK,Anastasia Beverly hills,VEGAS DWARKA,Delhi,Delhi,North,Offline,Sephora,Sephora,Mohit,Mohit,Mohit,Mohit,,Active,Secondary Sales
+T2CH,Anastasia Beverly hills,WTP JAIPUR,Jaipur,Rajasthan,North,Offline,Sephora,Sephora,Mohit,Mohit,Mohit,Mohit,,Active,Secondary Sales
+T2CF,Anastasia Beverly hills,EA CHENNAI,Chennai,Tamil Nadu,South,Offline,Sephora,Sephora,Raja Shekhar,Raja Shekhar,Raja Shekhar,Raja Shekhar,,Active,Secondary Sales
+T2BU,Anastasia Beverly hills,INFINITI,Mumbai,Maharashtra,West,Offline,Sephora,Sephora,Rakesh Salian,Rakesh Salian,Rakesh Salian,Rakesh Salian,,Active,Secondary Sales
+T2BS,Anastasia Beverly hills,ALPHA ONE,Ahmedabad,Gujurat,West,Offline,Sephora,Sephora,Rakesh Salian,Rakesh Salian,Rakesh Salian,Rakesh Salian,,Active,Secondary Sales
+T2BT,Anastasia Beverly hills,DB MALL,Bhopal,Madhya Pradesh,West,Offline,Sephora,Sephora,Mohit,Mohit,Mohit,Mohit,,Active,Secondary Sales
+T5XE,Anastasia Beverly hills,INORBIT MALL,Hyderabad,Telangana,South,Offline,Sephora,Sephora,Vinay,Vinay,Vinay,Vinay,,Active,Secondary Sales
+T2BL,Kylie Cosmetics,AMBI,Gurugram,Haryana,North,Offline,Sephora,Sephora,Mohit,Mohit,Mohit,Mohit,,Active,Secondary Sales
+T2BJ,Kylie Cosmetics,DLF,Delhi,Delhi,North,Offline,Sephora,Sephora,Mohit,Mohit,Mohit,Mohit,,Active,Secondary Sales
+T2CF,Kylie Cosmetics,EA CHENNAI,Chennai,Telangana,South,Offline,Sephora,Sephora,Raja Shekhar,Raja Shekhar,Raja Shekhar,Raja Shekhar,,Active,Secondary Sales
+T2BH,Kylie Cosmetics,ELANTE,Chandigarh,Punjab,North,Offline,Sephora,Sephora,Mohit,Mohit,Mohit,Mohit,,Active,Secondary Sales
+T2CM,Kylie Cosmetics,FORUM SUJANA,Hyderabad,Telangana,South,Offline,Sephora,Sephora,Vinay,Vinay,Vinay,Vinay,,Active,Secondary Sales
+S0LJ,Kylie Cosmetics,WH INCREF,Online,Online,Online,Online,Sephora,Sephora,Tanuj,Tanuj,Tanuj,Tanuj,,Active,Secondary Sales
+T2BU,Kylie Cosmetics,INFINITI,Mumbai,Maharashtra,West,Offline,Sephora,Sephora,Rakesh Salian,Rakesh Salian,Rakesh Salian,Rakesh Salian,,Active,Secondary Sales
+T4YE,Kylie Cosmetics,MBD LUDHIANA,Ludhiana,Punjab,North,Offline,Sephora,Sephora,Mohit,Mohit,Mohit,Mohit,,Active,Secondary Sales
+T5AB,Kylie Cosmetics,MOA BLR,Bengaluru,Karnataka,South,Offline,Sephora,Sephora,Raja Shekhar,Raja Shekhar,Raja Shekhar,Raja Shekhar,,Active,Secondary Sales
+T2CK,Kylie Cosmetics,MOIN,Noida,Uttar Pradesh,North,Offline,Sephora,Sephora,Mohit,Mohit,Mohit,Mohit,,Active,Secondary Sales
+T4IR,Kylie Cosmetics,MOM PUNE,Pune,Maharashtra,West,Offline,Sephora,Sephora,Rakesh Salian,Rakesh Salian,Rakesh Salian,Rakesh Salian,,Active,Secondary Sales
+T2BV,Kylie Cosmetics,OBEROI,Mumbai,Maharashtra,West,Offline,Sephora,Sephora,Rakesh Salian,Rakesh Salian,Rakesh Salian,Rakesh Salian,,Active,Secondary Sales
+T2BO,Kylie Cosmetics,ORION BLR,Bengaluru,Karnataka,South,Offline,Sephora,Sephora,Raja Shekhar,Raja Shekhar,Raja Shekhar,Raja Shekhar,,Active,Secondary Sales
+T2BW,Kylie Cosmetics,PALLADIUM,Mumbai,Maharashtra,West,Offline,Sephora,Sephora,Rakesh Salian,Rakesh Salian,Rakesh Salian,Rakesh Salian,,Active,Secondary Sales
+T2CN,Kylie Cosmetics,PMC CHENNAI,Chennai,Tamil Nadu,South,Offline,Sephora,Sephora,Raja Shekhar,Raja Shekhar,Raja Shekhar,Raja Shekhar,,Active,Secondary Sales
+T2CE,Kylie Cosmetics,R CITY,Mumbai,Maharashtra,West,Offline,Sephora,Sephora,Rakesh Salian,Rakesh Salian,Rakesh Salian,Rakesh Salian,,Active,Secondary Sales
+T2BI,Kylie Cosmetics,SCW,Delhi,Delhi,North,Offline,Sephora,Sephora,Mohit,Mohit,Mohit,Mohit,,Active,Secondary Sales
+T2EI,Kylie Cosmetics,SOUTH CITY,Kolkata,West Bengal,East,Offline,Sephora,Sephora,Gaurav,Gaurav,Gaurav,Gaurav,,Active,Secondary Sales
+T2CC,Kylie Cosmetics,TI INDORE,Indore,Madhya Pradesh,West,Offline,Sephora,Sephora,Mohit,Mohit,Mohit,Mohit,,Active,Secondary Sales
+T2CH,Kylie Cosmetics,WTP JAIPUR,Jaipur,Rajasthan,North,Offline,Sephora,Sephora,Mohit,Mohit,Mohit,Mohit,,Active,Secondary Sales
+T2BS,Kylie Cosmetics,ALPHA ONE,Ahmedabad,Gujurat,West,Offline,Sephora,Sephora,Rakesh Salian,Rakesh Salian,Rakesh Salian,Rakesh Salian,,Active,Secondary Sales
+T2BN,Kylie Cosmetics,FORUM BLR,Bengaluru,Karnataka,South,Offline,Sephora,Sephora,Raja Shekhar,Raja Shekhar,Raja Shekhar,Raja Shekhar,,Active,Secondary Sales
+T2BZ,Kylie Cosmetics,PMC KURLA,Kurla,Maharashtra,West,Offline,Sephora,Sephora,Rakesh Salian,Rakesh Salian,Rakesh Salian,Rakesh Salian,,Active,Secondary Sales
+T2CA,Kylie Cosmetics,SEAWOODS,Mumbai,Maharashtra,West,Offline,Sephora,Sephora,Rakesh Salian,Rakesh Salian,Rakesh Salian,Rakesh Salian,,Active,Secondary Sales
+T2BK,Kylie Cosmetics,VEGAS DWARKA,Delhi,Delhi,North,Offline,Sephora,Sephora,Mohit,Mohit,Mohit,Mohit,,Active,Secondary Sales
+T2BT,Kylie Cosmetics,DB MALL,Bhopal,Madhya Pradesh,West,Offline,Sephora,Sephora,Mohit,Mohit,Mohit,Mohit,,Active,Secondary Sales
+T2BY,Kylie Cosmetics,PMC PUNE,Pune,Maharashtra,West,Offline,Sephora,Sephora,Rakesh Salian,Rakesh Salian,Rakesh Salian,Rakesh Salian,,Active,Secondary Sales
+T5XE,Kylie Cosmetics,INORBIT MALL,Hyderabad,Telangana,South,Offline,Sephora,Sephora,Vinay,Vinay,Vinay,Vinay,,Active,Secondary Sales
+T2BX,Kylie Cosmetics,PAVILLION,Pune,Maharashtra,West,Offline,Sephora,Sephora,Rakesh Salian,Rakesh Salian,Rakesh Salian,Rakesh Salian,,Active,Secondary Sales
+CP02,Anastasia Beverly hills,TCP-KOPA,Pune,Maharashtra,West,Offline,TCP,TCP,Rakesh Salian,Rakesh Salian,Rakesh Salian,Rakesh Salian,,Inactive,Secondary Sales
+TCL,Anastasia Beverly hills,TCL,Online,Online,Online,Online,TCL,TCL,Tanuj,Tanuj,Tanuj,Tanuj,,Active,Secondary Sales
+8713,Anastasia Beverly hills,SS BEAUTY - QUEST MALL,Kolkata,West Bengal,East,Offline,SS-Beauty,SS-Beauty,Gaurav,Gaurav,Gaurav,Gaurav,,Inactive,Secondary Sales
+8712,Anastasia Beverly hills,SS BEAUTY T2 BIAL,Bengaluru,Karnataka,South,Offline,SS-Beauty,SS-Beauty,Raja Shekhar,Raja Shekhar,Raja Shekhar,Raja Shekhar,,Inactive,Secondary Sales
+8706,Anastasia Beverly hills,SSBEAUTY CITY CENTRE,Kolkata,West Bengal,East,Offline,SS-Beauty,SS-Beauty,Gaurav,Gaurav,Gaurav,Gaurav,,Inactive,Secondary Sales
+8705,Anastasia Beverly hills,SSBEAUTY INFINITY MALL,Mumbai,Maharashtra,West,Offline,SS-Beauty,SS-Beauty,Rakesh Salian,Rakesh Salian,Rakesh Salian,Rakesh Salian,,Inactive,Secondary Sales
+8702,Anastasia Beverly hills,SSBEAUTY PMC KURLA MAL,Kurla,Maharashtra,West,Offline,SS-Beauty,SS-Beauty,Rakesh Salian,Rakesh Salian,Rakesh Salian,Rakesh Salian,,Inactive,Secondary Sales
+656,Anastasia Beverly hills,SSBEAUTY-GVK ONE MALL HYD,Hyderabad,Telangana,South,Offline,SS-Beauty,SS-Beauty,Vinay,Vinay,Vinay,Vinay,,Inactive,Secondary Sales
+Amazon,Anastasia Beverly hills,Amazon,Online,Online,Online,Online,Amazon,Amazon,Tanuj,Tanuj,Tanuj,Tanuj,,Active,Secondary Sales
+T0V1,Anastasia Beverly hills,TIRA PMC Wakad,Pune,Maharashtra,West,Offline,Tira-Offline,Tira-Offline,Rakesh Salian,Rakesh Salian,Rakesh Salian,Rakesh Salian,,Active,Secondary Sales
+T2EG,Anastasia Beverly hills,TIRA Kopa Mall koreg,Pune,Maharashtra,West,Offline,Tira-Offline,Tira-Offline,Rakesh Salian,Rakesh Salian,Rakesh Salian,Rakesh Salian,,Active,Secondary Sales
+T2CP,Anastasia Beverly hills,TIRA DLF Avenue Mall,Delhi,Delhi,North,Offline,Tira-Offline,Tira-Offline,Mohit,Mohit,Mohit,Mohit,,Active,Secondary Sales
+T5FT,Anastasia Beverly hills,TIRA VR Mall Chennai,Chennai,Tamil Nadu,South,Offline,Tira-Offline,Tira-Offline,Raja Shekhar,Raja Shekhar,Raja Shekhar,Raja Shekhar,,Active,Secondary Sales
+T5QT,Anastasia Beverly hills,TIRA 1 MG Mall Bengaluru,Bengaluru,Karnataka,South,Offline,Tira-Offline,Tira-Offline,Raja Shekhar,Raja Shekhar,Raja Shekhar,Raja Shekhar,,Active,Secondary Sales
+T5QU,Anastasia Beverly hills,TIRA Ambience mall Vasant Kunj,Delhi,Delhi,North,Offline,Tira-Offline,Tira-Offline,Mohit,Mohit,Mohit,Mohit,,Active,Secondary Sales
+T6JJ,Anastasia Beverly hills,TIRA Seawoods Grand ,Mumbai,Maharashtra,West,Offline,Tira-Offline,Tira-Offline,Rakesh Salian,Rakesh Salian,Rakesh Salian,Rakesh Salian,,Active,Secondary Sales
+T11J,Anastasia Beverly hills,Tira - Jio World Drive,Mumbai,Maharashtra,West,Offline,Tira-Offline,Tira-Offline,Rakesh Salian,Rakesh Salian,Rakesh Salian,Rakesh Salian,,Active,Secondary Sales
+T76P,Anastasia Beverly hills,Tira Jio World Plaza,Mumbai,Maharashtra,West,Offline,Tira-Offline,Tira-Offline,Rakesh Salian,Rakesh Salian,Rakesh Salian,Rakesh Salian,,Active,Secondary Sales
+TG0X,Anastasia Beverly hills,Tira Sarath City Cap,Hyderabad,Telangana,South,Offline,Tira-Offline,Tira-Offline,Vinay,Vinay,Vinay,Vinay,,Active,Secondary Sales
+TG7G,Anastasia Beverly hills,Tira Viviana Mall Thane,Thane,Maharashtra,West,Offline,Tira-Offline,Tira-Offline,Rakesh Salian,Rakesh Salian,Rakesh Salian,Rakesh Salian,,Active,Secondary Sales
+TH4X,Anastasia Beverly hills,Tira Infiniti Mall Andheri,Mumbai,Maharashtra,West,Offline,Tira-Offline,Tira-Offline,Rakesh Salian,Rakesh Salian,Rakesh Salian,Rakesh Salian,,Active,Secondary Sales
+TH6E,Anastasia Beverly hills,TIRA Palladium Chennai,Chennai,Tamil Nadu,South,Offline,Tira-Offline,Tira-Offline,Raja Shekhar,Raja Shekhar,Raja Shekhar,Raja Shekhar,,Active,Secondary Sales
+T3AS,Anastasia Beverly hills,TIRA PMC Kurla,Kurla,Maharashtra,West,Offline,Tira-Offline,Tira-Offline,Rakesh Salian,Rakesh Salian,Rakesh Salian,Rakesh Salian,,Active,Secondary Sales
+T91L,Anastasia Beverly hills,Tira Infiniti Malad,Mumbai,Maharashtra,West,Offline,Tira-Offline,Tira-Offline,Rakesh Salian,Rakesh Salian,Rakesh Salian,Rakesh Salian,,Active,Secondary Sales
+T0UU,Anastasia Beverly hills,TIRA Mall of Asia Bengaluru,Bengaluru,Karnataka,South,Offline,Tira-Offline,Tira-Offline,Raja Shekhar,Raja Shekhar,Raja Shekhar,Raja Shekhar,,Active,Secondary Sales
+T7PC,Anastasia Beverly hills,TIRA-Palladium,Mumbai,Maharashtra,West,Offline,Tira-Offline,Tira-Offline,Rakesh Salian,Rakesh Salian,Rakesh Salian,Rakesh Salian,,Active,Secondary Sales
+T9MT,Anastasia Beverly hills,RRL Azorte Thane Viviana,Thane,Maharashtra,West,Offline,Tira-Offline,Tira-Offline,Rakesh Salian,Rakesh Salian,Rakesh Salian,Rakesh Salian,,Active,Secondary Sales
+Tira-Online,Anastasia Beverly hills,Tira-Online,Online,Online,Online,Online,Tira-Online,Tira-Online,Tanuj,Tanuj,Tanuj,Tanuj,,Active,Secondary Sales
+L40,Anastasia Beverly hills,Nykaa Luxe 100Ft Bengaluru,Bengaluru,Karnataka,South,Offline,Nykaa-Offline,Nykaa-Offline,Raja Shekhar,Raja Shekhar,Raja Shekhar,Raja Shekhar,,Active,Secondary Sales
+L50,Anastasia Beverly hills,Nykaa Luxe Infiniti Mall Andheri Mumbai,Mumbai,Maharashtra,West,Offline,Nykaa-Offline,Nykaa-Offline,Rakesh Salian,Rakesh Salian,Rakesh Salian,Rakesh Salian,,Active,Secondary Sales
+L55,Anastasia Beverly hills,Nykaa Luxe Jubliee Hills Hyderabad,Hyderabad,Telangana,South,Offline,Nykaa-Offline,Nykaa-Offline,Vinay,Vinay,Vinay,Vinay,,Active,Secondary Sales
+L56,Anastasia Beverly hills,Nykaa Luxe Churchgate Mumbai,Mumbai,Maharashtra,West,Offline,Nykaa-Offline,Nykaa-Offline,Rakesh Salian,Rakesh Salian,Rakesh Salian,Rakesh Salian,,Active,Secondary Sales
+L76,Anastasia Beverly hills,Nykaa Luxe Phoenix Mall Indore,Indore,Madhya Pradesh,West,Offline,Nykaa-Offline,Nykaa-Offline,Mohit,Mohit,Mohit,Mohit,,Active,Secondary Sales
+L80,Anastasia Beverly hills,Nykaa Luxe City Center Siliguri,Siliguri,West Bengal,East,Offline,Nykaa-Offline,Nykaa-Offline,Gaurav,Gaurav,Gaurav,Gaurav,,Active,Secondary Sales
+L85,Anastasia Beverly hills,Nykaa Luxe Phoenix Palladium Mall Ahmedabad,Ahmedabad,Gujurat,West,Offline,Nykaa-Offline,Nykaa-Offline,Rakesh Salian,Rakesh Salian,Rakesh Salian,Rakesh Salian,,Active,Secondary Sales
+L87,Anastasia Beverly hills,Nykaa Luxe Elante Mall Chandigarh,Chandigarh,Punjab,North,Offline,Nykaa-Offline,Nykaa-Offline,Mohit,Mohit,Mohit,Mohit,,Active,Secondary Sales
+L90,Anastasia Beverly hills,Nykaa Luxe Inorbit Mall Hyderabad,Hyderabad,Telangana,South,Offline,Nykaa-Offline,Nykaa-Offline,Vinay,Vinay,Vinay,Vinay,,Active,Secondary Sales
+L91,Anastasia Beverly hills,Nykaa Luxe Phoenix Mall of Millennium Pune,Pune,Maharashtra,West,Offline,Nykaa-Offline,Nykaa-Offline,Rakesh Salian,Rakesh Salian,Rakesh Salian,Rakesh Salian,,Active,Secondary Sales
+L96,Anastasia Beverly hills,Nykaa Luxe Falcon Mall Bangalore,Bengaluru,Karnataka,South,Offline,Nykaa-Offline,Nykaa-Offline,Raja Shekhar,Raja Shekhar,Raja Shekhar,Raja Shekhar,,Active,Secondary Sales
+L97,Anastasia Beverly hills,Nykaa Luxe Mall of Asia Bangalore,Bengaluru,Karnataka,South,Offline,Nykaa-Offline,Nykaa-Offline,Raja Shekhar,Raja Shekhar,Raja Shekhar,Raja Shekhar,,Active,Secondary Sales
+L99,Anastasia Beverly hills,Nykaa Luxe Forum Mall Kochi,Kochi,Kerala,South,Offline,Nykaa-Offline,Nykaa-Offline,Raja Shekhar,Raja Shekhar,Raja Shekhar,Raja Shekhar,,Active,Secondary Sales
+O32,Anastasia Beverly hills,Nykaa On Trend Trilium Mall Nagpur,Nagpur,Madhya Pradesh,West,Offline,Nykaa-Offline,Nykaa-Offline,Rakesh Salian,Rakesh Salian,Rakesh Salian,Rakesh Salian,,Active,Secondary Sales
+U02,Anastasia Beverly hills,Nykaa Luxe Pacific Mall Rajouri Delhi,Delhi,Delhi,North,Offline,Nykaa-Offline,Nykaa-Offline,Mohit,Mohit,Mohit,Mohit,,Active,Secondary Sales
+U05,Anastasia Beverly hills,Nykaa Luxe Model Town Jalandhar HS,Jalandhar,Punjab,North,Offline,Nykaa-Offline,Nykaa-Offline,Mohit,Mohit,Mohit,Mohit,,Active,Secondary Sales
+U10,Anastasia Beverly hills,Nykaa Luxe Mall of India Noida,Noida,Uttar Pradesh,North,Offline,Nykaa-Offline,Nykaa-Offline,Mohit,Mohit,Mohit,Mohit,,Active,Secondary Sales
+U14,Anastasia Beverly hills,Nykaa Luxe Chandivali Powai HS,Mumbai,Maharashtra,West,Offline,Nykaa-Offline,Nykaa-Offline,Rakesh Salian,Rakesh Salian,Rakesh Salian,Rakesh Salian,,Active,Secondary Sales
+L33,Anastasia Beverly hills,Nykaa Luxe City Centre Guwahati,Guwahati,Assam,East,Offline,Nykaa-Offline,Nykaa-Offline,Gaurav,Gaurav,Gaurav,Gaurav,,Active,Secondary Sales
+U16,Anastasia Beverly hills,Nykaa Luxe DLF Cyber Hub Gurgaon HS,Gurugram,Haryana,North,Offline,Nykaa-Offline,Nykaa-Offline,Mohit,Mohit,Mohit,Mohit,,Active,Secondary Sales
+U17,Anastasia Beverly hills,Nykaa Luxe City Centre Raipur,Raipur,Chhattisgarh,East,Offline,Nykaa-Offline,Nykaa-Offline,Gaurav,Gaurav,Gaurav,Gaurav,,Active,Secondary Sales
+L92,Anastasia Beverly hills,Nykaa Luxe Viviana Mall Thane,Thane,Maharashtra,West,Offline,Nykaa-Offline,Nykaa-Offline,Rakesh Salian,Rakesh Salian,Rakesh Salian,Rakesh Salian,,Active,Secondary Sales
+L95,Anastasia Beverly hills,Nykaa Luxe Park Street Kolkata,Kolkata,West Bengal,East,Offline,Nykaa-Offline,Nykaa-Offline,Gaurav,Gaurav,Gaurav,Gaurav,,Active,Secondary Sales
+U20,Anastasia Beverly hills,Nykaa Luxe Polo Central Mall Agartala,Agartala,Tripura,East,Offline,Nykaa-Offline,Nykaa-Offline,Gaurav,Gaurav,Gaurav,Gaurav,,Active,Secondary Sales
+U06,Anastasia Beverly hills,Nykaa Luxe Phoenix Palladium Mumbai,Mumbai,Maharashtra,West,Offline,Nykaa-Offline,Nykaa-Offline,Rakesh Salian,Rakesh Salian,Rakesh Salian,Rakesh Salian,,Active,Secondary Sales
+Nykaa-Online,Anastasia Beverly hills,Nykaa-Online,Online,Online,Online,Online,Nykaa-Online,Nykaa-Online,Tanuj,Tanuj,Tanuj,Tanuj,,Active,Secondary Sales
+Myntra,Anastasia Beverly hills,Myntra,Online,Online,Online,Online,Myntra,Myntra,Tanuj,Tanuj,Tanuj,Tanuj,,Active,Secondary Sales
+RG-Delhi,Anastasia Beverly hills,Rajouri Garden,Delhi,Delhi,North,Offline,Aaakash Life,Aaakash Life,Mohit,Mohit,Mohit,Mohit,,Inactive,Secondary Sales
+EOK-Delhi,Anastasia Beverly hills,EOK-Delhi,Delhi,Delhi,North,Offline,Aaakash Life,Aaakash Life,Mohit,Mohit,Mohit,Mohit,,Inactive,Secondary Sales
+MT-Delhi,Anastasia Beverly hills,Model Town,Delhi,Delhi,North,Offline,Aaakash Life,Aaakash Life,Mohit,Mohit,Mohit,Mohit,,Inactive,Secondary Sales
+Boddess-Online,Anastasia Beverly hills,Boddess-Online,Online,Online,Online,Online,Boddess-Online,Boddess-Online,Tanuj,Tanuj,Tanuj,Tanuj,,Active,Secondary Sales
+7703,Anastasia Beverly hills,Boddess-Agartala,Agartala,Tripura,East,Offline,Boddess-Offline,Boddess-Offline,Gaurav,Gaurav,Gaurav,Gaurav,,Inactive,Secondary Sales
+7702,Anastasia Beverly hills,Boddess-Itanagar,Itanagar,Arunachal Pradesh,East,Offline,Boddess-Offline,Boddess-Offline,Gaurav,Gaurav,Gaurav,Gaurav,,Inactive,Secondary Sales
+7705,Anastasia Beverly hills,Boddess-Bhatinda,Bhatinda,Punjab,North,Offline,Boddess-Offline,Boddess-Offline,Mohit,Mohit,Mohit,Mohit,,Inactive,Secondary Sales
+7156,Anastasia Beverly hills,IB-PANCHGAON,Gurugram,Haryana,North,Offline,IB-PANCHGAON,IB-PANCHGAON,Mohit,Mohit,Mohit,Mohit,,Inactive,Secondary Sales
+7153,Anastasia Beverly hills,ABH-PALLADIUM,Mumbai,Maharashtra,West,Offline,ABH-PALLADIUM,ABH-PALLADIUM,Rakesh Salian,Rakesh Salian,Rakesh Salian,Rakesh Salian,,Inactive,Secondary Sales
+7151,Anastasia Beverly hills,ABH-MOI,Noida,Uttar Pradesh,North,Offline,ABH-MOI,ABH-MOI,Mohit,Mohit,Mohit,Mohit,,Inactive,Secondary Sales
+U26,Anastasia Beverly hills,Nykaa Luxe Sigra Varanasi HS,Varanasi,Uttar Pradesh,North,Offline,Nykaa-Offline,Nykaa-Offline,Mohit,Mohit,Mohit,Mohit,,Active,Secondary Sales
+U21,Anastasia Beverly hills,Nykaa Luxe Express Avenue Mall Chennai,Chennai,Tamil Nadu,South,Offline,Nykaa-Offline,Nykaa-Offline,Raja Shekhar,Raja Shekhar,Raja Shekhar,Raja Shekhar,,Active,Secondary Sales
+T2BG,Anastasia Beverly hills,PMC BLR,Bengaluru,Karnataka,South,Offline,Sephora,Sephora,Raja Shekhar,Raja Shekhar,Raja Shekhar,Raja Shekhar,,Active,Secondary Sales
+T2BG,Kylie Cosmetics,PMC BLR,Bengaluru,Karnataka,South,Offline,Sephora,Sephora,Raja Shekhar,Raja Shekhar,Raja Shekhar,Raja Shekhar,,Active,Secondary Sales
+U18,Anastasia Beverly hills,Nykaa Luxe Oberoi Sky City Mall Borivali,Mumbai,Maharashtra,West,Offline,Nykaa-offline,Nykaa-offline,Rakesh Salian,Rakesh Salian,Rakesh Salian,Rakesh Salian,,Active,Secondary Sales
+7704,Anastasia Beverly hills,Boddess-Gangtok,Gangtok,Sikkim,East,Offline,Boddess-Offline,Boddess-Offline,Gaurav,Gaurav,Gaurav,Gaurav,,Inactive,Secondary Sales
+T8FL,Anastasia Beverly hills,TIRA SKY CITY MALL,Mumbai,Maharashtra,West,Offline,Tira-Offline,Tira-Offline,Rakesh Salian,Rakesh Salian,Rakesh Salian,Rakesh Salian,,Active,Secondary Sales
+O25,Anastasia Beverly hills,Nykaa On Trend VR Mall Chennai,Chennai,Tamil Nadu,South,Offline,Nykaa-Offline,Nykaa-Offline,Raja Shekhar,Raja Shekhar,Raja Shekhar,Raja Shekhar,,Active,Secondary Sales
+O63,Anastasia Beverly hills,Nykaa On Trend PMC Kurla Mumbai,Mumbai,Maharashtra,West,Offline,Nykaa-Offline,Nykaa-Offline,Rakesh Salian,Rakesh Salian,Rakesh Salian,Rakesh Salian,,Active,Secondary Sales
+U23,Anastasia Beverly hills,Nykaa Luxe G S Road Shillong HS,Shillong,Meghalaya,East,Offline,Nykaa-Offline,Nykaa-Offline,Gaurav,Gaurav,Gaurav,Gaurav,,Active,Secondary Sales
+Zepto,Anastasia Beverly hills,Zepto,Online,Online,Online,Online,Zepto,Zepto,Tanuj,Tanuj,Tanuj,Tanuj,,Active,Secondary Sales
+1285,Anastasia Beverly hills,Express Avenue - Chennai,Chennai,Tamil Nadu,South,Offline,Lifestyle,Lifestyle,Raja Shekhar,Raja Shekhar,Raja Shekhar,Raja Shekhar,,Inactive,Secondary Sales
+1315,Anastasia Beverly hills,Inorbit - Cyberabad,Cyberabad,Telangana,South,Offline,Lifestyle,Lifestyle,Vinay,Vinay,Vinay,Vinay,,Inactive,Secondary Sales
+S3ZE,Anastasia Beverly hills,Tira Nexus Forum Sujana,Hyderabad,Telangana,South,Offline,Tira-Offline,Tira-Offline,Vinay,Vinay,Vinay,Vinay,,Active,Secondary Sales
+7057,Anastasia Beverly hills,Boddess-Event Sale,Gurugram,Haryana,North,Offline,Boddess-offline,Boddess-offline,Mohit,Mohit,Mohit,Mohit,,Inactive,Secondary Sales
+7153,Kylie Cosmetics,ABH-PALLADIUM,Mumbai,Maharashtra,West,Offline,ABH-PALLADIUM,ABH-PALLADIUM,Rakesh Salian,Rakesh Salian,Rakesh Salian,Rakesh Salian,,Inactive,Secondary Sales
+Tira-Online,Kylie Cosmetics,Tira-Online,Online,Online,Online,Online,Tira-Online,Tira-Online,Tanuj,Tanuj,Tanuj,Tanuj,,Active,Secondary Sales
+T11J,Kylie Cosmetics,Tira - Jio World Drive,Mumbai,Maharashtra,West,Offline,TIRA-Offline,TIRA-Offline,Rakesh Salian,Rakesh Salian,Rakesh Salian,Rakesh Salian,,Active,Secondary Sales
+T7PC,Kylie Cosmetics,TIRA-Palladium,Mumbai,Maharashtra,West,Offline,TIRA-Offline,TIRA-Offline,Rakesh Salian,Rakesh Salian,Rakesh Salian,Rakesh Salian,,Active,Secondary Sales
+T0V1,Kylie Cosmetics,TIRA PMC Wakad,Pune,Maharashtra,West,Offline,TIRA-Offline,TIRA-Offline,Rakesh Salian,Rakesh Salian,Rakesh Salian,Rakesh Salian,,Active,Secondary Sales
+TH4X,Kylie Cosmetics,Tira Infiniti Mall Andheri,Mumbai,Maharashtra,West,Offline,TIRA-Offline,TIRA-Offline,Rakesh Salian,Rakesh Salian,Rakesh Salian,Rakesh Salian,,Active,Secondary Sales
+T5QU,Kylie Cosmetics,TIRA Ambience mall Vasant Kunj,Delhi,Delhi,North,Offline,TIRA-Offline,TIRA-Offline,Mohit,Mohit,Mohit,Mohit,,Active,Secondary Sales
+1455,Anastasia Beverly hills,Pacific - Khayala,Delhi,Delhi,North,Offline,Lifestyle,Lifestyle,Mohit,Mohit,Mohit,Mohit,,Inactive,Secondary Sales
+1645,Anastasia Beverly hills,Viva City-Thane,Thane,Maharashtra,West,Offline,Lifestyle,Lifestyle,Rakesh Salian,Rakesh Salian,Rakesh Salian,Rakesh Salian,,Inactive,Secondary Sales
+7057,Kylie Cosmetics,Boddess-Event Sale,Gurugram,Haryana,North,Offline,Boddess-Offline,Boddess-Offline,Mohit,Mohit,Mohit,Mohit,,Inactive,Secondary Sales
+U29,Anastasia Beverly hills,Nykaa Luxe Sarjapur Bangalore HS,Bengaluru,Karnataka,South,Offline,Nykaa-Offline,Nykaa-Offline,Raja Shekhar,Raja Shekhar,Raja Shekhar,Raja Shekhar,,Active,Secondary Sales
+U27,Anastasia Beverly hills,Nykaa Luxe North India Mall Ghaziabad,Ghaziabad,Uttar Pradesh,North,Offline,Nykaa-Offline,Nykaa-Offline,Mohit,Mohit,Mohit,Mohit,,Active,Secondary Sales
+1354,Anastasia Beverly hills,Phoenix Market City-LS-BLR,Bengaluru,Karnataka,South,Offline,Lifestyle,Lifestyle,Raja Shekhar,Raja Shekhar,Raja Shekhar,Raja Shekhar,,Inactive,Secondary Sales
+TE4E,Anastasia Beverly hills,Tira-Mall of India Noida,Noida,Uttar Pradesh,North,Offline,Tira-Offline,Tira-Offline,Mohit,Mohit,Mohit,Mohit,,Active,Secondary Sales
+BLST1,Anastasia Beverly hills,ZEPHYRUS FASHION STORE-BANGALORE,Bengaluru,Karnataka,South,Offline,Adani ,Adani ,Raja Shekhar,Raja Shekhar,Raja Shekhar,Raja Shekhar,,Active,Secondary Sales
+TE4E,Kylie Cosmetics,Tira-Mall of India Noida,Noida,Uttar Pradesh,North,Offline,Tira-Offline,Tira-Offline,Mohit,Mohit,Mohit,Mohit,,Active,Secondary Sales
+Kult,Anastasia Beverly hills,Kult,Online,Online,Online,Online,Kult,Kult,Tanuj,Tanuj,Tanuj,Tanuj,,Inactive,Secondary Sales
+7705,Kylie Cosmetics,Boddess-Bhatinda,Bhatinda,Punjab,North,Offline,Boddess-Offline,Boddess-Offline,Mohit,Mohit,Mohit,Mohit,,Inactive,Secondary Sales
+7703,Kylie Cosmetics,Boddess-Agartala,Agartala,Tripura,East,Offline,Boddess-Offline,Boddess-Offline,Gaurav,Gaurav,Gaurav,Gaurav,,Inactive,Secondary Sales
+TE2G,Kylie Cosmetics,Nexusmall Amritsar,Amritsar,Punjab,North,Offline,Sephora,Sephora,Mohit,Mohit,Mohit,Mohit,,Active,Secondary Sales
+TD6I,Kylie Cosmetics,Phoenix Palassio-Lucknow,Lucknow ,Uttar Pradesh,North,Offline,Sephora,Sephora,Mohit,Mohit,Mohit,Mohit,,Active,Secondary Sales
+TE2G,Anastasia Beverly hills,Nexusmall Amritsar,Amritsar,Punjab,North,Offline,Sephora,Sephora,Mohit,Mohit,Mohit,Mohit,,Active,Secondary Sales
+TD6I,Anastasia Beverly hills,Phoenix Palassio-Lucknow,Lucknow ,Uttar Pradesh,North,Offline,Sephora,Sephora,Mohit,Mohit,Mohit,Mohit,,Active,Secondary Sales
+TK7C,Kylie Cosmetics,Tira-Nexus Mall Koramangala BLR,Bengaluru,Karnataka,South,Offline,Tira-Offline,Tira-Offline,Raja Shekhar,Raja Shekhar,Raja Shekhar,Raja Shekhar,,Active,Secondary Sales
+T3AS,Kylie Cosmetics,TIRA PMC Kurla,Kurla,Maharashtra,West,Offline,Tira-Offline,Tira-Offline,Rakesh Salian,Rakesh Salian,Rakesh Salian,Rakesh Salian,,Active,Secondary Sales
+AMARLX,Anastasia Beverly hills,MUM-T2-DEP-AMARA LUXE,Mumbai,Maharashtra,West,Offline,Adani ,Adani ,Rakesh Salian,Rakesh Salian,Rakesh Salian,Rakesh Salian,,Active,Secondary Sales
+JAIAMA,Anastasia Beverly hills,JAI-DEP-AMARA LUXE,Jaipur,Rajasthan,North,Offline,Adani ,Adani ,Mohit,Mohit,Mohit,Mohit,,Active,Secondary Sales
+TK7C,Anastasia Beverly hills,Tira-Nexus Mall Koramangala BLR,Bengaluru,Karnataka,South,Offline,Tira-Offline,Tira-Offline,Raja Shekhar,Raja Shekhar,Raja Shekhar,Raja Shekhar,,Active,Secondary Sales
+L87,Kylie Cosmetics,Nykaa Luxe Elante Mall Chandigarh,Chandigarh,Punjab,North,Offline,Nykaa-Offline,Nykaa-Offline,Mohit,Mohit,Mohit,Mohit,,Active,Secondary Sales
+U01,Kylie Cosmetics,Nykaa Luxe Ambiance Mall Gurugram,Gurugram,Haryana,North,Offline,Nykaa-Offline,Nykaa-Offline,Mohit,Mohit,Mohit,Mohit,,Active,Secondary Sales
+L50,Kylie Cosmetics,Nykaa Luxe Infiniti Mall Andheri Mumbai,Mumbai,Maharashtra,West,Offline,Nykaa-Offline,Nykaa-Offline,Rakesh Salian,Rakesh Salian,Rakesh Salian,Rakesh Salian,,Active,Secondary Sales
+O33,Anastasia Beverly hills,Nykaa On Trend Sarath City Hyderabad,Hyderabad,Telangana,South,Offline,Nykaa-Offline,Nykaa-Offline,Vinay,Vinay,Vinay,Vinay,,Active,Secondary Sales
+L56,Kylie Cosmetics,Nykaa Luxe Churchgate Mumbai,Mumbai,Maharashtra,West,Offline,Nykaa-Offline,Nykaa-Offline,Rakesh Salian,Rakesh Salian,Rakesh Salian,Rakesh Salian,,Active,Secondary Sales
+L63,Kylie Cosmetics,Nykaa Luxe Pacific NSP,Delhi,Delhi,North,Offline,Nykaa-Offline,Nykaa-Offline,Mohit,Mohit,Mohit,Mohit,,Active,Secondary Sales
+Nykaa-Online,Kylie Cosmetics,Nykaa-Online,Online,Online,Online,Online,Nykaa-Online,Nykaa-Online,Tanuj,Tanuj,Tanuj,Tanuj,,Active,Secondary Sales
+3216,Anastasia Beverly hills,LS-Phoenix Palladium-Mumbai,Mumbai,Maharashtra,West,Offline,Lifestyle,Lifestyle,Rakesh Salian,Rakesh Salian,Rakesh Salian,Rakesh Salian,,Inactive,Secondary Sales
+T5FT,Kylie Cosmetics,TIRA VR Mall Chennai,Chennai,Tamil Nadu,South,Offline,Tira-Offline,Tira-Offline,Raja Shekhar,Raja Shekhar,Raja Shekhar,Raja Shekhar,,Active,Secondary Sales
+Boddess-Online,Kylie Cosmetics,Boddess-online,Online,Online,Online,Online,Boddess-Online,Boddess-Online,Tanuj,Tanuj,Tanuj,Tanuj,,Active,Secondary Sales
+L29,Kylie Cosmetics,Nykaa Luxe Goa High Street,Goa,Goa,West,Offline,Nykaa-Offline,Nykaa-Offline,Rakesh Salian,Rakesh Salian,Rakesh Salian,Rakesh Salian,,Active,Secondary Sales
+L55,Kylie Cosmetics,Nykaa Luxe Jubliee Hills Hyderabad,Hyderabad,Telangana,South,Offline,Nykaa-Offline,Nykaa-Offline,Vinay,Vinay,Vinay,Vinay,,Active,Secondary Sales
+U16,Kylie Cosmetics,Nykaa Luxe DLF Cyber Hub Gurgaon HS,Gurugram,Haryana,North,Offline,Nykaa-Offline,Nykaa-Offline,Mohit,Mohit,Mohit,Mohit,,Active,Secondary Sales
+L80,Kylie Cosmetics,Nykaa Luxe City Center Siliguri,Siliguri,West Bengal,East,Offline,Nykaa-Offline,Nykaa-Offline,Gaurav,Gaurav,Gaurav,Gaurav,,Active,Secondary Sales
+O25,Kylie Cosmetics,Nykaa On Trend VR Mall Chennai,Chennai,Tamil Nadu,South,Offline,Nykaa-Offline,Nykaa-Offline,Raja Shekhar,Raja Shekhar,Raja Shekhar,Raja Shekhar,,Active,Secondary Sales
+L95,Kylie Cosmetics,Nykaa Luxe Park Street Kolkata,Kolkata,West Bengal,East,Offline,Nykaa-Offline,Nykaa-Offline,Gaurav,Gaurav,Gaurav,Gaurav,,Active,Secondary Sales
+L91,Kylie Cosmetics,Nykaa Luxe Phoenix Mall of Millennium Pune,Pune,Maharashtra,West,Offline,Nykaa-Offline,Nykaa-Offline,Rakesh Salian,Rakesh Salian,Rakesh Salian,Rakesh Salian,,Active,Secondary Sales
+L63,Anastasia Beverly hills,Nykaa Luxe Pacific NSP,Delhi,Delhi,North,Offline,Nykaa-Offline,Nykaa-Offline,Mohit,Mohit,Mohit,Mohit,,Active,Secondary Sales
+NMAMRLX,Anastasia Beverly hills,NMIAL-DEP-AMARALUXE,Mumbai,Maharashtra,West,Offline,Adani ,Adani ,Rakesh Salian,Rakesh Salian,Rakesh Salian,Rakesh Salian,,Active,Secondary Sales
+1289,Anastasia Beverly hills,Phoenix Market City Velachery,Velachery,Tamil Nadu,South,Offline,Lifestyle,Lifestyle,Raja Shekhar,Raja Shekhar,Raja Shekhar,Raja Shekhar,,Inactive,Secondary Sales
+7702,Kylie Cosmetics,Boddess-Itanagar,Itanagar,Arunachal Pradesh,East,Offline,Boddess-Offline,Boddess-Offline,Gaurav,Gaurav,Gaurav,Gaurav,,Inactive,Secondary Sales
+7704,Kylie Cosmetics,Boddess-Gangtok,Gangtok,Sikkim,East,Offline,Boddess-Offline,Boddess-Offline,Gaurav,Gaurav,Gaurav,Gaurav,,Inactive,Secondary Sales
+U44,Anastasia Beverly hills,Nykaa Luxe Punjabi Bagh Delhi HS,Delhi,Delhi,North,Offline,Nykaa-Offline,Nykaa-Offline,Mohit,Mohit,Mohit,Mohit,,Active,Secondary Sales
+U25,Anastasia Beverly hills,Nykaa Luxe One Mall Srinagar,Srinagar,Jammu and Kashmir,North,Offline,Nykaa-Offline,Nykaa-Offline,Mohit,Mohit,Mohit,Mohit,,Active,Secondary Sales
+U22,Anastasia Beverly hills,Nykaa Luxe City Center Mall Bareilly,Bareily,Uttar Pradesh,North,Offline,Nykaa-Offline,Nykaa-Offline,Mohit,Mohit,Mohit,Mohit,,Active,Secondary Sales
+TAR7,Anastasia Beverly hills,Tira-Ambience Gurgaon,Gurugram,Haryana,North,Offline,Tira-Offline,Tira-Offline,Mohit,Mohit,Mohit,Mohit,,Active,Secondary Sales
+T5QT,Kylie Cosmetics,TIRA 1 MG Mall Bengaluru,Bengaluru,Karnataka,South,Offline,Tira-Offline,Tira-Offline,Raja Shekhar,Raja Shekhar,Raja Shekhar,Raja Shekhar,,Active,Secondary Sales
+TBLL,Anastasia Beverly hills,TIRA PMC BLR,Bengaluru,Karnataka,South,Offline,Tira-Offline,Tira-Offline,Raja Shekhar,Raja Shekhar,Raja Shekhar,Raja Shekhar,,Active,Secondary Sales
+TE3A,Anastasia Beverly hills,TIRA Gateway Mall,Lucknow ,Uttar Pradesh,North,Offline,Tira-Offline,Tira-Offline,Mohit,Mohit,Mohit,Mohit,,Active,Secondary Sales
+TBLL,Kylie Cosmetics,TIRA PMC BLR,Bengaluru,Karnataka,South,Offline,Tira-Offline,Tira-Offline,Raja Shekhar,Raja Shekhar,Raja Shekhar,Raja Shekhar,,Active,Secondary Sales
+U45,Anastasia Beverly hills,Nykaa Luxe Infiniti Mall Malad,Mumbai,Maharashtra,West,Offline,Nykaa-Offline,Nykaa-Offline,Rakesh Salian,Rakesh Salian,Rakesh Salian,Rakesh Salian,,Active,Secondary Sales
+U42,Anastasia Beverly hills,Nykaa Luxe Felix Plaza Mall Gurgaon,Gurugram,Haryana,North,Offline,Nykaa-Offline,Nykaa-Offline,Mohit,Mohit,Mohit,Mohit,,Active,Secondary Sales
+U28,Anastasia Beverly hills,Nykaa Luxe Inorbit Mall Visakhaptanam,Visakhaptanam,Andhra Pradesh,South,Offline,Nykaa-Offline,Nykaa-Offline,Vinay,Vinay,Vinay,Vinay,,Active,Secondary Sales
+U40,Kylie Cosmetics,Nykaa Luxe PMC Mall Bangalore,Bengaluru,Karnataka,South,Offline,Nykaa-Offline,Nykaa-Offline,Raja Shekhar,Raja Shekhar,Raja Shekhar,Raja Shekhar,,Active,Secondary Sales
+U40,Anastasia Beverly hills,Nykaa Luxe PMC Mall Bangalore,Bengaluru,Karnataka,South,Offline,Nykaa-Offline,Nykaa-Offline,Raja Shekhar,Raja Shekhar,Raja Shekhar,Raja Shekhar,,Active,Secondary Sales
+TBIN,Anastasia Beverly hills,Tira Orion Bengaluru,Bengaluru,Karnataka,South,Offline,Tira-Offline,Tira-Offline,Raja Shekhar,Raja Shekhar,Raja Shekhar,Raja Shekhar,,Active,Secondary Sales
+L51,Anastasia Beverly hills,Nykaa Luxe Ambience Vasant Kunj Delhi,Delhi,Delhi,North,Offline,Nykaa-Offline,Nykaa-Offline,Mohit,Mohit,Mohit,Mohit,,Active,Secondary Sales
+U35,Anastasia Beverly hills,Nykaa Luxe Worldmark Mall Aerocity Delhi,Delhi,Delhi,North,Offline,Nykaa-Offline,Nykaa-Offline,Mohit,Mohit,Mohit,Mohit,,Active,Secondary Sales
+L51,Kylie Cosmetics,Nykaa Luxe Ambience Vasant Kunj Delhi,Delhi,Delhi,North,Offline,Nykaa-Offline,Nykaa-Offline,Mohit,Mohit,Mohit,Mohit,,Active,Secondary Sales
+TCGU,Anastasia Beverly hills,Tira GVK One Mall,Hyderabad,Telangana,South,Offline,Tira-Offline,Tira-Offline,Vinay,Vinay,Vinay,Vinay,,Active,Secondary Sales
+420150,Anastasia Beverly hills,Staff Sale,Gurugram,Haryana,North,Offline,Staff Sale,Staff Sale,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+420256,Anastasia Beverly hills,Barter Kit,Gurugram,Haryana,North,Offline,Barter kit,Barter kit,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+420285,Anastasia Beverly hills,Nykaa-Mumbai,Mumbai,Maharashtra,West,Online,Nykaa-Online,Nykaa-Online,Tanuj,Tanuj,Tanuj,Tanuj,,Active,Primary Sales
+420286,Anastasia Beverly hills,Nykaa-Delhi,Delhi,Delhi,North,Online,Nykaa-Online,Nykaa-Online,Tanuj,Tanuj,Tanuj,Tanuj,,Active,Primary Sales
+420292,Anastasia Beverly hills,BVM International,Delhi,Delhi,North,Offline,BVM International,BVM International,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+420313,Anastasia Beverly hills,Myntra-Gurgaon,Gurugram,Haryana,North,Online,Myntra,Myntra,Tanuj,Tanuj,Tanuj,Tanuj,,Active,Primary Sales
+420314,Anastasia Beverly hills,Myntra-Mumbai,Mumbai,Maharashtra,West,Online,Myntra,Myntra,Tanuj,Tanuj,Tanuj,Tanuj,,Active,Primary Sales
+420315,Anastasia Beverly hills,Myntra-West Bengal,Kolkata,West Bengal,East,Online,Myntra,Myntra,Tanuj,Tanuj,Tanuj,Tanuj,,Active,Primary Sales
+420316,Anastasia Beverly hills,Myntra -Bangalore,Bengaluru,Karnataka,South,Online,Myntra,Myntra,Tanuj,Tanuj,Tanuj,Tanuj,,Active,Primary Sales
+420334,Anastasia Beverly hills,Myntra-Binola,Gurugram,Haryana,North,Online,Myntra,Myntra,Tanuj,Tanuj,Tanuj,Tanuj,,Active,Primary Sales
+420379,Anastasia Beverly hills,SSBEAUTY PMC KURLA MAL,Kurla,Maharashtra,West,Offline,SS-Beauty,SS-Beauty,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+420391,Anastasia Beverly hills,SSBEAUTY-GVK ONE MALL HYD,Hyderabad,Telangana,South,Offline,SS-Beauty,SS-Beauty,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+420393,Anastasia Beverly hills,SSBEAUTY INFINITY MALL,Mumbai,Maharashtra,West,Offline,SS-Beauty,SS-Beauty,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+420429,Anastasia Beverly hills,SSBEAUTY CITY CENTRE,Kolkata,West Bengal,East,Offline,SS-Beauty,SS-Beauty,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+420553,Anastasia Beverly hills,Kolkata-New,Kolkata,West Bengal,East,Online,Nykaa-Online,Nykaa-Online,Tanuj,Tanuj,Tanuj,Tanuj,,Active,Primary Sales
+420664,Anastasia Beverly hills,Tata cliq-Mumbai,Mumbai,Maharashtra,West,Offline,Tata Cliq,Tata Cliq,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+420685,Anastasia Beverly hills,SSBEAUTY PMC KURLA MAL,Kurla,Maharashtra,West,Offline,SS-Beauty,SS-Beauty,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+420686,Anastasia Beverly hills,SSBEAUTY-GVK ONE MALL HYD,Hyderabad,Telangana,South,Offline,SS-Beauty,SS-Beauty,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+420687,Anastasia Beverly hills,SSBEAUTY INFINITY MALL,Mumbai,Maharashtra,West,Offline,SS-Beauty,SS-Beauty,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+420688,Anastasia Beverly hills,SSBEAUTY CITY CENTRE,Kolkata,West Bengal,East,Offline,SS-Beauty,SS-Beauty,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+420692,Anastasia Beverly hills,SS BEAUTY T2 BIAL,Bengaluru,Karnataka,South,Offline,SS-Beauty,SS-Beauty,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+420709,Anastasia Beverly hills,SS BEAUTY T2 BIAL,Bengaluru,Karnataka,South,Offline,SS-Beauty,SS-Beauty,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+420712,Anastasia Beverly hills,Nykaa-Mumbai,Mumbai,Maharashtra,West,Online,Nykaa-online,Nykaa-online,Tanuj,Tanuj,Tanuj,Tanuj,,Active,Primary Sales
+420724,Anastasia Beverly hills,DED3,Delhi,Delhi,North,Online,RK World infocom Pvt Ltd,RK World infocom Pvt Ltd,Tanuj,Tanuj,Tanuj,Tanuj,,Active,Primary Sales
+420731,Anastasia Beverly hills,Tata Cliq-Mumbai,Mumbai,Maharashtra,West,Offline,Tata Cliq,Tata Cliq,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+420827,Anastasia Beverly hills,FSN Mumbai,Mumbai,Maharashtra,West,Offline,Nykaa-offline,Nykaa-offline,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+420829,Anastasia Beverly hills,FSN Bangalore,Bengaluru,Karnataka,South,Offline,Nykaa-offline,Nykaa-offline,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+420831,Anastasia Beverly hills,FSN Delhi,Delhi,Delhi,North,Offline,Nykaa-offline,Nykaa-offline,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+420833,Anastasia Beverly hills,FSN Kolkata-New,Kolkata,West Bengal,East,Offline,Nykaa-offline,Nykaa-offline,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+420862,Anastasia Beverly hills,Mumbai,Mumbai,Maharashtra,West,Offline,Tata Cliq,Tata Cliq,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+420889,Anastasia Beverly hills,Tira-Bhiwandi-2,Mumbai,Maharashtra,#N/A,Online,Tira-Online,Tira-Online,Tanuj,Tanuj,Tanuj,Tanuj,,Active,Primary Sales
+420889-1,Anastasia Beverly hills,Tira-Bhiwandi-2,Mumbai,Maharashtra,#N/A,Offline,Tira-Offline,Tira-Offline,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+420965,Anastasia Beverly hills,SS BEAUTY - QUEST MALL,Kolkata,West Bengal,East,Offline,SS-Beauty,SS-Beauty,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+420966,Anastasia Beverly hills,SS BEAUTY - QUEST MALL,Kolkata,West Bengal,East,Offline,SS-Beauty,SS-Beauty,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421018,Anastasia Beverly hills,Indra Cosmetics,Ludhiana,Punjab,North,Offline,Indra Cosmetics,Corporate Order,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421051,Anastasia Beverly hills,ELANTE,Chandigarh,Punjab,North,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421052,Anastasia Beverly hills,ALPHA ONE,Ahmedabad,Gujurat,West,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421053,Anastasia Beverly hills,AMBI,Gurugram,Haryana,North,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421055,Anastasia Beverly hills,WH INCREF,Online,Online,Online,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421056,Anastasia Beverly hills,FORUM BLR,Bengaluru,Karnataka,South,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421057,Anastasia Beverly hills,ORION BLR,Bengaluru,Karnataka,South,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421058,Anastasia Beverly hills,PMC BLR,Bengaluru,Karnataka,South,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421060,Anastasia Beverly hills,TI INDORE,Indore,Madhya Pradesh,West,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421061,Anastasia Beverly hills,DB MALL,Bhopal,Madhya Pradesh,West,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421062,Anastasia Beverly hills,PMC PUNE,Pune,Maharashtra,West,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421063,Anastasia Beverly hills,PALLADIUM,Mumbai,Maharashtra,West,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421064,Anastasia Beverly hills,INFINITI,Mumbai,Maharashtra,West,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421065,Anastasia Beverly hills,PMC KURLA,Kurla,Maharashtra,West,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421066,Anastasia Beverly hills,SEAWOODS,Mumbai,Maharashtra,West,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421067,Anastasia Beverly hills,OBEROI,Mumbai,Maharashtra,West,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421069,Anastasia Beverly hills,PAVILLION,Pune,Maharashtra,West,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421071,Anastasia Beverly hills,R CITY,Mumbai,Maharashtra,West,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421072,Anastasia Beverly hills,SCW,Delhi,Delhi,North,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421073,Anastasia Beverly hills,DLF,Delhi,Delhi,North,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421074,Anastasia Beverly hills,VEGAS DWARKA,Delhi,Delhi,North,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421075,Anastasia Beverly hills,WTP JAIPUR,Jaipur,Rajasthan,North,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421076,Anastasia Beverly hills,EA CHENNAI,Chennai,Tamil Nadu,South,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421077,Anastasia Beverly hills,PMC CHENNAI,Chennai,Tamil Nadu,South,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421078,Anastasia Beverly hills,FORUM SUJANA,Hyderabad,Telangana,South,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421079,Anastasia Beverly hills,MOIN,Noida,Uttar Pradesh,North,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421082,Anastasia Beverly hills,SOUTH CITY,Kolkata,West Bengal,East,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421083,Anastasia Beverly hills,ELANTE,Chandigarh,Punjab,North,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421084,Anastasia Beverly hills,ALPHA ONE,Ahmedabad,Gujurat,West,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421085,Anastasia Beverly hills,AMBI,Gurugram,Haryana,North,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421086,Anastasia Beverly hills,FORUM BLR,Bengaluru,Karnataka,South,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421087,Anastasia Beverly hills,ORION BLR,Bengaluru,Karnataka,South,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421088,Anastasia Beverly hills,PMC BLR,Bengaluru,Karnataka,South,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421089,Anastasia Beverly hills,TI INDORE,Indore,Madhya Pradesh,West,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421090,Anastasia Beverly hills,DB MALL,Bhopal,Madhya Pradesh,West,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421091,Anastasia Beverly hills,PMC PUNE,Pune,Maharashtra,West,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421092,Anastasia Beverly hills,PALLADIUM,Mumbai,Maharashtra,West,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421093,Anastasia Beverly hills,INFINITI,Mumbai,Maharashtra,West,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421094,Anastasia Beverly hills,PMC KURLA,Kurla,Maharashtra,West,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421095,Anastasia Beverly hills,SEAWOODS,Mumbai,Maharashtra,West,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421096,Anastasia Beverly hills,OBEROI,Mumbai,Maharashtra,West,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421097,Anastasia Beverly hills,PAVILLION,Pune,Maharashtra,West,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421098,Anastasia Beverly hills,R CITY,Mumbai,Maharashtra,West,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421099,Anastasia Beverly hills,SCW,Delhi,Delhi,North,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421100,Anastasia Beverly hills,DLF,Delhi,Delhi,North,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421101,Anastasia Beverly hills,VEGAS DWARKA,Delhi,Delhi,North,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421102,Anastasia Beverly hills,WTP JAIPUR,Jaipur,Rajasthan,North,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421103,Anastasia Beverly hills,EA CHENNAI,Chennai,Tamil Nadu,South,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421104,Anastasia Beverly hills,PMC CHENNAI,Chennai,Tamil Nadu,South,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421105,Anastasia Beverly hills,FORUM SUJANA,Hyderabad,Telangana,South,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421106,Anastasia Beverly hills,MOIN,Noida,Uttar Pradesh,North,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421108,Anastasia Beverly hills,SOUTH CITY,Kolkata,West Bengal,East,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421164,Anastasia Beverly hills,GGN_WH,Gurugram,Haryana,North,Offline,Aakash Medicines Pvt Ltd,Aakash Medicines Pvt Ltd,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421188,Anastasia Beverly hills,SSL Lulu Mall Trivandrum,Trivandrum,Kerala,South,Offline,SS-Beauty,SS-Beauty,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421194,Anastasia Beverly hills,SSL-Pune-Wakad,Pune,Maharashtra,West,Offline,SS-Beauty,SS-Beauty,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421207,Anastasia Beverly hills,SSL-ROURKELA-PLUTONE MALL,Rourkel,Odisha,East,Offline,SS-Beauty,SS-Beauty,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421237,Anastasia Beverly hills,SSL- DIMAPUR,Kolkata,West Bengal,East,Offline,SS-Beauty,SS-Beauty,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421269,Anastasia Beverly hills,Kathiawar Stores,Hyderabad,Telangana,South,Offline,Kathiawar Stores,Corporate Order,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421368,Anastasia Beverly hills,MOM PUNE,Pune,Maharashtra,West,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421370,Anastasia Beverly hills,MOM PUNE,Pune,Maharashtra,West,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421481,Anastasia Beverly hills,Garg Traders,Ludhiana,Punjab,North,Offline,Garg Traders,Corporate Order,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421503,Anastasia Beverly hills,SSL-SARATH CITY HYDERABAD,Hyderabad,Telangana,South,Offline,SS-Beauty,SS-Beauty,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421510,Anastasia Beverly hills,MOA BLR,Bengaluru,Karnataka,South,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421511,Anastasia Beverly hills,MOA BLR,Bengaluru,Karnataka,South,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421528,Anastasia Beverly hills,Mani Ram Balwant Rai & Sons,Ludhiana,Punjab,North,Offline,Mani Ram Balwant Rai & Sons,Corporate Order,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421555,Anastasia Beverly hills,MBD LUDHIANA,Ludhiana,Punjab,North,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421556,Anastasia Beverly hills,MBD LUDHIANA,Ludhiana,Punjab,North,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421651,Anastasia Beverly hills,UM infotech pvt ltd,Delhi,Delhi,North,Offline,UM infotech pvt ltd,UM infotech pvt ltd,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421696,Anastasia Beverly hills,Kalkaji,Delhi,Delhi,North,Offline,H & B Stores Ltd,H & B Stores Ltd,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421767,Anastasia Beverly hills,T91L-Tira Infinity Malad,Mumbai,Maharashtra,West,Offline,Tira-Offline,Tira-Offline,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421770,Anastasia Beverly hills,TG7G-Tira Viviana Thane,Thane,Maharashtra,West,Offline,Tira-Offline,Tira-Offline,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421771,Anastasia Beverly hills,TIRA-Sample,Pune,Maharashtra,West,Offline,Tira-Offline,Tira-Offline,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421772,Anastasia Beverly hills,T11J-Tira JWD ,Mumbai,Maharashtra,West,Offline,Tira-Offline,Tira-Offline,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421773,Anastasia Beverly hills,TH4X-Tira Infinity Andheri,Mumbai,Maharashtra,West,Offline,Tira-Offline,Tira-Offline,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421774,Anastasia Beverly hills,T0UU-TIRA Seawoods Grand Central,Mumbai,Maharashtra,West,Offline,Tira-Offline,Tira-Offline,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421775,Anastasia Beverly hills,T2EG-Tira Kopa Mall,Pune,Maharashtra,West,Offline,Tira-Offline,Tira-Offline,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421776,Anastasia Beverly hills,T2CP-TIRA DLF Avenue Mall Saket,Delhi,Delhi,North,Offline,Tira-Offline,Tira-Offline,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421780,Anastasia Beverly hills,T5QU-Tira Ambi Vasant Kunj,Delhi,Delhi,North,Offline,Tira-Offline,Tira-Offline,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421795,Anastasia Beverly hills,INORBIT MALL,Hyderabad,Telangana,South,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421797,Anastasia Beverly hills,INORBIT MALL,Hyderabad,Telangana,South,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421819,Anastasia Beverly hills,Nykaa-Bangalore,Bengaluru,Karnataka,South,Online,Nykaa-online,Nykaa-online,Tanuj,Tanuj,Tanuj,Tanuj,,Active,Primary Sales
+421820,Anastasia Beverly hills,Prettycosmo & Beauty Private Ltd,Delhi,Delhi,North,Offline,Prettycosmo & Beauty Private Ltd,Corporate Order,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421860,Anastasia Beverly hills,SSL-LUCKNOW,Lucknow ,Uttar Pradesh,North,Offline,SS-Beauty,SS-Beauty,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421861,Anastasia Beverly hills,SSL-Gaur Mall,Noida,Uttar Pradesh,North,Offline,SS-Beauty,SS-Beauty,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421862,Anastasia Beverly hills,SSL-Guwahati City,Guwahati,Assam,East,Offline,SS-Beauty,SS-Beauty,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421863,Anastasia Beverly hills,SSL-MGF Saket,Delhi,Delhi,North,Offline,SS-Beauty,SS-Beauty,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421864,Anastasia Beverly hills,SSL-Vasant Kunj,Delhi,Delhi,North,Offline,SS-Beauty,SS-Beauty,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421865,Anastasia Beverly hills,SSL-Select City,Delhi,Delhi,North,Offline,SS-Beauty,SS-Beauty,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421866,Anastasia Beverly hills,SSL-ALPHA ONE,Ahmedabad,Gujurat,West,Offline,SS-Beauty,SS-Beauty,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421867,Anastasia Beverly hills,SSL-BANNERGHATA,Bengaluru,Karnataka,South,Offline,SS-Beauty,SS-Beauty,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421868,Anastasia Beverly hills,SSL-ORION BNG,Bengaluru,Karnataka,South,Offline,SS-Beauty,SS-Beauty,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421869,Anastasia Beverly hills,SSL-BHOPAL,Bhopal,Madhya Pradesh,West,Offline,SS-Beauty,SS-Beauty,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421870,Anastasia Beverly hills,SSL- Inorbit Malad,Mumbai,Maharashtra,West,Offline,SS-Beauty,SS-Beauty,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421871,Anastasia Beverly hills,SSL-THANE,Thane,Maharashtra,West,Offline,SS-Beauty,SS-Beauty,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421872,Anastasia Beverly hills,SSL-R CITY GHATKOPAR,Mumbai,Maharashtra,West,Offline,SS-Beauty,SS-Beauty,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421873,Anastasia Beverly hills,SSL-WTP JAIPUR,Jaipur,Rajasthan,North,Offline,SS-Beauty,SS-Beauty,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421874,Anastasia Beverly hills,SSL-PMC Chennai,Chennai,Tamil Nadu,South,Offline,SS-Beauty,SS-Beauty,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421875,Anastasia Beverly hills,GVK HYDERABAD,Hyderabad,Telangana,South,Offline,SS-Beauty,SS-Beauty,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421876,Anastasia Beverly hills,SSL- GMR HYD,Hyderabad,Telangana,South,Offline,SS-Beauty,SS-Beauty,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421877,Anastasia Beverly hills,SSL-CYBERABAD,Hyderabad,Telangana,South,Offline,SS-Beauty,SS-Beauty,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421878,Anastasia Beverly hills,SSL-SARATH CITY ,Hyderabad,Telangana,South,Offline,SS-Beauty,SS-Beauty,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421879,Anastasia Beverly hills,SSL-Forum Mall,Hyderabad,Telangana,South,Offline,SS-Beauty,SS-Beauty,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421880,Anastasia Beverly hills,SSL-SALT LAKE ,Kolkata,West Bengal,East,Offline,SS-Beauty,SS-Beauty,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421881,Anastasia Beverly hills,SSL-SOUTH CITY ,Kolkata,West Bengal,East,Offline,SS-Beauty,SS-Beauty,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421882,Anastasia Beverly hills,SSL-SILIGURI,Siliguri,West Bengal,East,Offline,SS-Beauty,SS-Beauty,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421889,Anastasia Beverly hills,Nykaa-Delhi-1,Delhi,Delhi,North,Online,Nykaa-Online,Nykaa-Online,Tanuj,Tanuj,Tanuj,Tanuj,,Active,Primary Sales
+421928,Anastasia Beverly hills,SHREE BEAUTY CENTRE,Nagpur,Maharashtra,West,Offline,SHREE BEAUTY CENTRE,Corporate Order,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421929,Anastasia Beverly hills,Nykaa-Bangalore 1,Bengaluru,Karnataka,South,Offline,Nykaa-Offline,Nykaa-Offline,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421935,Anastasia Beverly hills,J.Anubhav Sarita Private Limited,Delhi,Delhi,North,Offline,J.Anubhav Sarita Private Limited,Corporate Order,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421944,Anastasia Beverly hills,Zepto-Gurugram,Gurugram,Haryana,North,Online,Zepto,Zepto,Tanuj,Tanuj,Tanuj,Tanuj,,Active,Primary Sales
+421945,Anastasia Beverly hills,Zepto-Bhiwandi,Mumbai,Maharashtra,#N/A,Online,Zepto,Zepto,Tanuj,Tanuj,Tanuj,Tanuj,,Active,Primary Sales
+421946,Anastasia Beverly hills,Zepto-Karnataka,Bengaluru,Karnataka,South,Online,Zepto,Zepto,Tanuj,Tanuj,Tanuj,Tanuj,,Active,Primary Sales
+421971,Anastasia Beverly hills,Nykaa-Delhi,Delhi,Delhi,North,Online,Nykaa-online,Nykaa-online,Tanuj,Tanuj,Tanuj,Tanuj,,Active,Primary Sales
+421972,Anastasia Beverly hills,BWN-WH,Bengaluru,Karnataka,South,Online,Primespot,Primespot,Tanuj,Tanuj,Tanuj,Tanuj,,Active,Primary Sales
+421973,Anastasia Beverly hills,BNG-WH,Bengaluru,Karnataka,South,Online,Primespot,Primespot,Tanuj,Tanuj,Tanuj,Tanuj,,Active,Primary Sales
+421974,Anastasia Beverly hills,PS-KOL-WH,Kolkata,West Bengal,East,Online,Primespot,Primespot,Tanuj,Tanuj,Tanuj,Tanuj,,Active,Primary Sales
+421975,Anastasia Beverly hills,GGN-WH,Gurugram,Haryana,North,Online,Primespot,Primespot,Tanuj,Tanuj,Tanuj,Tanuj,,Active,Primary Sales
+421982,Anastasia Beverly hills,Dolkan Impex Pvt Ltd,Delhi,Delhi,North,Offline,Dolkan Impex Pvt Ltd,Corporate Order,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421987,Anastasia Beverly hills,28 SOUTH VENTURES LLP,Bengaluru,Karnataka,South,Offline,28 SOUTH VENTURES LLP,Corporate Order,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421991,Anastasia Beverly hills,Pritee Devang Badiani,Mumbai,Maharashtra,West,Offline,Pritee Devang Badiani,Corporate Order,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+422012,Anastasia Beverly hills,KRITIKA GILL,Delhi,Delhi,North,Offline,KRITIKA GILL,Corporate Order,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+422013,Anastasia Beverly hills,Hreenkar Enterprises,Mumbai,Maharashtra,West,Offline,Hreenkar Enterprises,Corporate Order,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+422071,Anastasia Beverly hills,Staff Sale,Gurugram,Haryana,North,Offline,Staff Sale,Staff Sale,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+422072,Anastasia Beverly hills,Staff Sale,Gurugram,Haryana,North,Offline,Staff Sale,Staff Sale,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+422141,Anastasia Beverly hills,Metropolis Mall-Gurugram,Gurugram,Haryana,North,Offline,Lifestyle,Lifestyle,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+422142,Anastasia Beverly hills,Inorbit - Cyberabad,Cyberabad,Telangana,South,Offline,Lifestyle,Lifestyle,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+422143,Anastasia Beverly hills,Pacific - Khayala,Delhi,Delhi,North,Offline,Lifestyle,Lifestyle,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+422144,Anastasia Beverly hills,Viva City-Thane,Thane,Maharashtra,West,Offline,Lifestyle,Lifestyle,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+422145,Anastasia Beverly hills,V R Mall-Chennai,Chennai,Tamil Nadu,South,Offline,Lifestyle,Lifestyle,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+422163,Anastasia Beverly hills,Metropolis Mall-Gurugram,Gurugram,Haryana,North,Offline,Lifestyle,Lifestyle,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+422164,Anastasia Beverly hills,Inorbit - Cyberabad,Cyberabad,Telangana,South,Offline,Lifestyle,Lifestyle,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+422165,Anastasia Beverly hills,Pacific - Khayala,Delhi,Delhi,North,Offline,Lifestyle,Lifestyle,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+422166,Anastasia Beverly hills,Viva City-Thane,Thane,Maharashtra,West,Offline,Lifestyle,Lifestyle,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+422167,Anastasia Beverly hills,V R Mall-Chennai,Chennai,Tamil Nadu,South,Offline,Lifestyle,Lifestyle,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+422281,Anastasia Beverly hills,Pheel Retail,Delhi,Delhi,North,Offline,Pheel Retail,Corporate Order,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+422284,Anastasia Beverly hills,Express Avenue - Chennai,Chennai,Tamil Nadu,South,Offline,Lifestyle,Lifestyle,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+422285,Anastasia Beverly hills,Express Avenue - Chennai,Chennai,Tamil Nadu,South,Offline,Lifestyle,Lifestyle,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+422337,Anastasia Beverly hills,BWN-WH New,Thane,Maharashtra,West,Online,Primespot,Primespot,Tanuj,Tanuj,Tanuj,Tanuj,,Active,Primary Sales
+422344,Anastasia Beverly hills,ZEPHYRUS FASHION STORE-BANGALORE,Bengaluru,Karnataka,South,Offline,Adani ,Adani ,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+422441,Anastasia Beverly hills,TIRA- MOI ,Noida,Uttar Pradesh,North,Offline,TIRA-Offline,TIRA-Offline,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+422443,Anastasia Beverly hills,Tester_MOI,Noida,Uttar Pradesh,North,Offline,Tira-Offline,Tira-Offline,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+422446,Anastasia Beverly hills,Phoenix Market City-LS-BLR,Bengaluru,Karnataka,South,Offline,Lifestyle,Lifestyle,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+422454,Anastasia Beverly hills,Phoenix Market City-LS-BLR,Bengaluru,Karnataka,South,Offline,Lifestyle,Lifestyle,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+422465,Anastasia Beverly hills,Kult-PATAUDI,Gurugram,Haryana,North,Offline,KULT,KULT,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+422481,Anastasia Beverly hills,PMC Kurla,Kurla,Maharashtra,West,Offline,Lifestyle,Lifestyle,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+422482,Anastasia Beverly hills,PMC Kurla,Kurla,Maharashtra,West,Offline,Lifestyle,Lifestyle,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+422483,Anastasia Beverly hills,PMC Kurla,Kurla,Maharashtra,West,Offline,Lifestyle,Lifestyle,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+422529,Anastasia Beverly hills,Nexusmall Amritsar,Amritsar,Punjab,North,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+422531,Anastasia Beverly hills,Nexusmall Amritsar,Amritsar,Punjab,North,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+422672,Anastasia Beverly hills,MUM-T2-DEP-AMARA LUXE,Mumbai,Maharashtra,West,Offline,Adani ,Adani ,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+422673,Anastasia Beverly hills,MUM-T2-DEP-AMARA LUXE,Mumbai,Maharashtra,West,Offline,Adani,Adani,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+422696,Anastasia Beverly hills,JAI-DEP-AMARA LUXE,Jaipur,Rajasthan,North,Offline,Adani ,Adani ,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+422697,Anastasia Beverly hills,JAI-DEP-AMARA LUXE,Jaipur,Rajasthan,North,Offline,Adani,Adani,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+422698,Anastasia Beverly hills,LS-Phoenix Palladium-Mumbai,Mumbai,Maharashtra,West,Offline,Lifestyle,Lifestyle,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+422699,Anastasia Beverly hills,LS-Phoenix Palladium-Mumbai,Mumbai,Maharashtra,West,Offline,Lifestyle,Lifestyle,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+422709,Anastasia Beverly hills,TK7C- Nexus Mall Koramanga,Bengaluru,Karnataka,South,Offline,Tira-Offline,Tira-Offline,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+422713,Anastasia Beverly hills,Phoenix Palassio-Lucknow,Lucknow ,Uttar Pradesh,North,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+422714,Anastasia Beverly hills,Phoenix Palassio-Lucknow,Lucknow ,Uttar Pradesh,North,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+422719,Anastasia Beverly hills,T5QU-Tira Ambi Vasant Kunj,Delhi,Delhi,North,Offline,TIRA-Offline,TIRA-Offline,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+422721,Anastasia Beverly hills,T5QT-Tira 1 MG Bangaluru,Bengaluru,Karnataka,South,Offline,TIRA-Offline,TIRA-Offline,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+422724,Anastasia Beverly hills,T11J-Tira JWD ,Mumbai,Maharashtra,West,Offline,TIRA-Offline,TIRA-Offline,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+422726,Anastasia Beverly hills,T3AS-Tira PMC Kurla,Kurla,Maharashtra,West,Online,Tira-Online,Tira-Online,Tanuj,Tanuj,Tanuj,Tanuj,,Active,Primary Sales
+422727,Anastasia Beverly hills,T3AS-Tira PMC Kurla,Kurla,Maharashtra,West,Offline,Tira-Offline,Tira-Offline,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+422728,Anastasia Beverly hills,T76P-Tira JWD Plaza,Mumbai,Maharashtra,West,Offline,TIRA-Offline,TIRA-Offline,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+422730,Anastasia Beverly hills,Tester_JWD Plaza,Mumbai,Maharashtra,West,Offline,Tira-Offline,Tira-Offline,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+422731,Anastasia Beverly hills,T7PC-Tira Palladium,Mumbai,Maharashtra,West,Online,Tira-Online,Tira-Online,Tanuj,Tanuj,Tanuj,Tanuj,,Active,Primary Sales
+422733,Anastasia Beverly hills,Tester_Palladium,Mumbai,Maharashtra,West,Offline,Tira-Offline,Tira-Offline,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+422734,Anastasia Beverly hills,T8FL-Tira Sky City,Mumbai,Maharashtra,West,Online,Tira-Online,Tira-Online,Tanuj,Tanuj,Tanuj,Tanuj,,Active,Primary Sales
+422737,Anastasia Beverly hills,T91L-Tira Infinity Malad,Mumbai,Maharashtra,West,Online,Tira-Online,Tira-Online,Tanuj,Tanuj,Tanuj,Tanuj,,Active,Primary Sales
+422739,Anastasia Beverly hills,TH4X-Tira Infinity Andheri,Mumbai,Maharashtra,West,Online,Tira-Online,Tira-Online,Tanuj,Tanuj,Tanuj,Tanuj,,Active,Primary Sales
+422741,Anastasia Beverly hills,T0V1-Tira Wakad,Pune,Maharashtra,West,Online,Tira-Online,Tira-Online,Tanuj,Tanuj,Tanuj,Tanuj,,Active,Primary Sales
+422743,Anastasia Beverly hills,T2EG-Tira Kopa Mall,Pune,Maharashtra,West,Online,Tira-Online,Tira-Online,Tanuj,Tanuj,Tanuj,Tanuj,,Active,Primary Sales
+422745,Anastasia Beverly hills,TG7G-Tira Viviana Thane,Thane,Maharashtra,West,Online,Tira-Online,Tira-Online,Tanuj,Tanuj,Tanuj,Tanuj,,Active,Primary Sales
+422747,Anastasia Beverly hills,T5FT-Tira VR Chennai,Chennai,Tamil Nadu,South,Online,Tira-Online,Tira-Online,Tanuj,Tanuj,Tanuj,Tanuj,,Active,Primary Sales
+422750,Anastasia Beverly hills,TH6E-Tira Palladium Chennai,Chennai,Tamil Nadu,South,Online,Tira-Online,Tira-Online,Tanuj,Tanuj,Tanuj,Tanuj,,Active,Primary Sales
+422752,Anastasia Beverly hills,T7PC-Tira Palladium,Mumbai,Maharashtra,West,Offline,Tira-Offline,Tira-Offline,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+422753,Anastasia Beverly hills,TG0X-Tira Sarath City,Hyderabad,Telangana,South,Online,Tira-Online,Tira-Online,Tanuj,Tanuj,Tanuj,Tanuj,,Active,Primary Sales
+422755,Anastasia Beverly hills,TG0X-Tira Sarath City,Hyderabad,Telangana,South,Offline,Tira-Offline,Tira-Offline,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+422756,Anastasia Beverly hills,T2CP-TIRA DLF Avenue Mall Saket,Delhi,Delhi,North,Online,Tira-Online,Tira-Online,Tanuj,Tanuj,Tanuj,Tanuj,,Active,Primary Sales
+422760,Anastasia Beverly hills,TAR7-Tira Ambi  Gurgaon,Gurugram,Haryana,North,Offline,Tira-Offline,Tira-Offline,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+422762,Anastasia Beverly hills,Tester_Ambi,Gurugram,Haryana,North,Offline,Tira-Offline,Tira-Offline,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+422763,Anastasia Beverly hills,T0UU-TIRA Seawoods Grand Central,Mumbai,Maharashtra,West,Online,Tira-Online,Tira-Online,Tanuj,Tanuj,Tanuj,Tanuj,,Active,Primary Sales
+422801,Anastasia Beverly hills,T0UU-TIRA Seawoods Grand Central,Mumbai,Maharashtra,West,Online,Tira-Online,Tira-Online,Tanuj,Tanuj,Tanuj,Tanuj,,Active,Primary Sales
+422803,Anastasia Beverly hills,S3ZE-Forum Hyderabad,Hyderabad,Telangana,South,Offline,TIRA-Offline,TIRA-Offline,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+422805,Anastasia Beverly hills,Tester_Forum HYD,Hyderabad,Telangana,South,Offline,Tira-Offline,Tira-Offline,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+422904,Anastasia Beverly hills,NMIAL-DEP-AMARALUXE,Mumbai,Maharashtra,West,Offline,Adani,Adani,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+422905,Anastasia Beverly hills,NMIAL-DEP-AMARALUXE,Mumbai,Maharashtra,West,Offline,Adani,Adani,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+422948,Anastasia Beverly hills,Adani Guwahati,Guwahati,Assam,East,Offline,Adani,Adani,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+422949,Anastasia Beverly hills,Adani Guwahati,Guwahati,Assam,East,Offline,Adani,Adani,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+422971,Anastasia Beverly hills,Gurgaon- Online,Gurugram,Haryana,North,Online,Tira-Online,Tira-Online,Tanuj,Tanuj,Tanuj,Tanuj,,Active,Primary Sales
+422972,Anastasia Beverly hills,Gurgaon- Online,Gurugram,Haryana,North,Online,Tira-Online,Tira-Online,Tanuj,Tanuj,Tanuj,Tanuj,,Active,Primary Sales
+422975,Anastasia Beverly hills,Phoenix Market City Velachery,Velachery,Tamil Nadu,South,Offline,Lifestyle,Lifestyle,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+422976,Anastasia Beverly hills,Phoenix Market City Velachery,Velachery,Tamil Nadu,South,Offline,Lifestyle,Lifestyle,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+422977,Anastasia Beverly hills,Prosperity Multitrade Private Limit,Mumbai,Maharashtra,West,Offline,Prosperity Multitrade Private Limit,Corporate Order,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+422985,Anastasia Beverly hills,Ritika Sakhuja (9650799488),Gurugram,Haryana,North,Offline,Ritika Sakhuja (9650799488),Corporate Order,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+423033,Anastasia Beverly hills,TIRA-PMC BLR,Bengaluru,Karnataka,South,Offline,Tira-Offline,Tira-Offline,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+423034,Anastasia Beverly hills,TIRA-Orion BLR,Bengaluru,Karnataka,South,Offline,Tira-Offline,Tira-Offline,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+423060,Anastasia Beverly hills,Staff Sale,Gurugram,Haryana,North,Offline,Staff Sale,Staff Sale,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+423063,Anastasia Beverly hills,Sandy And Dash,Delhi,Delhi,North,Offline,Sandy And Dash,Corporate Order,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+423123,Anastasia Beverly hills,Bhiwandi- Online,Mumbai,Maharashtra,#N/A,Online,Tira-Online,Tira-Online,Tanuj,Tanuj,Tanuj,Tanuj,,Active,Primary Sales
+46031,Anastasia Beverly hills,Barter Kit,Gurugram,Haryana,North,Offline,Barter Kit,Barter Kit,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+46037,Anastasia Beverly hills,Staff Sale,Gurugram,Haryana,North,Offline,Staff Sale,Staff Sale,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+420150,Kylie Cosmetics,Staff Sale,Gurugram,Haryana,North,Offline,Staff Sale,Staff Sale,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+420256,Kylie Cosmetics,Barter Kit,Gurugram,Haryana,North,Offline,Barter kit,Barter kit,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+420363,Kylie Cosmetics,Nykaa-Kolkata,Kolkata,West Bengal,East,Online,Nykaa-Online,Nykaa-Online,Tanuj,Tanuj,Tanuj,Tanuj,,Active,Primary Sales
+420553,Kylie Cosmetics,Nykaa-Kolkata,Kolkata,West Bengal,East,Online,Nykaa-Online,Nykaa-Online,Tanuj,Tanuj,Tanuj,Tanuj,,Active,Primary Sales
+420712,Kylie Cosmetics,Nykaa-Mumbai,Mumbai,Maharashtra,West,Online,Nykaa-Online,Nykaa-Online,Tanuj,Tanuj,Tanuj,Tanuj,,Active,Primary Sales
+420827,Kylie Cosmetics,FSN Mumbai,Mumbai,Maharashtra,West,Offline,Nykaa-Offline,Nykaa-Offline,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+420831,Kylie Cosmetics,FSN Delhi,Delhi,Delhi,North,Offline,Nykaa-Offline,Nykaa-Offline,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+420833,Kylie Cosmetics,FSN- Kolkata-New,Kolkata,West Bengal,East,Offline,Nykaa-Offline,Nykaa-Offline,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+420889,Kylie Cosmetics,Tira-Bhiwandi-2,Mumbai,Maharashtra,#N/A,Offline,TIRA-Offline,TIRA-Offline,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+420992,Kylie Cosmetics,ELANTE,Chandigarh,Punjab,North,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+420993,Kylie Cosmetics,ALPHA ONE,Ahmedabad,Gujurat,West,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+420994,Kylie Cosmetics,AMBI,Gurugram,Haryana,North,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+420995,Kylie Cosmetics,WH INCREF,Online,Online,Online,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+420996,Kylie Cosmetics,FORUM BLR,Bengaluru,Karnataka,South,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+420997,Kylie Cosmetics,ORION BLR,Bengaluru,Karnataka,South,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+420998,Kylie Cosmetics,PMC BLR,Bengaluru,Karnataka,South,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+420999,Kylie Cosmetics,TI INDORE,Indore,Madhya Pradesh,West,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421000,Kylie Cosmetics,DB MALL,Bhopal,Madhya Pradesh,West,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421001,Kylie Cosmetics,PMC PUNE,Pune,Maharashtra,West,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421002,Kylie Cosmetics,PALLADIUM,Mumbai,Maharashtra,West,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421003,Kylie Cosmetics,INFINITI,Mumbai,Maharashtra,West,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421004,Kylie Cosmetics,PMC KURLA,Kurla,Maharashtra,West,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421005,Kylie Cosmetics,SEAWOODS,Mumbai,Maharashtra,West,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421006,Kylie Cosmetics,OBEROI,Mumbai,Maharashtra,West,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421007,Kylie Cosmetics,PAVILLION,Pune,Maharashtra,West,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421008,Kylie Cosmetics,R CITY,Mumbai,Maharashtra,West,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421009,Kylie Cosmetics,SCW,Delhi,Delhi,North,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421010,Kylie Cosmetics,DLF,Delhi,Delhi,North,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421011,Kylie Cosmetics,VEGAS DWARKA,Delhi,Delhi,North,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421012,Kylie Cosmetics,WTP JAIPUR,Jaipur,Rajasthan,North,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421013,Kylie Cosmetics,EA CHENNAI,Chennai,Tamil Nadu,South,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421014,Kylie Cosmetics,PMC CHENNAI,Chennai,Tamil Nadu,South,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421015,Kylie Cosmetics,FORUM SUJANA,Hyderabad,Telangana,South,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421016,Kylie Cosmetics,MOIN,Noida,Uttar Pradesh,North,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421017,Kylie Cosmetics,SOUTH CITY,Kolkata,West Bengal,East,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421051,Kylie Cosmetics,ELANTE,Chandigarh,Punjab,North,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421052,Kylie Cosmetics,ALPHA ONE,Ahmedabad,Gujurat,West,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421053,Kylie Cosmetics,AMBI,Gurugram,Haryana,North,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421055,Kylie Cosmetics,WH INCREF,Online,Online,Online,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421056,Kylie Cosmetics,FORUM BLR,Bengaluru,Karnataka,South,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421057,Kylie Cosmetics,ORION BLR,Bengaluru,Karnataka,South,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421058,Kylie Cosmetics,PMC BLR,Bengaluru,Karnataka,South,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421060,Kylie Cosmetics,TI INDORE,Indore,Madhya Pradesh,West,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421061,Kylie Cosmetics,DB MALL,Bhopal,Madhya Pradesh,West,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421062,Kylie Cosmetics,PMC PUNE,Pune,Maharashtra,West,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421063,Kylie Cosmetics,PALLADIUM,Mumbai,Maharashtra,West,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421064,Kylie Cosmetics,INFINITI,Mumbai,Maharashtra,West,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421065,Kylie Cosmetics,PMC KURLA,Kurla,Maharashtra,West,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421066,Kylie Cosmetics,SEAWOODS,Mumbai,Maharashtra,West,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421067,Kylie Cosmetics,OBEROI,Mumbai,Maharashtra,West,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421069,Kylie Cosmetics,PAVILLION,Pune,Maharashtra,West,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421071,Kylie Cosmetics,R CITY,Mumbai,Maharashtra,West,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421072,Kylie Cosmetics,SCW,Delhi,Delhi,North,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421073,Kylie Cosmetics,DLF,Delhi,Delhi,North,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421074,Kylie Cosmetics,VEGAS DWARKA,Delhi,Delhi,North,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421075,Kylie Cosmetics,WTP JAIPUR,Jaipur,Rajasthan,North,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421076,Kylie Cosmetics,EA CHENNAI,Chennai,Tamil Nadu,South,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421077,Kylie Cosmetics,PMC CHENNAI,Chennai,Tamil Nadu,South,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421078,Kylie Cosmetics,FORUM SUJANA,Hyderabad,Telangana,South,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421079,Kylie Cosmetics,MOIN,Noida,Uttar Pradesh,North,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421082,Kylie Cosmetics,SOUTH CITY,Kolkata,West Bengal,East,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421083,Kylie Cosmetics,ELANTE,Chandigarh,Punjab,North,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421084,Kylie Cosmetics,ALPHA ONE,Ahmedabad,Gujurat,West,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421085,Kylie Cosmetics,AMBI,Gurugram,Haryana,North,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421086,Kylie Cosmetics,FORUM BLR,Bengaluru,Karnataka,South,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421087,Kylie Cosmetics,ORION BLR,Bengaluru,Karnataka,South,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421088,Kylie Cosmetics,PMC BLR,Bengaluru,Karnataka,South,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421089,Kylie Cosmetics,TI INDORE,Indore,Madhya Pradesh,West,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421090,Kylie Cosmetics,DB MALL,Bhopal,Madhya Pradesh,West,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421091,Kylie Cosmetics,PMC PUNE,Pune,Maharashtra,West,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421092,Kylie Cosmetics,PALLADIUM,Mumbai,Maharashtra,West,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421093,Kylie Cosmetics,INFINITI,Mumbai,Maharashtra,West,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421094,Kylie Cosmetics,PMC KURLA,Kurla,Maharashtra,West,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421095,Kylie Cosmetics,SEAWOODS,Mumbai,Maharashtra,West,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421096,Kylie Cosmetics,OBEROI,Mumbai,Maharashtra,West,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421097,Kylie Cosmetics,PAVILLION,Pune,Maharashtra,West,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421098,Kylie Cosmetics,R CITY,Mumbai,Maharashtra,West,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421099,Kylie Cosmetics,SCW,Delhi,Delhi,North,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421100,Kylie Cosmetics,DLF,Delhi,Delhi,North,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421101,Kylie Cosmetics,VEGAS DWARKA,Delhi,Delhi,North,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421102,Kylie Cosmetics,WTP JAIPUR,Jaipur,Rajasthan,North,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421103,Kylie Cosmetics,EA CHENNAI,Chennai,Tamil Nadu,South,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421104,Kylie Cosmetics,PMC CHENNAI,Chennai,Tamil Nadu,South,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421105,Kylie Cosmetics,FORUM SUJANA,Hyderabad,Telangana,South,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421106,Kylie Cosmetics,MOIN,Noida,Uttar Pradesh,North,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421108,Kylie Cosmetics,SOUTH CITY,Kolkata,West Bengal,East,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421237,Kylie Cosmetics,SSL- DIMAPUR,Kolkata,West Bengal,East,Offline,SS-Beauty,SS-Beauty,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421368,Kylie Cosmetics,MOM PUNE,Pune,Maharashtra,West,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421369,Kylie Cosmetics,MOM PUNE,Pune,Maharashtra,West,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421370,Kylie Cosmetics,MOM PUNE,Pune,Maharashtra,West,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421481,Kylie Cosmetics,Garg Traders,Ludhiana,Punjab,North,Offline,Garg Traders,Corporate Order,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421508,Kylie Cosmetics,MOA BLR,Bengaluru,Karnataka,South,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421510,Kylie Cosmetics,MOA BLR,Bengaluru,Karnataka,South,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421511,Kylie Cosmetics,MOA BLR,Bengaluru,Karnataka,South,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421528,Kylie Cosmetics,Mani Ram Balwant Rai & Sons,Ludhiana,Punjab,North,Offline,Mani Ram Balwant Rai & Sons,Corporate Order,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421555,Kylie Cosmetics,MBD LUDHIANA,Ludhiana,Punjab,North,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421556,Kylie Cosmetics,MBD LUDHIANA,Ludhiana,Punjab,North,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421573,Kylie Cosmetics,MBD LUDHIANA,Ludhiana,Punjab,North,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421771,Kylie Cosmetics,TIRA-Sample,Pune,Maharashtra,West,Offline,Tira-Offline,Tira-Offline,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421772,Kylie Cosmetics,TIRA-Sample,Mumbai,Maharashtra,West,Offline,Tira-Offline,Tira-Offline,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421779,Kylie Cosmetics,Tira-1 Mg,Bengaluru,Karnataka,South,Offline,Tira-Offline,Tira-Offline,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421795,Kylie Cosmetics,INORBIT MALL,Hyderabad,Telangana,South,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421796,Kylie Cosmetics,INORBIT MALL,Hyderabad,Telangana,South,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421797,Kylie Cosmetics,INORBIT MALL,Hyderabad,Telangana,South,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421819,Kylie Cosmetics,Nykaa-Bangalore,Bengaluru,Karnataka,South,Online,Nykaa-Online,Nykaa-Online,Tanuj,Tanuj,Tanuj,Tanuj,,Active,Primary Sales
+421820,Kylie Cosmetics,Prettycosmo & Beauty Private Ltd,Delhi,Delhi,North,Offline,Prettycosmo & Beauty Private Ltd,Corporate Order,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421889,Kylie Cosmetics,Nykaa-Delhi-1,Delhi,Delhi,North,Online,Nykaa-Online,Nykaa-Online,Tanuj,Tanuj,Tanuj,Tanuj,,Active,Primary Sales
+421903,Kylie Cosmetics,Barter Kit,Gurugram,Haryana,North,Offline,Barter Kit,Barter Kit,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421928,Kylie Cosmetics,SHREE BEAUTY CENTRE,Nagpur,Maharashtra,West,Offline,SHREE BEAUTY CENTRE,Corporate Order,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421929,Kylie Cosmetics,Nykaa-Bangalore 1,Bengaluru,Karnataka,South,Offline,Nykaa-Offline,Nykaa-Offline,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+421971,Kylie Cosmetics,Nykaa-Delhi,Delhi,Delhi,North,Online,Nykaa-Online,Nykaa-Online,Tanuj,Tanuj,Tanuj,Tanuj,,Active,Primary Sales
+421990,Kylie Cosmetics,Tira-Bhiwandi-2,Mumbai,Maharashtra,#N/A,Offline,TIRA-Offline,TIRA-Offline,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+422072,Kylie Cosmetics,Staff Sale,Gurugram,Haryana,North,Offline,Staff Sale,Staff Sale,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+422073,Kylie Cosmetics,Barter Kit,Gurugram,Haryana,North,Offline,Barter Kit,Barter Kit,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+422442,Kylie Cosmetics,TIRA-MOI,Noida,Uttar Pradesh,North,Offline,TIRA-Offline,TIRA-Offline,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+422443,Kylie Cosmetics,Tester_Tira MOI,Noida,Uttar Pradesh,North,Offline,Tira-Offline,Tira-Offline,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+422529,Kylie Cosmetics,Nexusmall Amritsar,Amritsar,Punjab,North,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+422531,Kylie Cosmetics,Nexusmall Amritsar,Amritsar,Punjab,North,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+422532,Kylie Cosmetics,Perfect Brands,Thane,Maharashtra,West,Offline,Perfect Brands,Corporate Order,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+422691,Kylie Cosmetics,TK7C- Nexus Mall Koramanga,Bengaluru,Karnataka,South,Offline,TIRA-Offline,TIRA-Offline,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+422713,Kylie Cosmetics,Phoenix Palassio-Lucknow,Lucknow ,Uttar Pradesh,North,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+422714,Kylie Cosmetics,Phoenix Palassio-Lucknow,Lucknow ,Uttar Pradesh,North,Offline,Sephora,Sephora,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+422715,Kylie Cosmetics,T3AS-Tira Phoenix Kurla,Kurla,Maharashtra,West,Offline,TIRA-Offline,TIRA-Offline,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+422720,Kylie Cosmetics,T5QU-Tira Ambi Vasant Kunj,Delhi,Delhi,North,Online,Tira-Online,Tira-Online,Tanuj,Tanuj,Tanuj,Tanuj,,Active,Primary Sales
+422722,Kylie Cosmetics,TIRA 1 MG Mall Bengaluru,Bengaluru,Karnataka,South,Offline,Tira-Offline,Tira-Offline,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+422725,Kylie Cosmetics,T11J-Tira JWD ,Mumbai,Maharashtra,West,Offline,TIRA-Offline,TIRA-Offline,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+422727,Kylie Cosmetics,T3AS-Tira PMC Kurla,Kurla,Maharashtra,West,Offline,Tira-Offline,Tira-Offline,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+422732,Kylie Cosmetics,T7PC-Tira Palladium,Mumbai,Maharashtra,West,Online,Tira-Online,Tira-Online,Tanuj,Tanuj,Tanuj,Tanuj,,Active,Primary Sales
+422733,Kylie Cosmetics,Tester_Palladium,Mumbai,Maharashtra,West,Offline,Tira-Offline,Tira-Offline,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+422742,Kylie Cosmetics,T0V1-Tira Wakad,Pune,Maharashtra,West,Online,Tira-Online,Tira-Online,Tanuj,Tanuj,Tanuj,Tanuj,,Active,Primary Sales
+422748,Kylie Cosmetics,TIRA-VR Mall Chennai,Chennai,Tamil Nadu,South,Offline,TIRA-Offline,TIRA-Offline,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+422749,Kylie Cosmetics,Tester_Tira VR,Chennai,Tamil Nadu,South,Offline,Tira-Offline,Tira-Offline,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+422762,Kylie Cosmetics,Tester_Ambi,Gurugram,Haryana,North,Offline,Tira-Offline,Tira-Offline,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+422866,Kylie Cosmetics,Effects Management Services Pvt Ltd,Delhi,Delhi,North,Offline,Effects Management Services Pvt Ltd,Corporate Order,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+422903,Kylie Cosmetics,Sharmaine Lobo (8850795441),Mumbai,Maharashtra,West,Offline,Coty Employee Sample,Coty Employee Sample,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+422972,Kylie Cosmetics,TIRA-Gurgaon,Gurugram,Haryana,North,Online,Tira-Online,Tira-Online,Tanuj,Tanuj,Tanuj,Tanuj,,Active,Primary Sales
+422972-1,Kylie Cosmetics,TIRA-Gurgaon,Gurugram,Haryana,North,Offline,Tira-Offline,Tira-Offline,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+422977,Kylie Cosmetics,Prosperity Multitrade Private Limit,Mumbai,Maharashtra,West,Offline,Prosperity Multitrade Private Limit,Corporate Order,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+423031,Kylie Cosmetics,TIRA-PMC BLR,Bengaluru,Karnataka,South,Offline,Tira-Offline,Tira-Offline,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+423033,Kylie Cosmetics,TIRA-PMC BLR,Bengaluru,Karnataka,South,Offline,Tira-Offline,Tira-Offline,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+423060,Kylie Cosmetics,Staff Sale,Gurugram,Haryana,North,Offline,Staff Sale,Staff Sale,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+423063,Kylie Cosmetics,Sandy And Dash,Delhi,Delhi,North,Offline,Sandy And Dash,Corporate Order,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+423124,Kylie Cosmetics,Bhiwandi- Online,Mumbai,Maharashtra,#N/A,Online,Tira-Online,Tira-Online,Tanuj,Tanuj,Tanuj,Tanuj,,Active,Primary Sales
+423132,Kylie Cosmetics,Gurgaon- Online,Gurugram,Haryana,North,Online,Tira-Online,Tira-Online,Tanuj,Tanuj,Tanuj,Tanuj,,Active,Primary Sales
+46037,Kylie Cosmetics,Staff Sale,Gurugram,Haryana,North,Offline,Staff Sale,Staff Sale,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales
+46038,Kylie Cosmetics,Barter Kit,Gurugram,Haryana,North,Offline,Barter Kit,Barter Kit,Naresh Ji,Naresh Ji,Naresh Ji,Naresh Ji,,Active,Primary Sales

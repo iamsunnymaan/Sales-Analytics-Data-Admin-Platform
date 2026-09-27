@@ -1,0 +1,68 @@
+/* Shared "coming soon" layout for pages that exist in the sidebar but have no real content/backend
+   yet (currently the Identity section — Users/Groups/Roles/Permissions). Swap this out page-by-page
+   once each one gets a real implementation; no page-specific CSS needed until then. */
+.placeholder-page {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 24px;
+}
+
+.placeholder-page-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 8px;
+}
+
+.placeholder-page-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    background: var(--color-primary);
+    color: #fff;
+    font-size: 1.25rem;
+}
+
+.placeholder-page-title {
+    margin: 0;
+    font-size: 1.35rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+}
+
+.placeholder-page-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    text-align: center;
+    padding: 64px 24px;
+    background: var(--color-card-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    box-shadow: var(--shadow-card);
+}
+
+.placeholder-page-card i {
+    font-size: 2.5rem;
+    color: var(--color-text-secondary);
+}
+
+.placeholder-page-card-title {
+    margin: 0;
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+}
+
+.placeholder-page-card-text {
+    margin: 0;
+    max-width: 420px;
+    font-size: 0.9rem;
+    color: var(--color-text-secondary);
+}

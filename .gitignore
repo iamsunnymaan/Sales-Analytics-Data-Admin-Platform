@@ -1,0 +1,28 @@
+target/
+*.class
+
+# IDE
+.idea/
+*.iml
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Local environment / credentials
+application-dev.properties
+application-local.properties
+.env
+
+# Uploaded import files
+/uploads/
+
+# Local sample/reference data - not part of the app, shouldn't be committed
+/sample_data/
+
+# Local DB schema/diagram snapshots - regenerated from the live DB, not committed
+/database/

@@ -1,0 +1,33 @@
+/* Shared "surface" base — background, border, corner radius — reused by every card/panel-style
+   block across pages/components. Padding/margin/box-shadow/width stay on each selector's own
+   rule in its page/component CSS file since those vary per use; this file only centralizes the
+   3 declarations that were byte-identical everywhere. */
+.brand-header-filter-bar.brand-header,
+.daily-trend-card,
+.dashboard-fy-overview-filter-header-card,
+.product-snapshot-card,
+.product-snapshot-download-popup,
+.region-summary-card,
+.table-data-menu-panel,
+.table-data-download-panel,
+.table-data-card,
+.table-list-grid,
+.file-import-card,
+.import-history-card,
+.reports-section-card,
+.dashboard-site-report-card,
+.dashboard-geo-map-card,
+.secondary-site-report-card,
+.site-detail-card,
+.site-status-card,
+.team-performance-report-card,
+.team-performance-site-report-card,
+.users-card,
+.roles-card,
+.roles-filter-header-card,
+.monitoring-card,
+.superadmin-tool-card {
+    background-color: var(--color-card-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+}

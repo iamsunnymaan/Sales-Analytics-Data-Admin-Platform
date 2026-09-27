@@ -1,0 +1,92 @@
+<!-- Single source of truth for the sidebar markup. Fetched at runtime by Sidebar.js's
+     initSidebar() and injected into each page's empty <nav id="appSidebar"></nav> placeholder
+     (see any pages/*/*.html) — pages never duplicate this HTML themselves. Add/remove/rename a
+     nav link only here. -->
+<div class="sidebar-brand px-3 py-3">
+    <span class="sidebar-brand-mark">
+        <i class="bi bi-hexagon-fill me-2"></i>
+        <span class="fw-semibold sidebar-brand-text">IB Team</span>
+    </span>
+    <button type="button" class="sidebar-collapse-btn" id="sidebarCollapseToggle" aria-label="Collapse sidebar" title="Collapse sidebar">
+        <i class="bi bi-chevron-left"></i>
+    </button>
+</div>
+
+<ul class="nav flex-column sidebar-nav">
+    <li class="nav-item">
+        <a class="nav-link" href="/" data-page="dashboard" data-permission="page:dashboard" title="Dashboard">
+            <i class="bi bi-speedometer2 me-2"></i><span class="nav-link-text">Dashboard</span>
+        </a>
+    </li>
+
+    <li class="nav-item sidebar-section-title">Sales</li>
+    <li class="nav-item">
+        <a class="nav-link" href="/pages/PrimarySalesPage/PrimarySalesPage.html" data-page="primary-sales" data-permission="page:primary-sales" title="Primary Sales">
+            <i class="bi bi-box-seam-fill me-2"></i><span class="nav-link-text">Primary Sales</span>
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="/pages/SecondarySalesPage/SecondarySalesPage.html" data-page="secondary-sales" data-permission="page:secondary-sales" title="Secondary Sales">
+            <i class="bi bi-shop me-2"></i><span class="nav-link-text">Secondary Sales</span>
+        </a>
+    </li>
+    <li class="nav-item sidebar-section-title">Performance</li>
+    <li class="nav-item">
+        <a class="nav-link" href="/pages/SiteStatusPage/SiteStatusPage.html" data-page="site-status" data-permission="page:site-insights" title="Site Insights">
+            <i class="bi bi-geo-alt me-2"></i><span class="nav-link-text">Site Insights</span>
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="/pages/TeamPerformancePage/TeamPerformancePage.html" data-page="team-performance" data-permission="page:team-insights" title="Team Insights">
+            <i class="bi bi-people me-2"></i><span class="nav-link-text">Team Insights</span>
+        </a>
+    </li>
+
+    <li class="nav-item sidebar-section-title">Database</li>
+    <li class="nav-item">
+        <a class="nav-link" href="/pages/ExplorerPage/ExplorerPage.html" data-page="explorer" data-permission="page:explorer" title="Explorer">
+            <i class="bi bi-database me-2"></i><span class="nav-link-text">Explorer</span>
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="/pages/DataUploadPage/DataUploadPage.html" data-page="data-upload" data-permission="page:data-upload" title="Upload Data">
+            <i class="bi bi-cloud-upload me-2"></i><span class="nav-link-text">Upload Data</span>
+        </a>
+    </li>
+
+    <li class="nav-item sidebar-section-title">Admin</li>
+    <li class="nav-item">
+        <a class="nav-link" href="/pages/RolesPage/RolesPage.html" data-page="roles" data-permission="page:roles" title="Roles & Users">
+            <i class="bi bi-shield-lock me-2"></i><span class="nav-link-text">User & Role</span>
+        </a>
+    </li>
+
+    <!-- SUPERADMIN-only — page:superadmin is deliberately excluded from ADMIN's own auto-granted
+         permission set (see AuthBootstrapSeeder.topUpAdminPermissions' own comment), so this link
+         only ever reveals for the SUPERADMIN role. "Database Config" (SuperAdminPage,
+         page:superadmin) was removed from here per explicit request — the page itself, its
+         permission, and its PageAccessInterceptor mapping all stay (it's just unlinked from nav
+         now); don't re-add this link unasked. -->
+    <li class="nav-item sidebar-section-title">Super Admin</li>
+    <li class="nav-item">
+        <a class="nav-link" href="/pages/IAMPage/IAMPage.html" data-page="iam" data-permission="page:iam" title="IAM">
+            <i class="bi bi-person-badge me-2"></i><span class="nav-link-text">IAM</span>
+        </a>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link" href="/pages/MonitoringPage/MonitoringPage.html" data-page="monitoring" data-permission="page:monitoring" title="Monitoring">
+            <i class="bi bi-activity me-2"></i><span class="nav-link-text">Monitoring</span>
+        </a>
+    </li>
+</ul>
+
+<div class="sidebar-footer">
+    <div class="sidebar-footer-user">
+        <span class="sidebar-footer-avatar"><i class="bi bi-person-circle"></i></span>
+        <span class="sidebar-footer-username">Admin</span>
+    </div>
+    <button type="button" class="sidebar-footer-logout" id="sidebarLogoutBtn" title="Logout" aria-label="Logout">
+        <i class="bi bi-box-arrow-right"></i>
+    </button>
+</div>

@@ -1,0 +1,235 @@
+<!-- IAM — Sidebar.html's own "Admin" section (separate from "Super Admin"). "1. User Details"
+     reproduces the same section from the Roles & Users page (RolesPage.html) verbatim — same
+     markup/modal/IDs (each page is its own document, so no collision), same underlying
+     UsersController/FeaturesController endpoints — but gated by its own page:iam.user-details key
+     instead of page:roles.user-details, independently grantable (see RequirePermission's own header
+     comment on the OR semantics that makes those controllers accept either). "2. Role and Details"
+     is real role management (New/Edit/Delete Role, the Permission/Feature picker) moved here from
+     the Roles & Users page per explicit request — that page no longer has any role management at
+     all, this is now the only place it exists, gated by its own page:iam.roles-details key
+     (RolesController's create/update/delete endpoints check this key, not page:roles.*). No
+     ADMIN/SUPERADMIN filtering on this table (unlike the User Details table/the New User modal's
+     own Roles picker below, which both still filter those two out per the original explicit
+     request) — since this is the only surface left to manage any role, hiding ADMIN/SUPERADMIN here
+     would make them permanently unmanageable. See IAMPage.js. -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>IAM - IB Department</title>
+    <script src="/Shared/js/auth-guard.js"></script>
+    <script src="/Shared/js/sidebar-collapse-init.js"></script>
+    <script src="/Shared/js/theme-init.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="/Shared/css/variables.css">
+    <link rel="stylesheet" href="/Shared/css/app.css">
+    <link rel="stylesheet" href="/Shared/css/card.css">
+    <link rel="stylesheet" href="/components/Sidebar/Sidebar.css">
+    <link rel="stylesheet" href="/components/QuickAccessPanel/QuickAccessPanel.css">
+    <link rel="stylesheet" href="/pages/RolesPage/RolesPage.css">
+    <link rel="stylesheet" href="/pages/IAMPage/IAMPage.css">
+</head>
+<body>
+    <div class="app-shell">
+        <nav class="app-sidebar" id="appSidebar"></nav>
+        <script src="/components/Sidebar/SidebarBootstrap.js"></script>
+        <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+        <button type="button" class="sidebar-toggle-btn" id="sidebarToggle" aria-label="Open menu" aria-expanded="false" title="Menu">
+            <i class="bi bi-list"></i>
+        </button>
+
+        <main class="app-main">
+            <section class="roles-section">
+
+                <div class="section-container" data-permission="page:iam.user-details" hidden>
+                    <div class="section-header users-details-header">
+                        <p class="roles-section-title">1. User Details</p>
+                        <div class="users-details-header-actions">
+                            <div class="users-search">
+                                <i class="bi bi-search"></i>
+                                <input type="text" id="usersSearchInput" placeholder="Search users…" data-feature="feature:search-bar">
+                            </div>
+                            <button type="button" class="users-new-btn" id="usersNewUserBtn" data-permission="page:iam.user-details" data-feature="feature:new-user" hidden>
+                                <i class="bi bi-person-plus"></i>
+                                <span>New User</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="section-content">
+                        <div class="users-card">
+                            <div class="users-table-wrap" id="usersTableWrap" data-permission="page:iam.user-details" hidden>
+                                <table class="users-table">
+                                    <thead>
+                                        <tr>
+                                            <th>User</th>
+                                            <th>Email</th>
+                                            <th>Roles</th>
+                                            <th>Status</th>
+                                            <th>Created At</th>
+                                            <th>Last Login</th>
+                                            <th>Last Edit Date</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="usersTableBody">
+                                        <tr><td colspan="8" class="users-empty">Loading…</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section-container" data-permission="page:iam.roles-details" hidden>
+                    <div class="section-header roles-details-header">
+                        <p class="roles-section-title">2. Role and Details</p>
+                        <button type="button" class="roles-new-btn" id="rolesNewRoleBtn" data-feature="feature:new-role">
+                            <i class="bi bi-shield-plus"></i>
+                            <span>New Role</span>
+                        </button>
+                    </div>
+                    <div class="section-content">
+                        <div class="roles-card">
+                            <div class="roles-table-wrap" id="rolesTableWrap" data-permission="page:iam.roles-details" hidden>
+                                <table class="roles-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Role</th>
+                                            <th>Description</th>
+                                            <th>Permissions</th>
+                                            <th>Users</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="rolesTableBody">
+                                        <tr><td colspan="5" class="roles-empty">Loading…</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </section>
+        </main>
+    </div>
+
+    <div class="quick-access-panel" id="quickAccessPanel"></div>
+
+    <!-- New User / Edit Profile popup — same modal, toggled between "create" and "edit" mode by
+         IAMPage.js (openUserModal), verbatim copy of RolesPage.html's own. -->
+    <div class="users-modal-backdrop" id="usersModalBackdrop" hidden>
+        <div class="users-modal" role="dialog" aria-modal="true" aria-labelledby="usersModalTitle">
+            <div class="users-modal-header">
+                <span class="users-modal-title" id="usersModalTitle">New User</span>
+                <button type="button" class="users-modal-close" id="usersModalClose" aria-label="Close">&times;</button>
+            </div>
+            <form class="users-modal-body" id="usersModalForm">
+                <div class="users-modal-error d-none" id="usersModalError"></div>
+
+                <div class="users-field" id="usersUsernameField">
+                    <label for="usersUsernameInput">Username</label>
+                    <input type="text" class="users-input" id="usersUsernameInput" autocomplete="off">
+                </div>
+
+                <div class="users-field" id="usersPasswordField">
+                    <label for="usersPasswordInput">Password</label>
+                    <div class="users-input-wrap">
+                        <input type="password" class="users-input" id="usersPasswordInput" autocomplete="new-password">
+                        <button type="button" class="users-input-toggle" id="usersPasswordToggle" aria-label="Show password">
+                            <i class="bi bi-eye"></i>
+                        </button>
+                    </div>
+                    <span class="users-field-hint">Minimum 8 characters.</span>
+                </div>
+
+                <div class="users-field">
+                    <label for="usersFullNameInput">Full Name</label>
+                    <input type="text" class="users-input" id="usersFullNameInput" autocomplete="off">
+                </div>
+
+                <div class="users-field">
+                    <label for="usersEmailInput">Email</label>
+                    <input type="email" class="users-input" id="usersEmailInput" autocomplete="off">
+                </div>
+
+                <div class="users-field" id="usersNewPasswordField">
+                    <label for="usersNewPasswordInput">New Password</label>
+                    <div class="users-input-wrap">
+                        <input type="password" class="users-input" id="usersNewPasswordInput" autocomplete="new-password">
+                        <button type="button" class="users-input-toggle" id="usersNewPasswordToggle" aria-label="Show password">
+                            <i class="bi bi-eye"></i>
+                        </button>
+                    </div>
+                    <span class="users-field-hint">Leave blank to keep the current password.</span>
+                </div>
+
+                <div class="users-field" id="usersStatusField">
+                    <label>Status</label>
+                    <div class="users-status-toggle" id="usersStatusToggle" data-active="true">
+                        <button type="button" class="users-status-toggle-btn" data-value="true">Active</button>
+                        <button type="button" class="users-status-toggle-btn" data-value="false">Inactive</button>
+                    </div>
+                </div>
+
+                <div class="users-field">
+                    <label>Roles</label>
+                    <div class="users-role-list" id="usersRoleList">
+                        <span class="users-field-hint">Loading roles…</span>
+                    </div>
+                </div>
+
+                <div class="users-modal-actions">
+                    <button type="submit" class="users-submit-btn" id="usersModalSubmitBtn">
+                        <span class="users-submit-label">Submit</span>
+                        <span class="users-submit-spinner d-none" id="usersModalSubmitSpinner"></span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- New Role / Edit Role popup — same modal, toggled by IAMPage.js (openRoleModal), verbatim
+         copy of RolesPage.html's own (before role management moved here — see this file's own
+         header comment). -->
+    <div class="roles-modal-backdrop" id="rolesModalBackdrop" hidden>
+        <div class="roles-modal" role="dialog" aria-modal="true" aria-labelledby="rolesModalTitle">
+            <div class="roles-modal-header">
+                <span class="roles-modal-title" id="rolesModalTitle">New Role</span>
+                <button type="button" class="roles-modal-close" id="rolesModalClose" aria-label="Close">&times;</button>
+            </div>
+            <form class="roles-modal-body" id="rolesModalForm">
+                <div class="roles-modal-error d-none" id="rolesModalError"></div>
+
+                <div class="roles-field">
+                    <label for="rolesNameInput">Role Name</label>
+                    <input type="text" class="roles-input" id="rolesNameInput" autocomplete="off">
+                </div>
+
+                <div class="roles-field">
+                    <label for="rolesDescriptionInput">Description</label>
+                    <textarea class="roles-input" id="rolesDescriptionInput" rows="2"></textarea>
+                </div>
+
+                <div class="roles-field">
+                    <label>Permissions</label>
+                    <div class="roles-permission-list" id="rolesPermissionList">
+                        <span class="roles-field-hint">Loading permissions…</span>
+                    </div>
+                </div>
+
+                <div class="roles-modal-actions">
+                    <button type="submit" class="roles-submit-btn" id="rolesModalSubmitBtn">
+                        <span class="roles-submit-label">Submit</span>
+                        <span class="roles-submit-spinner d-none" id="rolesModalSubmitSpinner"></span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script type="module" src="/pages/IAMPage/IAMPage.js"></script>
+</body>
+</html>

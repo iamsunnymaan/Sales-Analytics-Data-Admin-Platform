@@ -1,0 +1,408 @@
+<!-- Dashboard / landing page. Loads the shared Sidebar component; other pages follow the same
+     shell + component-script pattern (see pages/*/*.html). -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>IB Department</title>
+    <script src="/Shared/js/auth-guard.js"></script>
+    <script src="/Shared/js/sidebar-collapse-init.js"></script>
+    <script src="/Shared/js/theme-init.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="/Shared/css/variables.css">
+    <link rel="stylesheet" href="/Shared/css/app.css">
+    <link rel="stylesheet" href="/Shared/css/modal.css">
+    <link rel="stylesheet" href="/components/Sidebar/Sidebar.css">
+    <link rel="stylesheet" href="/components/QuickAccessPanel/QuickAccessPanel.css">
+    <link rel="stylesheet" href="/Shared/css/card.css">
+    <link rel="stylesheet" href="/components/ExcelDownloadButton/ExcelDownloadButton.css">
+    <link rel="stylesheet" href="/components/FyYearFilter/FyYearFilter.css">
+    <link rel="stylesheet" href="/components/StatusFilter/StatusFilter.css">
+    <link rel="stylesheet" href="/pages/Dashboard/Dashboard.css">
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.1/dist/echarts.min.js"></script>
+</head>
+<body>
+    <div class="app-shell">
+        <nav class="app-sidebar" id="appSidebar"></nav>
+        <script src="/components/Sidebar/SidebarBootstrap.js"></script>
+        <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+        <button type="button" class="sidebar-toggle-btn" id="sidebarToggle" aria-label="Open menu" aria-expanded="false" title="Menu">
+            <i class="bi bi-list"></i>
+        </button>
+
+        <main class="app-main">
+            <section class="dashboard-sections" id="dashboardSections">
+            <div class="section-container" id="dashboardFyOverviewFilterHeaderSectionContainer" data-permission="page:dashboard.filter-header" hidden>
+            <div class="section-header">
+                <p class="secondary-overview-subtitle">Filter Header</p>
+            </div>
+
+            <div class="section-content">
+                <div class="dashboard-fy-overview-filter-header-card">
+                    <!-- Sales Type / Brand / Channel filter row — scopes the Target/Actual/Achi/Vs Last
+                         Year numbers in "1. Overview" below (see fetchDashboardFyOverviewMetric's
+                         brand/channel params + initDashboardFyOverviewFilter in Dashboard.js). Sales
+                         Type shows/hides a whole column-group (Primary/Secondary); Brand/Channel narrow
+                         the numbers within whichever group(s) stay visible. All three pills' option
+                         buttons beyond "All" are populated dynamically from real Site_Master values
+                         (Sales_Type/Brand/Channel columns respectively), same convention the Daily
+                         Sales Trends section's own brand pill uses. Moved into its own section above
+                         "1. Overview" per explicit request — was previously inside the Overview card
+                         itself. -->
+                    <div class="dashboard-fy-overview-filter-row" id="dashboardFyOverviewFilterRow">
+                        <!-- "Loading…" is just the pre-JS fallback (real options, "All" included, are
+                             populated by initDashboardFyOverviewFilter in Dashboard.js, same convention
+                             Brand/Channel below already use) — per explicit request, a refresh no
+                             longer briefly shows a lone, not-yet-real "All" button before that fetch
+                             resolves. -->
+                        <div class="dashboard-fy-overview-field">
+                            <span class="dashboard-fy-overview-label">Sales Type</span>
+                            <div class="brand-header-pill" id="dashboardFyOverviewSalesTypeToggle" data-feature="feature:sales-type-filter">
+                                <span class="brand-header-item brand-header-empty">Loading…</span>
+                            </div>
+                        </div>
+                        <div class="dashboard-fy-overview-field">
+                            <span class="dashboard-fy-overview-label">Brand</span>
+                            <div class="brand-header-pill" id="dashboardFyOverviewBrandToggle" data-feature="feature:brand-filter">
+                                <span class="brand-header-item brand-header-empty">Loading…</span>
+                            </div>
+                        </div>
+                        <div class="dashboard-fy-overview-field">
+                            <span class="dashboard-fy-overview-label">Channel</span>
+                            <div class="brand-header-pill" id="dashboardFyOverviewChannelToggle" data-feature="feature:channel-filter">
+                                <span class="brand-header-item brand-header-empty">Loading…</span>
+                            </div>
+                        </div>
+                        <!-- Status toggle pill — real options fetched from GET /api/dashboard/statuses
+                             (site_master.Operational_Status, keyword-matched server-side by
+                             OperationalStatusFilter), same components/StatusFilter/StatusFilter.js +
+                             class="site-status-card-field site-status-filter-field"/.site-status-filter-pill/
+                             .site-status-filter-item look the Site Insight page's own Status pill uses.
+                             Rendered dynamically by initDashboardFyOverviewFilter (Dashboard.js), same
+                             fetch-then-render-then-"Not Available" convention Brand/Channel above already
+                             use — this placeholder is only ever shown while that fetch is still in flight. -->
+                        <div class="site-status-card-field site-status-filter-field">
+                            <span class="site-status-card-label">Status</span>
+                            <div class="site-status-filter-pill" id="dashboardFyOverviewStatusToggle" data-feature="feature:status-filter">
+                                <span class="site-status-filter-item brand-header-empty">Loading…</span>
+                            </div>
+                        </div>
+                        <!-- Shifted here from "1. Overview"'s own card header per explicit request — pushed
+                             to the row's right edge (see .dashboard-fy-overview-year-filter's own
+                             margin-left: auto in Dashboard.css) while Sales Type/Brand/Channel stay left. -->
+                        <div class="dashboard-fy-overview-field dashboard-fy-overview-year-filter">
+                            <span class="dashboard-fy-overview-label">Year Filter</span>
+                            <!-- Filter button + dropdown list, same interaction pattern as the app's other
+                                 Filter buttons (funnel icon, click to open a panel) — replaces the old
+                                 always-visible FY pill toggle per explicit request. Selecting an item
+                                 re-renders #dashboardFyOverviewBody for that FY (see
+                                 initDashboardFyYearFilter/DASHBOARD_FY_OVERVIEW_DATA in Dashboard.js). -->
+                            <div class="dashboard-fy-year-filter" id="dashboardFyYearFilter" data-feature="feature:fy-year-filter">
+                                <button type="button" class="dashboard-fy-year-filter-btn" id="dashboardFyYearFilterBtn" aria-expanded="false">
+                                    <i class="bi bi-funnel"></i>
+                                    <span id="dashboardFyYearFilterLabel">FY 26-27</span>
+                                    <i class="bi bi-chevron-down dashboard-fy-year-filter-caret"></i>
+                                </button>
+                                <div class="dashboard-fy-year-filter-menu" id="dashboardFyYearFilterMenu" hidden>
+                                    <button type="button" class="dashboard-fy-year-filter-item active" data-fy="2026-27">FY 26-27</button>
+                                    <button type="button" class="dashboard-fy-year-filter-item" data-fy="2025-26">FY 25-26</button>
+                                    <button type="button" class="dashboard-fy-year-filter-item" data-fy="2024-25">FY 24-25</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>
+
+            <div class="section-container" id="dashboardOverviewFySectionContainer" data-permission="page:dashboard.overview" hidden>
+            <div class="section-header">
+                <p class="secondary-overview-subtitle">1. Overview</p>
+            </div>
+
+            <div class="section-content">
+                <div class="dashboard-fy-overview-card" id="dashboardFyOverviewCard">
+                    <div class="dashboard-fy-overview-header">
+                        <div class="dashboard-fy-overview-field">
+                            <span class="dashboard-fy-overview-label">Financial Year</span>
+                            <!-- Updated by renderDashboardFyOverviewTable in Dashboard.js to match whichever
+                                 FY the Year Filter has selected, e.g. "Apr-25 to Mar-26" — this static
+                                 "April to March" text is just the pre-JS fallback. -->
+                            <span class="dashboard-fy-overview-value" id="dashboardFyOverviewRangeLabel">April to March</span>
+                        </div>
+                        <!-- Download button hugging the header's right edge — Year Filter used to sit here
+                             too, moved into the "Filter Header" section's own filter row per explicit
+                             request. -->
+                        <div class="dashboard-fy-overview-header-actions">
+                        <div class="dashboard-fy-overview-field dashboard-fy-overview-download">
+                            <div class="product-snapshot-download-wrap">
+                                <button type="button" class="product-snapshot-download-btn" id="dashboardFyOverviewDownloadBtn" title="Download CSV" aria-expanded="false" data-feature="feature:excel-download">
+                                    <i class="bi bi-download"></i>
+                                </button>
+                                <!-- Asks which FY to download (independent of whichever FY the table itself is
+                                     currently showing) — see downloadDashboardFyOverviewCsv + its wiring inside
+                                     initDashboardFyYearFilter in Dashboard.js. -->
+                                <div class="product-snapshot-download-popup" id="dashboardFyOverviewDownloadPopup" hidden>
+                                    <span class="product-snapshot-download-popup-title">Download Financial Year Data</span>
+                                    <select class="product-snapshot-download-range" id="dashboardFyOverviewDownloadYearSelect" title="Financial Year to download"></select>
+                                    <button type="button" class="product-snapshot-download-confirm-btn" id="dashboardFyOverviewDownloadConfirmBtn">
+                                        <i class="bi bi-download"></i>
+                                        <span>Download</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-fy-overview-table-wrap" id="dashboardFyOverviewTableWrap">
+                        <table class="dashboard-fy-overview-table">
+                            <thead>
+                                <tr>
+                                    <th rowspan="2" class="dashboard-fy-overview-month-col">Month</th>
+                                    <th colspan="4" class="dashboard-fy-overview-group-header dashboard-fy-overview-group-primary">Primary Sales</th>
+                                    <th colspan="4" class="dashboard-fy-overview-group-header dashboard-fy-overview-group-secondary">Secondary Sales</th>
+                                </tr>
+                                <tr>
+                                    <th class="dashboard-fy-overview-group-primary">Target</th>
+                                    <th class="dashboard-fy-overview-group-primary">Sales</th>
+                                    <th class="dashboard-fy-overview-group-primary">Achi.</th>
+                                    <th class="dashboard-fy-overview-group-primary">Vs Last Year</th>
+                                    <th class="dashboard-fy-overview-group-secondary">Target</th>
+                                    <th class="dashboard-fy-overview-group-secondary">Sales</th>
+                                    <th class="dashboard-fy-overview-group-secondary">Achi.</th>
+                                    <th class="dashboard-fy-overview-group-secondary">Vs Last Year</th>
+                                </tr>
+                            </thead>
+                            <!-- Populated by renderDashboardFyOverviewTable in Dashboard.js on load and on
+                                 every Year Filter change — no static rows here (this used to ship the
+                                 UI-first mock rows, e.g. "11,000"/"3,333"/"30%", which then visibly
+                                 flashed on every page refresh before the real async fetch replaced them). -->
+                            <tbody id="dashboardFyOverviewBody">
+                                <tr class="dashboard-fy-row--loading">
+                                    <td colspan="9">Loading…</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            </div>
+
+            <div class="section-container" id="dailyTrendSectionContainer" data-permission="page:dashboard.daily-trends" hidden>
+            <div class="section-header">
+            <p class="secondary-overview-subtitle">2. Daily Sales Trends</p>
+            </div>
+
+            <div class="section-content">
+            <div class="daily-trend-card" id="dailyTrendCard">
+                <div class="daily-trend-header">
+                    <div class="daily-trend-header-text">
+                        <span class="daily-trend-title">Sales Trend</span>
+                        <span class="daily-trend-mode-badge" id="dailyTrendModeBadge">—</span>
+                    </div>
+                    <div class="daily-trend-header-actions">
+                        <!-- Re-shown per explicit request — Compare itself still defaults OFF
+                             (state.compare starts false in Dashboard.js) so the chart stays a single
+                             series driven by the "Filter Header" section's own Sales Type/Brand/
+                             Channel/Year Filter until a user explicitly opts into Compare here;
+                             active/aria-pressed reflect that off-by-default state. -->
+                        <!-- Overlays last year's same-period Sales as a dotted line on the chart
+                             (data already comes back from /trend-range as `lastYear`, previously used
+                             only for the tooltip's "vs Last Year" %). Works alongside both Bar Graph
+                             mode and Compare mode — see initDailyTrendGraph's renderChart in
+                             Dashboard.js for how each mode draws its own Last Year overlay. -->
+                        <!-- Toggles the Target line on/off, same button look/behavior as Vs Last Year
+                             above — works across every chart mode (single line, Bar Graph, AND
+                             Compare, which previously never drew a Target line at all), see
+                             initDailyTrendGraph's renderChart in Dashboard.js. Starts active/on since
+                             the Target line used to always be shown unconditionally in single-series
+                             line mode — this toggle only adds the ability to hide it, not a new
+                             default-off behavior. -->
+                        <button type="button" class="daily-trend-compare-toggle active" id="dailyTrendTargetToggle" aria-pressed="true" title="Overlay Sales Target for the same period">
+                            <i class="bi bi-bullseye"></i> Target
+                        </button>
+                        <button type="button" class="daily-trend-compare-toggle" id="dailyTrendVsLastYearToggle" aria-pressed="false" title="Overlay last year's Sales for the same period">
+                            <i class="bi bi-calendar2-week"></i> Vs Last Year
+                        </button>
+                        <button type="button" class="daily-trend-compare-toggle" id="dailyTrendCompareToggle" aria-pressed="false" title="Compare brands or sales types side by side">
+                            <i class="bi bi-bar-chart-steps"></i> Compare
+                        </button>
+                        <!-- Shown only while Compare is active — picks which dimension gets compared
+                             side by side: the 2 real Brands (ABH vs Kylie) or the 2 Sales Types
+                             (Primary vs Secondary). See initDailyTrendGraph's state.compareMode in
+                             Dashboard.js. Reuses .daily-trend-chart-type-toggle/-btn's own look, just a
+                             separate instance/id. Starts hidden to match Compare's own off-by-default
+                             state above — the Compare toggle's own click handler flips this back to
+                             visible the moment Compare is turned on. -->
+                        <div class="daily-trend-chart-type-toggle" id="dailyTrendCompareModeToggle" hidden>
+                            <button type="button" class="daily-trend-chart-type-btn" data-compare-mode="brand">By Brand</button>
+                            <button type="button" class="daily-trend-chart-type-btn active" data-compare-mode="salesType">By Sales Type</button>
+                        </div>
+                        <div class="daily-trend-chart-type-toggle" id="dailyTrendChartTypeToggle">
+                            <button type="button" class="daily-trend-chart-type-btn active" data-chart-type="line">Graph</button>
+                            <button type="button" class="daily-trend-chart-type-btn" data-chart-type="bar">Bar Graph</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="brand-header daily-trend-brand-header brand-header-filter-bar" id="dailyTrendBrandHeader" hidden>
+                    <!-- Grouped with the Brand pill (not two direct siblings of #dailyTrendBrandHeader,
+                         whose justify-content: space-between would otherwise spread a 3rd item away
+                         from the Filter cluster instead of sitting right next to the Brand pill) —
+                         same pattern PrimarySalesPage.html's own .ta-overview-header-right uses. Sales
+                         Type pill sits first (before Brand), per explicit request. Whole bar (Sales
+                         Type/Brand pills + Date Filter) hidden per a later explicit request — state.
+                         salesType/brand/date-range all stay at their defaults (All/All/current FY) with
+                         no on-screen control left to change them. -->
+                    <div class="daily-trend-pill-group">
+                        <!-- Sales Type filter — All (default, always active on load)/Primary Sales/
+                             Secondary Sales, restricts the combined Sales/Target series below to just
+                             one channel (see initDailyTrendGraph's state.salesType in Dashboard.js and
+                             DashboardDailyTrendService's own salesTables()/targetTables()). -->
+                        <div class="brand-header-pill" id="dailyTrendSalesTypeToggle" data-feature="feature:sales-type-filter">
+                            <button type="button" class="brand-header-item active" data-sales-type="all">All</button>
+                            <button type="button" class="brand-header-item" data-sales-type="primary">Primary Sales</button>
+                            <button type="button" class="brand-header-item" data-sales-type="secondary">Secondary Sales</button>
+                        </div>
+
+                        <div class="brand-header-pill" data-feature="feature:brand-filter">
+                            <button type="button" class="brand-header-item active" data-brand="all">All</button>
+                            <button type="button" class="brand-header-item" data-brand="abh">ABH</button>
+                            <button type="button" class="brand-header-item" data-brand="kylie">Kylie</button>
+                        </div>
+                    </div>
+
+                    <div class="daily-trend-filter-cluster">
+                        <div class="sales-date-filter" id="dailyTrendDateFilter" data-feature="feature:date-filter">
+                            <div class="sales-date-filter-mode-toggle" id="dailyTrendDateFilterModeToggle">
+                                <button type="button" class="sales-date-filter-mode-btn" data-mode="filter"><i class="bi bi-funnel"></i> Filter</button>
+                            </div>
+                        </div>
+
+                        <div class="sales-date-filter-body" id="dailyTrendDateFilterBody"></div>
+                        <button type="button" class="sales-date-filter-clear" id="dailyTrendDateFilterClearBtn" title="Clear date filter">
+                            <i class="bi bi-x-circle"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="daily-trend-selection-summary" id="dailyTrendSelectionSummary">—</div>
+
+                <div class="daily-trend-chart-scroll" id="dailyTrendChartScroll">
+                    <div class="daily-trend-chart" id="dailyTrendChart"></div>
+                </div>
+            </div>
+            </div>
+            </div>
+
+            <!-- Now wired into the permission system per explicit request — page:dashboard.partner-
+                 performance, added to AuthBootstrapSeeder's own PERMISSION_TREE alongside Filter
+                 Header/Overview/Daily Sales Trends above. ADMIN/SUPERADMIN pick this up automatically
+                 on next restart (topUpAdminPermissions/topUpSuperAdminPermissions grant every new
+                 catalog key to those two roles on every startup); MANAGER/VIEWER/any custom role needs
+                 it granted by hand on the Roles & Users page, same as any other newly added section.
+                 `hidden` here is the same convention Filter Header/Overview/Daily Sales Trends already
+                 use — applyPagePermissions clears it once the session's real permission set resolves,
+                 so this section no longer flashes into view before those three on a reload the way it
+                 used to when it carried no data-permission at all. -->
+            <div class="section-container" id="dashboardPartnerPerformanceSectionContainer" data-permission="page:dashboard.partner-performance" hidden>
+            <div class="section-header">
+            <div class="secondary-overview-title-row">
+                <p class="secondary-overview-subtitle">3. Partner Wise</p>
+                <!-- Plain click-to-download (no "which range" popup — see downloadDashboardPartnerCsv's
+                     own header comment in Dashboard.js for why: this table has no filter knobs of its
+                     own, so there's nothing left to ask). Exports whatever renderDashboardPartnerTable
+                     most recently rendered. .secondary-overview-title-row's own justify-content:
+                     space-between already pushes this to the row's right edge; region-summary-download-btn
+                     gives it the same compact primary-color square icon look PrimarySalesPage.html's
+                     own Reports section download button uses, instead of the plain bordered variant. -->
+                <button type="button" class="product-snapshot-download-btn region-summary-download-btn" id="dashboardPartnerDownloadBtn" title="Download CSV" data-feature="feature:excel-download">
+                    <i class="bi bi-download"></i>
+                </button>
+            </div>
+            </div>
+
+            <div class="section-content">
+            <div class="dashboard-partner-card" id="dashboardPartnerCard">
+                <div class="dashboard-partner-table-wrap" id="dashboardPartnerTableWrap">
+                    <table class="dashboard-partner-table">
+                        <thead>
+                            <tr>
+                                <th rowspan="2" class="dashboard-partner-name-col">Partner</th>
+                                <!-- Updated by updateDashboardPartnerYtdLabel in Dashboard.js to match whichever
+                                     FY the "Filter Header" section's Year Filter has selected, e.g.
+                                     "YTD Apr-25 to Mar-26" for a fully-elapsed FY, or "YTD Apr-26 to Aug-26"
+                                     for the current FY (always stops at the last COMPLETE month — the
+                                     current calendar month itself is deliberately excluded, since that's
+                                     what the "Current Month" group to its right already covers). This
+                                     static "YTD Apr-Aug" text is just the pre-JS fallback. -->
+                                <th colspan="4" class="dashboard-partner-group-header dashboard-partner-group-ytd" id="dashboardPartnerYtdGroupHeader">YTD Apr-Aug</th>
+                                <!-- Updated by updateDashboardPartnerCurrentMonthLabel in Dashboard.js to
+                                     "Current Month: <Mon>-<yyyy>" for the real current calendar month, e.g.
+                                     "Current Month: Sep-2026" — independent of whichever FY the Year Filter
+                                     above has selected. This static "Current Month Sep" text is just the
+                                     pre-JS fallback. -->
+                                <th colspan="4" class="dashboard-partner-group-header dashboard-partner-group-current" id="dashboardPartnerCurrentGroupHeader">Current Month Sep</th>
+                                <!-- Info icon moved here from the card's own footnote below (per explicit
+                                     request) — same formula, now on hover instead of always-on text.
+                                     title is set by updateDashboardPartnerProjectionInfoTooltip in
+                                     Dashboard.js to the real current FY's own month spans (e.g. "Apr-26
+                                     to Aug-26 Actual + Sep-26 Projection/Actual Sales + Oct-26 to Mar-27
+                                     Target"), per explicit request that the wording track the real
+                                     calendar instead of staying hardcoded to whichever month it was
+                                     written in — this static title is just the pre-JS fallback. -->
+                                <th colspan="4" class="dashboard-partner-group-header dashboard-partner-group-projection">
+                                    Full Year Projection
+                                    <i class="bi bi-info-circle dashboard-partner-projection-info-icon" id="dashboardPartnerProjectionInfoIcon" title="Full Year Projection Forecast = Apr-Aug Actual + Current Month Projection + Oct-Mar Target"></i>
+                                </th>
+                            </tr>
+                            <tr>
+                                <th class="dashboard-partner-group-ytd">Target</th>
+                                <th class="dashboard-partner-group-ytd">Sales</th>
+                                <th class="dashboard-partner-group-ytd">Achi.</th>
+                                <th class="dashboard-partner-group-ytd">Vs LY</th>
+                                <th class="dashboard-partner-group-current">Target</th>
+                                <th class="dashboard-partner-group-current">Projection</th>
+                                <th class="dashboard-partner-group-current">Achi.</th>
+                                <th class="dashboard-partner-group-current">Vs LY</th>
+                                <th class="dashboard-partner-group-projection">Target</th>
+                                <th class="dashboard-partner-group-projection">Forecast</th>
+                                <th class="dashboard-partner-group-projection">Achi.</th>
+                                <th class="dashboard-partner-group-projection">Vs LY</th>
+                            </tr>
+                        </thead>
+                        <!-- Populated by renderDashboardPartnerTable in Dashboard.js — one row per real
+                             Site_Master.Partner value (GET /api/dashboard/partners), scoped by the "Filter
+                             Header" section's own Brand/Channel pills (see setDashboardFyOverviewFilter).
+                             Target/Achi/VS Target/Vs LY figures are still frontend-mock per explicit
+                             request (Partner identity + Filter Header wiring only, this pass) — no static
+                             rows here so a refresh doesn't flash placeholder partner names before the real
+                             list loads. -->
+                        <tbody id="dashboardPartnerBody">
+                            <tr class="dashboard-fy-row--loading">
+                                <td colspan="13">Loading…</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            </div>
+            </div>
+            </section>
+        </main>
+    </div>
+
+    <div class="quick-access-panel" id="quickAccessPanel"></div>
+
+    <script type="module">
+        import { initSidebar } from "/components/Sidebar/Sidebar.js";
+        import { initQuickAccessPanel } from "/components/QuickAccessPanel/QuickAccessPanel.js";
+        initSidebar();
+        initQuickAccessPanel();
+    </script>
+    <script type="module" src="/pages/Dashboard/Dashboard.js"></script>
+</body>
+</html>

@@ -1,0 +1,68 @@
+/* Shared color tokens (--color-*) used across every component/page CSS file. */
+:root {
+    /* Sidebar */
+/*    --color-sidebar-bg: #1B4D3E;*/
+    --color-sidebar-bg: #043927;
+    --color-sidebar-hover: #246B57;
+    --color-sidebar-active: #2E7D64;
+
+    /* Header */
+    --color-header-bg: #FFFFFF;
+
+    /* Backgrounds */
+/*    --color-background: #F4F8F6;*/
+    --color-background: #E2E9E4;
+    --color-card-bg: #FFFFFF;
+
+    /* Buttons */
+    --color-primary: #1B4D3E;
+    --color-primary-hover: #153C31;
+
+    /* Text */
+    --color-text-primary: #17221E;
+    --color-text-secondary: #66756F;
+
+    /* Borders */
+    --color-border: #DCE7E2;
+
+    /* Status */
+    --color-success: #16803C;
+    --color-warning: #D97706;
+    --color-danger: #DC2626;
+    --color-info: #2563EB;
+
+    /* Shadows */
+    --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+
+/* Night mode — toggled by the quick-access panel's day/night button (see
+   QuickAccessPanel.js's applyTheme), which sets/removes data-theme="dark" on <html> and persists
+   the choice in localStorage. Every page reads that same stored value in a tiny inline <head>
+   script (before any CSS loads) so the page never flashes light-then-dark on load. Same token
+   names as :root above — pages/components never need their own dark-mode overrides, only these
+   values change. */
+:root[data-theme="dark"] {
+    --color-sidebar-bg: #0A2418;
+    --color-sidebar-hover: #14382A;
+    --color-sidebar-active: #1B4D3E;
+
+    --color-header-bg: #16201C;
+
+    --color-background: #101512;
+    --color-card-bg: #182420;
+
+    --color-primary: #278667;
+    --color-primary-hover: #329C78;
+
+    --color-text-primary: #C7D0CB;
+    --color-text-secondary: #8A988F;
+
+    --color-border: #2A3733;
+
+    --color-success: #2BAD7D;
+    --color-warning: #CE9D1E;
+    --color-danger: #CB5D5D;
+    --color-info: #4F87CD;
+}
+
+

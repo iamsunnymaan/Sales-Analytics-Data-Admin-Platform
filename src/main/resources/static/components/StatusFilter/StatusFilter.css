@@ -1,0 +1,51 @@
+/* Shared visual rules for the Status pill toggle (see StatusFilter.js) — previously duplicated
+   byte-for-byte in SiteStatusPage.css and TeamPerformancePage.css. */
+.site-status-filter-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.1rem;
+    background-color: var(--color-background);
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    padding: 0.1rem;
+    box-shadow: var(--shadow-card);
+}
+
+.site-status-filter-item {
+    border: none;
+    background: transparent;
+    padding: 0.12rem 0.42rem;
+    border-radius: 999px;
+    font-size: 0.58rem;
+    font-weight: 500;
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.site-status-filter-item:hover:not(.active) {
+    color: var(--color-text-primary);
+}
+
+.site-status-filter-item.active {
+    background-color: var(--color-primary);
+    color: #fff;
+}
+
+/* .brand-header-empty: shown instead of the real All/Active/Inactive/Upcoming buttons while Site_Master
+   currently has no usable Operational_Status data (or the DB isn't connected) — see each page's own
+   renderStatusPill (Dashboard.js/SiteStatusPage.js/TeamPerformancePage.js), same "Not Available" state
+   convention BrandFilter/ChannelFilter already use. Paired with .site-status-filter-item in the markup
+   (not a standalone class) so it inherits this file's own font-size/padding instead of duplicating it.
+   Doubles as the pill's "Loading…" placeholder while that fetch is still in flight. Not a button: no
+   hover/active state, not clickable. */
+.site-status-filter-item.brand-header-empty {
+    font-style: italic;
+    opacity: 0.7;
+    cursor: default;
+    pointer-events: none;
+}
+
+.site-status-filter-item.brand-header-empty:hover {
+    color: var(--color-text-secondary);
+}
