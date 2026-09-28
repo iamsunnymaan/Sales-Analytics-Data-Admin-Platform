@@ -1,20 +1,55 @@
-# House of Beauty — Admin Portal
+# Sales & Analytics Admin Portal
 
-An internal Spring Boot admin application for managing and reporting on **Primary Sales**,
-**Secondary Sales**, **Site/Store data**, and **Product data** for the House of Beauty brands
-(Anastasia Beverly Hills, Kylie Cosmetics). It also includes its own login/RBAC system (users,
-roles, page/section permissions, per-user feature toggles) and a generic CSV/XLSX data-upload +
-Explorer tool for the underlying tables.
+An internal Spring Boot admin application for teams that need to track retail sales performance
+across multiple brands, partners, and channels. It centralizes two parallel sales pipelines —
+**Primary Sales** (sell-in to partners/distributors) and **Secondary Sales** (sell-through to end
+customers) — alongside the **Site/Store** and **Product master data** both depend on, so targets,
+daily trends, and achievement percentages can be reported consistently by brand, region, channel,
+partner, and time period. Everything is brand-agnostic by design: brand, channel, and region are
+just filters, so the same portal can onboard additional brands or partners without code changes.
+
+Beyond reporting, it's a self-service data platform for the underlying tables:
+
+- **Data Upload** — a CSV/XLSX import pipeline with a dry-run **Preview** step (runs the real
+  import logic inside a transaction that always rolls back, so what you see is exactly what a
+  commit would do), chunked commits, duplicate detection, identity-column preservation, per-row
+  error reporting, and a retained Upload History (auto-cleaned by a nightly job).
+- **Explorer** — a generic browse/search/edit/export UI over every exposed table, with no SQL
+  required; a fixed set of internal/system tables (`user_master`, `import_sessions`, audit/log
+  tables, etc.) is always hidden from it.
+- **Its own login/RBAC system** — session-based auth (BCrypt-hashed passwords), not the full
+  Spring Security filter chain, with roles, per-page/section permissions, and per-user feature
+  toggles, all managed from the IAM screen.
+- **Monitoring** — an audit trail of login, upload, download, and unauthorized-access attempts.
+
+## Screenshots
+
+| Dashboard | Site Insights — Geo Map |
+|---|---|
+| ![Dashboard](docs/screenshots/dashboard.jpg) | ![Site Insights Geo Map](docs/screenshots/site-insights-map.jpg) |
+
+| Explorer | Data Upload |
+|---|---|
+| ![Explorer](docs/screenshots/explorer.jpg) | ![Data Upload](docs/screenshots/data-upload.jpg) |
+
+| IAM / Roles |
+|---|
+| ![IAM Roles](docs/screenshots/iam-roles.jpg) |
 
 ## Tech stack
 
-- **Backend:** Java 17, Spring Boot 3.2.5 (Web, Data JPA/Hibernate, Validation), Maven
-- **Database:** MySQL 8+ — see [Database](#database)
-- **Auth:** Custom session-based login (BCrypt password hashing via `spring-security-crypto`,
-  *not* the full Spring Security filter chain — see `pom.xml`'s comment on that dependency)
-- **Frontend:** Static HTML/CSS/vanilla JS under `src/main/resources/static/` (no build step,
-  no framework/bundler — served directly by Spring Boot)
-- **File import/export:** Apache POI (XLSX), OpenCSV (CSV)
+- **Backend:** Java 17, Spring Boot 3.2.5 (`spring-boot-starter-web`, `-data-jpa`/Hibernate,
+  `-validation`), Maven, Lombok
+- **Database:** MySQL 8+ (via `mysql-connector-j`) — see [Database](#database)
+- **Auth:** Custom session-based login with BCrypt password hashing (`spring-security-crypto`
+  only, *not* the full `spring-boot-starter-security` filter chain — see `pom.xml`'s comment on
+  that dependency); its own role/permission/feature-toggle model instead of Spring Security's
+- **Frontend:** Static HTML/CSS/vanilla JS under `src/main/resources/static/` (one folder per
+  page/component, no build step, no bundler — served directly by Spring Boot); [Apache
+  ECharts](https://echarts.apache.org/) for charts, [D3.js](https://d3js.org/) + TopoJSON for the
+  Site Insights geo map
+- **File import/export:** Apache POI (`poi-ooxml`, XLSX), OpenCSV (CSV)
+- **Dev tooling:** Spring Boot DevTools (auto-restart on rebuild)
 
 ## Prerequisites
 
@@ -81,15 +116,24 @@ The app starts on **http://localhost:8091**. On first run against an empty datab
 
 ## Pages
 
-- **Dashboard** — cross-brand sales overview, daily trends, partner performance, product snapshot
-- **Primary Sales / Secondary Sales** — overview, daily trends, product snapshot, reports
-- **Site Insights** — site picker, geo map/compare, per-site detail
-- **Team Insights** — team/person-level performance reports
-- **Explorer** — generic browse/search/edit/export over the core data tables
-- **Data Upload** — CSV/XLSX import with preview, validation, and commit history
-- **IAM / Roles** — user, role, and page/section permission management
-- **Monitoring** — login/upload/download/unauthorized-access audit trails
-- **Super Admin** — top-level administrative console
+- **Dashboard** — cross-brand sales overview: monthly target vs. achievement for Primary and
+  Secondary Sales side by side, daily sales trends, partner performance, and a product snapshot,
+  all filterable by sales type, brand, channel, status, and financial year
+- **Primary Sales / Secondary Sales** — the same overview/trends/product-snapshot reporting,
+  scoped to just that sales pipeline, plus dedicated report views
+- **Site Insights** — look up a site by code or store name; an interactive **Geo Map** (D3 +
+  TopoJSON, drill down from all-India to state to district) showing which states/districts have
+  sites; a **Compare** view for states, sites, or hand-picked stores; and per-site detail
+- **Team Insights** — team- and person-level performance reports (RM/AM/CM/SM hierarchy)
+- **Explorer** — generic browse/search/edit/export over every exposed table (`primary_sales`,
+  `secondary_sales`, `site_master`, `product_master`, targets, `batch_master`, …)
+- **Data Upload** — CSV/XLSX import against any of those tables, with a template download, a
+  dry-run preview/validation step, and upload history
+- **IAM / Roles** — manage users and roles, and see/edit each role's full permission set (page
+  access, section access, upload/download/explorer rights, …) in one place
+- **Monitoring** — audit trail of logins, uploads, downloads, and unauthorized-access attempts
+- **Super Admin** — reserved top-level console, gated to the `SUPERADMIN` role (currently a shell
+  page; no dedicated backend yet)
 
 ## Project structure
 
