@@ -35,11 +35,6 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-// Backs the Identity > Users section (UsersController: /api/identity/users) — the "New
-// User"/"Edit Profile"/"Delete" actions on RolesPage.js. Password reset lives inside Edit
-// Profile (an optional "New Password" field — see UpdateUserRequest's header comment), there's no
-// separate password-change endpoint. Deliberately separate from AuthService, which owns the
-// login/session side of IAM_Login_Users; this owns the admin-facing CRUD side.
 @Service
 public class UserManagementService {
 
@@ -153,16 +148,11 @@ public class UserManagementService {
             user.setActive(request.active());
         }
 
-        // "New Password" is optional in the Edit Profile popup — blank/null means "leave it as it
-        // is". The popup's "Old Password" field is never sent (there's nothing real to diff
-        // against; passwords are only ever stored hashed) — it's a non-editable placeholder on the
-        // frontend only.
         String newPassword = request.newPassword();
         if (newPassword != null && !newPassword.isBlank()) {
             validatePassword(newPassword);
             user.setPasswordHash(passwordEncoder.encode(newPassword));
-            // Setting a fresh password is a reasonable point to also lift a lockout — there's no
-            // other screen yet to unlock an account otherwise.
+
             user.setFailedLoginAttempts(0);
             user.setLocked(false);
         }
@@ -182,10 +172,6 @@ public class UserManagementService {
     public void deleteUser(Long userId) {
         IamLoginUser user = getUserOrThrow(userId);
 
-        // Order matters: FK children first, then the user row itself. All four audit tables are
-        // detached (User_ID set null) rather than deleted, so login/download/upload/unauthorized-
-        // access history survives the account being removed — see IamLoginLoginAudit's header
-        // comment.
         userRoleRepository.deleteByIdUserId(userId);
         userPermissionRepository.deleteByIdUserId(userId);
         otpVerificationRepository.deleteByUserId(userId);
@@ -201,8 +187,6 @@ public class UserManagementService {
         featureManagementService.invalidateGrantedFeatureKeysCache(userId);
     }
 
-    // New user, no existing roles to compare against — any protected role in the request is an
-    // outright grant attempt.
     private void rejectProtectedRoleAssignment(List<Integer> requestedRoleIds) {
         if (!protectedRoleIdsWithin(requestedRoleIds).isEmpty()) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN,
@@ -210,10 +194,6 @@ public class UserManagementService {
         }
     }
 
-    // Compares against the user's CURRENT protected-role membership rather than rejecting outright,
-    // so a non-superadmin editing an unrelated field (email, name) on an existing Admin/SuperAdmin
-    // user doesn't get blocked just because the Edit Profile form resubmits their existing role
-    // checkboxes unchanged — only an actual add/remove of SUPERADMIN or ADMIN is rejected.
     private void rejectProtectedRoleChange(Long userId, List<Integer> requestedRoleIds) {
         Set<Integer> requestedProtected = protectedRoleIdsWithin(requestedRoleIds);
         List<Integer> currentRoleIds = userRoleRepository.findByIdUserId(userId).stream()

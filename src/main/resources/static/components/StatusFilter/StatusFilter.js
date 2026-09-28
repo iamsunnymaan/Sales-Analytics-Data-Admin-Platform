@@ -1,9 +1,3 @@
-// Shared "All/Active/Inactive/Upcoming" status pill toggle — previously copy-pasted between
-// SiteStatusPage.js (initSiteStatusFilterToggle) and TeamPerformancePage.js
-// (initTeamStatusFilterToggle). Each page keeps its own module-level "current status" variable and
-// its own fan-out of what refreshes when the status changes — this only owns the click/active-class
-// mechanics and always calls onChange with the new value, regardless of whether a given call site
-// uses that argument.
 import { hasFeatureSync } from "/Shared/js/feature-guard.js";
 
 export function initStatusFilter(toggleId, onChange) {

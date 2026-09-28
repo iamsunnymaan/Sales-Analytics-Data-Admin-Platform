@@ -1,6 +1,3 @@
-<!-- Primary Sales page: Overview KPI cards (Target vs Achievement), Daily Sales Trends,
-     Product Snapshot, and Region/State/City Summary sections, all driven by the shared Brand pill
-     and SalesDateFilter, wired up by PrimarySalesPage.js. -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -34,34 +31,16 @@
 
         <main class="app-main">
             <section class="target-achievement-section" id="targetVsAchievementSection">
-                <!-- "Filter Header" section — same frontend as Dashboard's own copy
-                     (#dashboardFyOverviewFilterHeaderSectionContainer in index.html), sitting above
-                     "1. Overview" below. Brand/Channel are both real, wired pills now (see
-                     PrimarySalesPage.js's Page.initBrandHeader/Page.initChannelHeader) — Brand is the
-                     same #brandHeader every other Brand-filterable section already used, moved here
-                     from "1. Overview"'s own Insights card header; Channel is new, scoped to real
-                     Site_Master.Channel values (Sales_Type = 'Primary Sales'). Both, plus the Date
-                     Filter below, drive "1. Overview", "2. Daily Sales Trends", "3. Product Snapshot",
-                     "4. Reports" only reacts to the Date Filter, per explicit request (it has no
-                     Brand/Channel pill of its own, always "all"). -->
+
                 <div class="section-container" id="dashboardFyOverviewFilterHeaderSectionContainer">
                 <div class="section-header">
                     <div class="ta-overview-header-row">
-                        <!-- Groups the title with its own loading spinner as one flex child (same
-                             .product-snapshot-panel-title-group convention Product Snapshot's own
-                             header uses) so .ta-overview-header-row's justify-content: space-between
-                             still only ever sees two children (this group, and the range label).
-                             Spinner shown via this page's own .section-loading-spinner/.is-loading
-                             convention — toggled on this container by Page wiring's withFilterLoading
-                             whenever a Brand/Channel/Date change is still being applied across every
-                             section the Filter Header drives. -->
+
                         <span class="product-snapshot-panel-title-group">
                             <p class="target-achievement-subtitle">Filter Header</p>
                             <i class="bi bi-arrow-clockwise section-loading-spinner" id="filterHeaderSpinner" aria-hidden="true"></i>
                         </span>
-                        <!-- Moved here from "1. Overview"'s own header row per explicit request — still
-                             the same #taOverviewRangeLabel PrimarySalesPage.js fills in on every fetch,
-                             just relocated to sit next to "Filter Header" on the right. -->
+
                         <span class="ta-overview-range-label" id="taOverviewRangeLabel"></span>
                     </div>
                 </div>
@@ -69,66 +48,30 @@
                 <div class="section-content">
                     <div class="dashboard-fy-overview-filter-header-card">
                         <div class="dashboard-fy-overview-filter-row" id="dashboardFyOverviewFilterRow">
-                            <!-- Moved here from "1. Overview"'s own Insights card header per explicit
-                                 request — still the same #brandHeader Page.initBrandHeader()
-                                 (PrimarySalesPage.js) already drives page-wide (Insights + Product
-                                 Snapshot), just relocated. FIXED per later explicit request ("align it
-                                 the same as the channel filter"): #brandHeader used to wrap a SEPARATE
-                                 inner .brand-header-pill div (a "historical" quirk — see BrandFilter.js's
-                                 own renderBrandPill comment, which already supported either shape) —
-                                 that extra unstyled wrapper div sat outside .dashboard-fy-overview-
-                                 field's own flex row as a plain block box, instead of being the flex
-                                 item directly the way Channel's #dashboardFyOverviewChannelToggle
-                                 below already is, throwing off the two pills' vertical alignment.
-                                 #brandHeader now carries .brand-header-pill itself — structurally
-                                 identical to Channel's own field, no separate wrapper left. -->
+
                             <div class="dashboard-fy-overview-field">
                                 <span class="dashboard-fy-overview-label">Brand</span>
                                 <div class="brand-header-pill" id="brandHeader" data-feature="feature:brand-filter">
-                                    <!-- Placeholder only — replaced with the real Site_Master-backed
-                                         brand buttons by renderBrandPill once loadBrandPillOptions()
-                                         resolves (see PrimarySalesPage.js's wirePage()). Avoids
-                                         briefly showing a hardcoded "ABH"/"Kylie" fallback that
-                                         doesn't match the real Brand data. -->
+
                                     <span class="brand-header-item brand-header-loading">Loading…</span>
                                 </div>
                             </div>
                             <div class="dashboard-fy-overview-field">
                                 <span class="dashboard-fy-overview-label">Channel</span>
                                 <div class="brand-header-pill" id="dashboardFyOverviewChannelToggle" data-feature="feature:channel-filter">
-                                    <!-- Placeholder only — replaced with the real Site_Master-backed channel
-                                         buttons by renderChannelPill once loadChannelPillOptions() resolves
-                                         (see PrimarySalesPage.js's wirePage()). Avoids briefly showing a
-                                         hardcoded "Offline"/"Online" fallback that doesn't match the real
-                                         Channel data. -->
+
                                     <span class="brand-header-item brand-header-loading">Loading…</span>
                                 </div>
                             </div>
-                            <!-- Same frontend as Dashboard's own copy (#dashboardFyOverviewStatusToggle
-                                 in index.html: same id, same site-status-card-field/site-status-filter-
-                                 pill classes) — wired via Page.initStatusFilter (PrimarySalesPage.js) to
-                                 the page's shared Brand/Channel-filterable sections. FIXED per later
-                                 explicit request: options (now including "Upcoming") are fetched from
-                                 GET /api/primary-sales/statuses by renderStatusPill, same
-                                 fetch-then-render-then-"Not Available"-on-failure pattern
-                                 renderBrandPill/renderChannelPill already follow, instead of these
-                                 buttons being hardcoded straight into this markup. -->
+
                             <div class="site-status-card-field site-status-filter-field">
                                 <span class="site-status-card-label">Status</span>
                                 <div class="site-status-filter-pill" id="dashboardFyOverviewStatusToggle" data-feature="feature:status-filter">
-                                    <!-- Placeholder only — replaced with the real category buttons by
-                                         renderStatusPill once loadStatusPillOptions() resolves (see
-                                         PrimarySalesPage.js's wirePage()). -->
+
                                     <span class="site-status-filter-item brand-header-loading">Loading…</span>
                                 </div>
                             </div>
-                            <!-- Moved here from "1. Overview"'s own Insights card header per explicit
-                                 request — still the same #salesDateFilterModeToggle/#salesDateFilterBody/
-                                 #salesDateFilterClearBtn Page.initInsightsDateFilter() (PrimarySalesPage.js)
-                                 already drives page-wide (Insights + Product Snapshot + Reports), just
-                                 relocated. Pushed to the filter row's right edge (see
-                                 .dashboard-fy-overview-filter-row .ta-overview-date-filter-right in
-                                 PrimarySalesPage.css), same convention the old Year Filter field used. -->
+
                             <div class="ta-overview-date-filter-right" data-feature="feature:date-filter">
                                 <div class="sales-date-filter-mode-toggle" id="salesDateFilterModeToggle">
                                     <button type="button" class="sales-date-filter-mode-btn" data-mode="filter" title="Select a month range"><i class="bi bi-funnel"></i> Filter</button>
@@ -150,15 +93,7 @@
                 <div class="section-header">
                 <div class="ta-overview-header-row">
                     <p class="target-achievement-subtitle">1. Overview</p>
-                    <!-- Real current month's Projection Vs Target ("BEHIND · Proj -27.8% (vs Tgt)" /
-                         "AHEAD · Proj +27.8% (vs Tgt)") — per explicit request this does NOT track the
-                         page's Brand pill/date Filter the way everything else in this section does; see
-                         loadFixedProjVsTargetBadge in PrimarySalesPage.js, loaded once and never
-                         refetched by setDateRange/setBrand. Deliberately a DIFFERENT figure/wording from
-                         the Insights table's own filter-aware "Projection Vs Target" row
-                         (#taInsightProjVsTargetCurrent). Its own range-label sibling (#taOverviewRangeLabel)
-                         moved out to the Filter Header section above per a later explicit request, so
-                         this badge no longer needs a .ta-overview-header-right wrapper to group with it. -->
+
                     <span class="ta-kpi-projected-badge" id="taOverviewProjVsTargetBadge">—</span>
                 </div>
                 </div>
@@ -168,11 +103,7 @@
                 <div class="ta-overview-split">
                 <div class="ta-overview-insights">
                     <div class="ta-insights-card" id="taInsightsCard">
-                        <!-- Its own Brand pill (#brandHeader) moved to the Filter Header section's own
-                             "Brand" field per explicit request — see PrimarySalesPage.html's Filter
-                             Header block above and PrimarySalesPage.css's .ta-insights-table-wrap
-                             comment for the corner-radius follow-up (this card has no header strip left
-                             to pair with anymore). -->
+
                         <div class="ta-insights-table-wrap">
                             <table class="ta-insights-table">
                                 <thead>
@@ -232,19 +163,14 @@
                         <div class="ta-kpi-gauge-wrap">
                             <div class="ta-kpi-gauge-chart" id="taMtdAchievementGauge"></div>
                         </div>
-                        <!-- "You are ₹X short of your target of ₹Y" (or "ahead of" once achieved) —
-                             see renderMtdAchievement in PrimarySalesPage.js. -->
+
                         <div class="ta-kpi-gauge-remaining" id="taMtdAchievementRemaining">—</div>
                         <div class="ta-kpi-card-footer" id="taMtdAchievementFooter">— / —</div>
                     </div>
                 </div>
 
                 </div>
-                <!-- Closes .target-achievement-groups (opened above at "1. Overview"'s content
-                     start) — previously left unclosed here pre-existing this section-container
-                     refactor; harmless before since that div carried no border/background, but a
-                     real bug once .section-container gives it a visible box that would otherwise
-                     swallow every section after it. -->
+
                 </div>
                 </div>
                 </div>
@@ -262,24 +188,11 @@
                             <span class="daily-trend-mode-badge" id="dailyTrendModeBadge">—</span>
                         </div>
                         <div class="daily-trend-header-actions">
-                            <!-- Same frontend as Dashboard's own copy (index.html's own
-                                 #dailyTrendTargetToggle) — toggles the Target line on/off, works in
-                                 both Graph and Bar Graph mode (see initDailyTrendGraph's renderChart in
-                                 PrimarySalesPage.js: state.showTarget replaces the old hardcoded
-                                 `!isBar` gate, which used to always show Target in Graph mode and never
-                                 in Bar Graph mode with no way to turn either off). Starts active/on
-                                 since Target used to always be shown unconditionally in Graph mode —
-                                 this toggle only adds the ability to hide it (and, per this same
-                                 explicit request, the ability to also show it in Bar Graph mode), not a
-                                 new default-off behavior. -->
+
                             <button type="button" class="daily-trend-compare-toggle active" id="dailyTrendTargetToggle" aria-pressed="true" title="Overlay Sales Target for the same period">
                                 <i class="bi bi-bullseye"></i> Target
                             </button>
-                            <!-- Overlays last year's same-period Sales as a dotted line on the chart
-                                 (data already comes back from /trend-range as `lastYear`, previously
-                                 used only for the tooltip's "vs Last Year" %). Works alongside both
-                                 Bar Graph mode and Compare mode — see initDailyTrendGraph's
-                                 renderChart in PrimarySalesPage.js. -->
+
                             <button type="button" class="daily-trend-compare-toggle" id="dailyTrendVsLastYearToggle" aria-pressed="false" title="Overlay last year's Sales for the same period">
                                 <i class="bi bi-calendar2-week"></i> Vs Last Year
                             </button>
@@ -292,13 +205,6 @@
                             </div>
                         </div>
                     </div>
-
-                    <!-- Brand pill + Date Filter row (#dailyTrendBrandHeader) removed per explicit
-                         request — Page.initSalesDateFilter/renderBrandPill/the click-handlers above
-                         all do plain getElementById/querySelector lookups (never DOM-position-
-                         dependent), so removing this markup is a no-op for them: the chart just stays
-                         on its default state (brand=all, no date filter applied) with nothing left
-                         on-page to change it from here. -->
 
                     <div class="daily-trend-selection-summary" id="dailyTrendSelectionSummary">—</div>
 
@@ -323,16 +229,11 @@
                             <div class="product-snapshot-panel-header">
                                 <span class="product-snapshot-panel-title-group">
                                     <span class="product-snapshot-panel-title">Product Ranking</span>
-                                    <!-- Shown only while a brand/date-filter change is in flight — see
-                                         initProductSnapshot's refresh() in PrimarySalesPage.js, which
-                                         toggles #productSnapshotCard.is-loading (an ancestor of this
-                                         header). -->
+
                                     <i class="bi bi-arrow-clockwise section-loading-spinner" id="productSnapshotRankingSpinner" aria-hidden="true"></i>
                                 </span>
                                 <div class="product-snapshot-panel-actions">
-                                    <!-- Real per-brand Qty (same ProductLevelResponse.brandQuantities data as the
-                                         right-side strip), condensed into one header badge — higher brand gets ▲,
-                                         the other gets ▼. Populated by renderQtyHeaderBadge in PrimarySalesPage.js. -->
+
                                     <div class="product-snapshot-qty-badge" id="productSnapshotQtyBadge"></div>
                                     <button type="button" class="product-snapshot-filter-toggle" id="productSnapshotFilterToggleA" aria-expanded="false">
                                         <i class="bi bi-funnel"></i>
@@ -408,9 +309,7 @@
                             <button type="button" class="brand-header-item" data-tab="channel">Channel</button>
                             <button type="button" class="brand-header-item" data-tab="partner">Partner</button>
                         </div>
-                        <!-- Shown only while any tab's data is being (re)fetched — see initReportsSection's
-                             beginLoading/endLoading in PrimarySalesPage.js, which toggle #reportsSectionCard.is-loading
-                             (an ancestor of this header). -->
+
                         <span class="section-loading-spinner" id="reportsSectionSpinner" aria-hidden="true"></span>
                         <div class="reports-section-counts" id="reportsSectionCounts"></div>
                         <div class="product-snapshot-download-wrap">

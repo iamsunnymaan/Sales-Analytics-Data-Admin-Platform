@@ -1,5 +1,3 @@
-/* Shared visual rules for the FY Year Filter dropdown (see FyYearFilter.js) — previously
-   duplicated byte-for-byte across Dashboard.css, SiteStatusPage.css, and TeamPerformancePage.css. */
 .dashboard-fy-year-filter {
     position: relative;
 }

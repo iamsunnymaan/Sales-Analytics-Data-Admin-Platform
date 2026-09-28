@@ -26,20 +26,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.stream.Collectors;
 
-// Backs the Dashboard page's "3. Product Snapshot" section — started as an exact copy of
-// PrimarySalesProductLevelService's logic/SQL (same TOP_N/TREE_* limits, same aggregation/ranking/
-// tree-building shape), per explicit request to reuse the Primary Sales Page's Product Snapshot
-// implementation as-is rather than designing a separate one. CHANGED per explicit request: the
-// Dashboard is the one page meant to show TOTAL sales across both channels, so every query below now
-// reads from COMBINED_SALES_SUBQUERY — a UNION ALL of Primary_Sales and Secondary_Sales (identical
-// Article_Code/Sales_Date/Sales/Qty shape in both tables) — instead of Primary_Sales alone, and
-// loadAvailableBrandsFromSiteMaster scopes Site_Master to Sales_Type IN ('Primary Sales',
-// 'Secondary Sales') instead of just 'Primary Sales'. This is the one Product Snapshot copy that's
-// deliberately NOT data-isolated to a single sales channel — contrast with
-// SecondarySalesProductLevelService's own copy, which reads Secondary_Sales only. Reuses that same
-// page's response DTOs directly (they're generic data shapes, not page-styled UI) — only this
-// service class itself is duplicated, matching this codebase's own convention of each page keeping
-// its own copy of page-facing logic.
 @Service
 public class DashboardProductLevelService {
 
@@ -49,13 +35,6 @@ public class DashboardProductLevelService {
     private static final int TREE_PRODUCTS_PER_SUBCATEGORY = 5;
     private static final BigDecimal[] ZERO_PAIR = {BigDecimal.ZERO, BigDecimal.ZERO};
 
-    // Both tables share the same (Article_Code, Sales_Date, Sales, Qty) shape and both join to
-    // Product_Master the same way, so every query below reads from this single UNION ALL instead of
-    // Primary_Sales alone — the one targeted change that makes this service a genuine Primary +
-    // Secondary combined view while keeping every aggregation/ranking/tree method byte-for-byte
-    // structurally identical to PrimarySalesProductLevelService's own copy. Aliased "ps" throughout
-    // (unchanged from the Primary-only original) purely to keep this diff minimal — it now stands for
-    // "combined sales", not "Primary_Sales".
     private static final String COMBINED_SALES_SUBQUERY =
             "(SELECT Article_Code, Sales_Date, Sales, Qty FROM Primary_Sales " +
                     "UNION ALL SELECT Article_Code, Sales_Date, Sales, Qty FROM Secondary_Sales) ps";
@@ -136,10 +115,6 @@ public class DashboardProductLevelService {
         return CompletableFuture.supplyAsync(supplier, queryExecutor);
     }
 
-    // Scoped to Sales_Type IN ('Primary Sales', 'Secondary Sales') — the Dashboard combines both
-    // channels, so a brand that only exists on one channel's sites should still show up here (unlike
-    // PrimarySalesProductLevelService/SecondarySalesProductLevelService's own copies, each scoped to
-    // just their own single channel).
     private List<String> loadAvailableBrandsFromSiteMaster() {
         String sql = "SELECT DISTINCT Brand FROM Site_Master WHERE Brand IS NOT NULL AND LTRIM(RTRIM(Brand)) <> '' " +
                 "AND Sales_Type IN ('Primary Sales', 'Secondary Sales')";
@@ -150,8 +125,6 @@ public class DashboardProductLevelService {
         return new ArrayList<>(brands);
     }
 
-    // Maps a real Site_Master.Brand value ("Anastasia Beverly hills", "Kylie Cosmetics") to the short
-    // code BrandFilter.VALID_BRANDS/BrandFilter#product actually accept ("abh"/"kylie").
     private static String siteBrandToCode(String siteBrand) {
         String normalized = siteBrand.trim().toLowerCase(java.util.Locale.ROOT);
         if (normalized.equals("anastasia beverly hills")) {

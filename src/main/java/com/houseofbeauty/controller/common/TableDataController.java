@@ -43,26 +43,20 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-// Generic paged read/edit/export API over any visible table — powers the Explorer grid. Row
-// identity comes from the table's primary key when it has one, or a full-row value match when it
-// doesn't (see updateByFullRowMatch/deleteByFullRowMatch).
+
 @RestController
 @RequestMapping("/api/database/tables")
 public class TableDataController {
 
     private static final int MAX_PAGE_SIZE = 200;
-    private static final int MAX_EXCEL_ROWS = 1_048_575; // Excel's per-sheet row limit, minus the header row.
+    private static final int MAX_EXCEL_ROWS = 1_048_575;
 
-    // MySQL may restrict ORDER BY / comparisons on these without an explicit cast workaround.
+
     private static final Set<String> NOT_SORTABLE_TYPES = Set.of("text", "ntext", "xml", "image");
-    // Binary-ish / structured types that can't usefully be cast to NVARCHAR for a LIKE search.
+
     private static final Set<String> NOT_SEARCHABLE_TYPES = Set.of("binary", "varbinary", "image", "timestamp");
 
-    // CHANGED 2026-08-11: on download (exportCsv/exportXlsx below), date/datetime columns render as
-    // DD-MM-YYYY instead of the DB's raw ISO YYYY-MM-DD text — independent of, and the reverse
-    // direction from, the YYYY-MM-DD normalization enforced on the way IN during import (see
-    // ImportProcessingService.normalizeDateText / ImportSessionController.formatExcelDate). Mirrors
-    // ImportProcessingService.DATE_COLUMN_TYPES.
+
     private static final Set<String> DATE_COLUMN_TYPES = Set.of("date", "datetime", "timestamp");
     private static final DateTimeFormatter EXPORT_DATE_FORMAT = DateTimeFormatter.ofPattern("dd-MM-yyyy");
     private static final DateTimeFormatter EXPORT_DATETIME_FORMAT = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
@@ -80,7 +74,7 @@ public class TableDataController {
         this.dialect = dialect;
     }
 
-    // Paged, searchable, sortable row listing for the Explorer grid.
+
     @GetMapping("/{tableName}/data")
     public TableDataResponse getTableData(@PathVariable String tableName,
                                              @RequestParam(defaultValue = "0") int page,
@@ -166,8 +160,7 @@ public class TableDataController {
         return new UpdateRowResponse(true);
     }
 
-    // Refuses to touch more than one row — a PK match should be unique by definition, so >1 means
-    // something is wrong (e.g. a duplicate key) and it's safer to stop than guess.
+
     private void updateByPrimaryKey(String table, List<String> primaryKeyColumns,
                                      UpdateRowRequest payload, Map<String, Object> values) {
         Map<String, Object> keys = requireMap(payload.keys(), "keys");
@@ -189,11 +182,7 @@ public class TableDataController {
         }
     }
 
-    /**
-     * Tables without a primary key have no stable identifier for "this row", so the edited row is
-     * located by matching every column's current value. If that combination isn't unique the edit
-     * is refused rather than risk silently changing the wrong (identical) row.
-     */
+    
     private void updateByFullRowMatch(String table, Map<String, String> columnTypes,
                                        UpdateRowRequest payload, Map<String, Object> values) {
         Map<String, Object> originalRow = requireMap(payload.originalRow(), "originalRow");
@@ -216,9 +205,7 @@ public class TableDataController {
         }
     }
 
-    // Empties an entire table and resets its identity column (e.g. SN) back to 1 — deliberately a
-    // separate, explicit endpoint from deleteRow below (which refuses to touch more than one row) so
-    // a full wipe can never happen by accident through the single-row delete path.
+
     @DeleteMapping("/{tableName}/all-rows")
     @RequirePermission("page:data-upload.truncate-table")
     public TruncateTableResponse truncateTable(@PathVariable String tableName) {
@@ -227,13 +214,7 @@ public class TableDataController {
         return new TruncateTableResponse(true, table);
     }
 
-    // One-off bulk adjustment of a single numeric column — multiplies every row's value by
-    // `factor` in one UPDATE (e.g. bringing an unrealistically high target column down to a level
-    // closer to actually-achieved sales, without disturbing the relative distribution across
-    // rows). Not used by any page in the app; exists purely as an admin/data-cleanup tool. Gated
-    // the same as truncateTable above — same destructive-tier tool, no page-level UI of its own,
-    // and previously had NO @RequirePermission at all (a real gap: anyone able to reach the API
-    // could bulk-rescale any table's numeric column with no permission check whatsoever).
+
     @PostMapping("/{tableName}/rescale-column")
     @RequirePermission("page:data-upload.truncate-table")
     public RescaleColumnResponse rescaleColumn(@PathVariable String tableName,
@@ -244,7 +225,7 @@ public class TableDataController {
         return new RescaleColumnResponse(table, column, factor, updated);
     }
 
-    // Mirrors updateRow's two identification strategies (PK vs. full-row match).
+
     @DeleteMapping("/{tableName}/rows")
     public DeleteRowResponse deleteRow(@PathVariable String tableName, @RequestBody DeleteRowRequest payload) {
         String table = tableAccessService.validateTable(tableName);
@@ -275,10 +256,7 @@ public class TableDataController {
         }
     }
 
-    /**
-     * Same full-row matching approach as {@link #updateByFullRowMatch}: without a primary key the
-     * only way to identify "this row" is by the exact values the client last saw for every column.
-     */
+    
     private void deleteByFullRowMatch(String table, Map<String, String> columnTypes, DeleteRowRequest payload) {
         Map<String, Object> originalRow = requireMap(payload.originalRow(), "originalRow");
         if (!originalRow.keySet().equals(columnTypes.keySet())) {
@@ -300,8 +278,7 @@ public class TableDataController {
         }
     }
 
-    // A blank CSV with just the header row, so an import file's columns match the table exactly.
-    // Identity and computed columns are excluded since they're always DB-generated.
+
     @GetMapping("/{tableName}/template")
     public void downloadTemplate(@PathVariable String tableName, HttpServletResponse response) throws IOException {
         String table = tableAccessService.validateTable(tableName);
@@ -324,8 +301,7 @@ public class TableDataController {
         }
     }
 
-    // Streams the full (or a row-range slice of the) filtered/sorted result set out as CSV or XLSX,
-    // reusing the same search/sort logic as the grid view.
+
     @GetMapping("/{tableName}/export")
     @RequirePermission("page:explorer.table-data")
     public void exportTableData(@PathVariable String tableName,
@@ -351,9 +327,7 @@ public class TableDataController {
         }
     }
 
-    // Backs the Monitoring page's "Download Attempts" section — see MonitoringAuditService's own
-    // header comment. authUser is always non-null here: AuthenticationFilter already rejected an
-    // unauthenticated request with 401 before this handler ever runs.
+
     private void recordDownload(HttpServletRequest request, String fileName, String fileKey, boolean success, String failureReason) {
         HttpSession session = request.getSession(false);
         AuthenticatedUser authUser = session != null
@@ -421,9 +395,7 @@ public class TableDataController {
         }
     }
 
-    // CHANGED 2026-08-11: formats a date/datetime column's value as DD-MM-YYYY for export — see the
-    // DATE_COLUMN_TYPES comment above. Non-date values, and dates in a shape this doesn't recognize
-    // (e.g. a driver-specific datetimeoffset type), fall back to the original toString() unchanged.
+
     private String formatExportValue(Object value, String columnType) {
         if (value == null) {
             return "";
@@ -467,8 +439,7 @@ public class TableDataController {
         response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
         response.setHeader("Content-Disposition", "attachment; filename=\"" + filename + ".xlsx\"");
 
-        // Streaming workbook (keeps only 100 rows in memory at a time) — a plain XSSFWorkbook would
-        // hold the entire export in memory, which doesn't scale to large tables.
+
         try (SXSSFWorkbook workbook = new SXSSFWorkbook(100)) {
             Sheet sheet = workbook.createSheet("Data");
             Row headerRow = sheet.createRow(0);
@@ -490,10 +461,7 @@ public class TableDataController {
                     if (value == null) {
                         cell.setBlank();
                     } else if (DATE_COLUMN_TYPES.contains(columnType)) {
-                        // CHANGED 2026-08-11: date/datetime columns write as DD-MM-YYYY text, not a
-                        // native Excel date cell — keeps the exported literal in sync with the CSV
-                        // export's formatting instead of leaving XLSX showing the system's default
-                        // date display format.
+
                         cell.setCellValue(formatExportValue(value, columnType));
                     } else if (value instanceof Number number) {
                         cell.setCellValue(number.doubleValue());
@@ -525,31 +493,12 @@ public class TableDataController {
         return columns.stream().filter(c -> !NOT_SEARCHABLE_TYPES.contains(columnTypes.get(c))).toList();
     }
 
-    // Columns eligible for the Explorer grid's date-range filter (see buildWhereClause below) —
-    // exposed to the frontend so it can disable the filter control on tables with no date/datetime
-    // column at all, and offer a column picker on tables with more than one.
+
     private List<String> dateColumns(List<String> columns, Map<String, String> columnTypes) {
         return columns.stream().filter(c -> DATE_COLUMN_TYPES.contains(columnTypes.get(c))).toList();
     }
 
-    // CHANGED (history): used to default orderColumn to sortableColumns.get(0) (the table's first
-    // column) whenever the caller didn't explicitly ask for a sort — wrong for a text-typed ID column
-    // (e.g. Site_Master.Site_Code sorting "1, 100, 101..." instead of numeric order) even though the
-    // rows landed in file order. That was replaced with no default sort at all (ORDER BY (SELECT
-    // NULL)) — which turned out to be wrong too: "the database's own natural scan order" is not the
-    // same thing as insertion/file order (MySQL is free to return rows via whatever scan it
-    // picks, e.g. by the clustered index — for Site_Master that's Site_Code, a business key with no
-    // relationship to file position), so grid/export order could still silently diverge from the
-    // uploaded file's row sequence.
-    //
-    // Defaults to an explicit "SN" column when the table has one, instead of falling straight to
-    // (SELECT NULL). Every importable table's SN (Product_Master, Batch_Master, Site_Master used to
-    // have one — see below) or SN-named primary key (Primary_Sales) is assigned by
-    // ImportProcessingService as a real, persisted, sequential value based on each row's absolute
-    // position in the uploaded file (immune to parallel-chunk/completion order — see
-    // ImportProcessingService's appManagedPkBaseValues), so ORDER BY SN reproduces the file's row
-    // order deterministically. Returns null (no explicit sort column) for a table with neither —
-    // still overridable by an explicit sortColumn (e.g. clicking a grid header) either way.
+
     private String[] resolveOrder(List<String> sortableColumns, String sortColumn, String sortDir) {
         String orderColumn = (sortColumn != null && sortableColumns.contains(sortColumn)) ? sortColumn : null;
         if (orderColumn == null) {
@@ -559,42 +508,7 @@ public class TableDataController {
         return new String[]{orderColumn, direction};
     }
 
-    // CHANGED 2026-08-12: second fallback tier below resolveOrder's SN check. Site_Master/
-    // Product_Master/Batch_Master lost their SN columns when their tables were recreated (see
-    // database/01_schema.sql's header) — their primary keys are business keys with no relationship
-    // to upload order, so a plain scan returns clustered-index (PK-alphabetical) order instead.
-    // Whenever there's no explicit/SN sort column and the table has exactly one PK column, this
-    // LEFT JOINs table_row_order (populated by ImportAtomicCommitRunner on every successful
-    // commit — see TableAccessService.recordRowOrder) and orders by its seq column instead. A table
-    // never imported through this pipeline (or one whose PK isn't tracked — e.g. a real identity
-    // column, which is already insertion-ordered on its own) just gets an all-NULL join, which sorts
-    // no differently than the old (SELECT NULL) fallback.
-    //
-    // table_row_order didn't actually exist in the live database from 2026-08-12 (when this
-    // fallback tier was written) until 2026-09-02 (database/migrations/2026-09-02_create_table_row_order.sql)
-    // — a schema/live-DB gap, not a code bug (see TableAccessService#tableRowOrderExists's own
-    // comment). While missing, every table this method would otherwise LEFT JOIN it for
-    // (site_master/Product_Master/Batch_Master, all single-PK with no SN column) was throwing
-    // "Invalid object name 'table_row_order'" straight through to the Explorer grid as a 500 —
-    // this tableRowOrderExists() check exists so it degrades to the (SELECT NULL) fallback instead of
-    // crashing whenever the table isn't there, which is also still the exact behavior for any
-    // environment this app points at that hasn't run that migration yet. Now that the table exists
-    // here, rows uploaded through ImportAtomicCommitRunner get their file position tracked and this
-    // LEFT JOIN actually engages — rows uploaded BEFORE the table existed have no tracked seq (the
-    // LEFT JOIN just yields NULL for them), so their grid/export order is unaffected until re-uploaded.
-    // (Primary_Sales_Target used to belong in that list too, back when its TargetID IDENTITY column
-    // was still its primary key — with that column removed it now has no primary key at all, so it
-    // already takes the plain (SELECT NULL) fallback below unconditionally.)
-    //
-    // CHANGED 2026-09-02: was previously gated on primaryKeyColumns.size() == 1 (site_master's PK was
-    // single-column, Site_Code, at the time this was written). site_master's PK became composite
-    // (Site_Code, Brand) the same day (see database/01_schema.sql's own header on that table), which
-    // silently broke this tier for it — a 2-column PK never matched size() == 1, so it fell straight
-    // to (SELECT NULL) regardless of table_row_order's contents, even after that table was created.
-    // Generalized below to any PK column count: each column is CAST to NVARCHAR(200) and concatenated
-    // with NCHAR(31) (TableAccessService.ROW_ORDER_KEY_DELIMITER) between them, matching exactly what
-    // ImportAtomicCommitRunner.recordRowOrder builds on the write side, in the same PK column order
-    // (both sides call TableAccessService.getPrimaryKeyColumns, ordered by ORDINAL_POSITION).
+
     private String[] buildFromAndOrderBy(String table, List<String> primaryKeyColumns, String orderColumn,
                                           String direction) {
         if (orderColumn != null) {
@@ -619,10 +533,7 @@ public class TableDataController {
         return new String[]{dialect.quote(table), "(SELECT NULL)"};
     }
 
-    // Combines the free-text search (OR'd across searchable columns) with an optional date-range
-    // filter (AND'd in) on a single caller-chosen column — used by the Primary Sales page's Month
-    // / Year / Range filter, but works against any table's date/datetime column since it's applied
-    // generically here.
+
     private String buildWhereClause(List<String> searchableColumns, String search, Map<String, String> columnTypes,
                                      String dateColumn, String dateFrom, String dateTo, List<Object> params) {
         List<String> conditions = new ArrayList<>();
@@ -648,8 +559,7 @@ public class TableDataController {
             if (dateFrom == null || dateFrom.isBlank() || dateTo == null || dateTo.isBlank()) {
                 throw new IllegalArgumentException("dateFrom and dateTo are required when dateColumn is set.");
             }
-            // Upper bound is exclusive of the following day so dateTo's entire day is included
-            // regardless of whether the column carries a time component.
+
             conditions.add(dialect.quote(dateColumn) + " >= ? AND " + dialect.quote(dateColumn) + " < " + dialect.dateAddOneDay("?"));
             params.add(dateFrom);
             params.add(dateTo);

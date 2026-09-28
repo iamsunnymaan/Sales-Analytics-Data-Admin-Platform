@@ -1,4 +1,3 @@
-/* Styles for the collapsible/off-canvas app sidebar nav. */
 .app-sidebar {
     width: 180px;
     flex-shrink: 0;
@@ -9,19 +8,7 @@
     flex-direction: column;
     overflow: hidden;
     transition: width 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-    /* Deliberately NOT given a `view-transition-name` (see the `@view-transition` rule in
-       Shared/css/app.css). That was tried to keep the sidebar visually stable during a
-       cross-document navigation, but it backfired: naming it makes the browser treat it as a
-       "shared element" and play its own geometry-interpolation animation (width/position)
-       between the old and new page's captured sidebar box, rendered as an overlay on top of the
-       real DOM for the transition's duration — any tiny mismatch between those two captures
-       (timing, sub-pixel rounding, a mid-click :active state) shows up as exactly the
-       "collapsed sidebar briefly widens, then snaps back" glitch this was meant to prevent.
-       SidebarBootstrap.js's synchronous session-cache (added after this) already makes the
-       sidebar's rendered pixels identical between the old and new page from the very first
-       frame, so it no longer needs special-casing — it just rides along in the default root
-       transition with the rest of the page, where a cross-fade between two identical images is
-       visually a no-op. */
+
 }
 
 .app-sidebar .sidebar-brand {
@@ -69,13 +56,10 @@ html.sidebar-collapsed .sidebar-brand {
     justify-content: center;
 }
 
-/* Only the expand toggle remains in the collapsed rail — the logo mark is hidden below. */
 html.sidebar-collapsed .sidebar-brand-mark {
     display: none;
 }
 
-/* Text fades/shrinks out instead of vanishing instantly via display:none, so it animates in sync
-   with the sidebar's width transition rather than popping. */
 .sidebar-brand-text,
 .sidebar-nav .nav-link-text,
 .sidebar-footer-username {
@@ -106,8 +90,7 @@ html.sidebar-collapsed .sidebar-nav .nav-link {
     padding-left: 0;
     padding-right: 0;
     margin: 0.15rem 0.5rem;
-    /* Item is inset by the margin above, so 100% here means "fill the rail minus that inset" —
-       not the full 72px — which is what keeps it from touching the edges. */
+
     width: calc(100% - 1rem);
     border-radius: 6px;
     overflow: hidden;
@@ -131,36 +114,20 @@ html.sidebar-collapsed .sidebar-nav .nav-link i {
     box-sizing: border-box;
 }
 
-/* .sidebar-nav is a column flex container (Bootstrap's .nav + .flex-column), which makes every
-   <li class="nav-item"> inside it — links AND .sidebar-section-title headers alike — an implicit
-   flex item with the default flex-shrink:1. Once enough sections/links were added that their
-   combined natural height exceeds the sidebar's fixed height, the browser shrank every row to
-   make them all fit instead of overflowing — collapsing the section-title rows down to just their
-   padding, with zero room left for the text itself (invisible, not just faint). flex-shrink:0
-   keeps every row at its natural size, so the container legitimately overflows and the
-   overflow-y:auto above scrolls it instead of silently crushing rows.  */
 .sidebar-nav .nav-item {
     flex-shrink: 0;
 }
 
 .sidebar-nav {
     flex: 1 1 auto;
-    /* Flex items default to min-height:auto (= their content's natural height) in a column
-       flex container, which stops them ever shrinking enough for overflow-y:auto to actually
-       engage — this is what made the nav list grow past .app-sidebar's height instead of
-       scrolling internally. min-height:0 lets it shrink to the flex container's remaining space. */
+
     min-height: 0;
-    /* Bootstrap's own .nav sets flex-wrap:wrap; combined with .flex-column (flex-direction:
-       column) that made items overflowing the available height wrap into a second column
-       instead of stacking — invisible since overflow-x is hidden below, which looked exactly
-       like "the extra items just disappeared" rather than a scrolling problem. */
+
     flex-wrap: nowrap;
     overflow-y: auto;
     overflow-x: hidden;
     padding: 0.5rem 0;
-    /* Scrollable (more sections were added than the rail's fixed height fits, e.g. Identity)
-       but the scrollbar itself stays invisible — Firefox/IE-Edge via these two properties,
-       Chrome/Safari/Edge(Chromium) via the ::-webkit-scrollbar rule below. */
+
     scrollbar-width: none;
     -ms-overflow-style: none;
 }
@@ -204,7 +171,6 @@ html.sidebar-collapsed .sidebar-nav .nav-link i {
     font-weight: 500;
 }
 
-/* Pinned to the bottom of the flex column — stays put regardless of nav scroll position. */
 .sidebar-footer {
     flex-shrink: 0;
     display: flex;
@@ -261,18 +227,10 @@ html.sidebar-collapsed .sidebar-footer {
     padding-right: 0.75rem;
 }
 
-/* Collapsed rail shows only the logout icon — the avatar + "Admin" label are dropped entirely
-   (not just faded) so the logout button is the sole flex child and centers cleanly. */
 html.sidebar-collapsed .sidebar-footer-user {
     display: none;
 }
 
-/* ==================== Responsive: hamburger toggle + backdrop ==================== */
-/* Fixed-position hamburger button that opens the off-canvas sidebar on tablet/mobile — hidden on
-   desktop, where the sidebar is always visible in-flow (with its own separate collapse toggle
-   above). Every page renders this + #sidebarBackdrop statically right next to <nav id="appSidebar">
-   (see any page's HTML) so it's present from first paint, matching how the sidebar nav itself
-   and SidebarBootstrap.js are already duplicated per page rather than injected. */
 .sidebar-toggle-btn {
     display: none;
     position: fixed;
@@ -292,8 +250,6 @@ html.sidebar-collapsed .sidebar-footer-user {
     cursor: pointer;
 }
 
-/* Dim overlay behind the open off-canvas sidebar — also a tap-to-close target on top of the
-   document-click listener in Sidebar.js's initSidebarOffCanvas(). */
 .sidebar-backdrop {
     display: none;
     position: fixed;
@@ -310,10 +266,6 @@ html.sidebar-collapsed .sidebar-footer-user {
     pointer-events: auto;
 }
 
-/* Tablet: sidebar stays in-flow (not off-canvas) but always shows as the compact icon-only rail —
-   reclaims width for content without hiding navigation entirely. Mirrors html.sidebar-collapsed's
-   rules above, applied unconditionally in this range regardless of the user's desktop collapse
-   preference. The desktop collapse toggle is hidden here since it'd have nothing visible to do. */
 @media (max-width: 1024px) and (min-width: 641px) {
     .app-sidebar {
         width: 64px;
@@ -375,12 +327,6 @@ html.sidebar-collapsed .sidebar-footer-user {
     }
 }
 
-/* Mobile: sidebar becomes a full off-canvas overlay drawer — hidden by default (translated off the
-   left edge), slid in via .show (toggled by #sidebarToggle, see Sidebar.js's
-   initSidebarOffCanvas()). Taken out of .app-shell's flex flow via position:fixed, so .app-main
-   naturally fills the full viewport width without any change needed there. Always shows full
-   labels regardless of the desktop sidebar-collapsed preference — an overlay drawer has no reason
-   to go icon-only, since it doesn't compete with content for width while open. */
 @media (max-width: 640px) {
     .sidebar-toggle-btn {
         display: flex;
@@ -400,7 +346,6 @@ html.sidebar-collapsed .sidebar-footer-user {
         transform: translateX(0);
     }
 
-    /* Only one control visible at a time: hamburger while closed, header arrow while open. */
     .app-sidebar.show ~ .sidebar-toggle-btn {
         display: none;
     }

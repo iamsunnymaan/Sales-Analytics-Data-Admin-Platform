@@ -1,14 +1,3 @@
-<!-- Monitoring — security/usage audit trail: password-reset tokens, OTPs, a Usage Overview graph
-     (login activity by hour of day + most-active users), and "2. Audit" — one Type/Status/Search/
-     Date-filtered table covering all 4 attempt kinds (login, download, upload, unauthorized). Those
-     4 used to be their own separate always-visible sections here; they were removed per explicit
-     request and folded into Audit instead (per a later explicit request) — don't re-add them as
-     their own standalone sections. Audit sits in the page's 2nd position (right after Usage
-     Overview) per explicit request — don't move it back down unasked. "Sessions (Refresh Tokens)"
-     was removed per explicit request too (it only ever showed rows from another application
-     sharing this database — house_of_beauty itself never issues one, see
-     IamLoginRefreshTokenRepository's own header comment) — don't re-add it unasked. See
-     MonitoringPage.js. -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -40,9 +29,6 @@
         <main class="app-main">
             <section class="monitoring-section">
 
-                <!-- 1. Usage Overview — which hour of day sees more/less login activity, and whose
-                     usage — both derived from real successful-login timestamps (GET
-                     /api/monitoring/usage-stats), not simulated. -->
                 <div class="section-container" id="usageOverviewSectionContainer" data-permission="page:monitoring.login-attempts" hidden>
                     <div class="section-header">
                         <p class="monitoring-section-title">1. Usage Overview</p>
@@ -61,14 +47,6 @@
                     </div>
                 </div>
 
-                <!-- 2. Audit — Type/Status filters left, Search/Date filter right, a single table
-                     below driven by MonitoringPage.js's own AUDIT_TYPE_CONFIG (Type picks which of
-                     MonitoringController's 4 attempt endpoints to read; Status/Search/Date filter
-                     client-side over the result). Date filter is the same #idPrefix-driven
-                     initSalesDateFilter widget (SalesDateFilter.js) SecondarySalesPage's own
-                     "1. Overview" uses, per explicit request; Search bar and Date filter both carry
-                     the same global feature:search-bar/feature:date-filter keys those widgets
-                     already use everywhere else. -->
                 <div class="section-container" id="auditSectionContainer" data-permission="page:monitoring.audit" hidden>
                     <div class="section-header">
                         <p class="monitoring-section-title">2. Audit</p>
@@ -106,9 +84,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <!-- Columns change per Type (see auditColumnsByType in MonitoringPage.js) —
-                                 thead+tbody are both fully rebuilt on every fetch/filter change,
-                                 unlike the other sections' own static per-type thead. -->
+
                             <div class="monitoring-table-wrap" id="auditTableWrap">
                                 <table class="monitoring-table">
                                     <thead id="auditTableHead"></thead>
@@ -121,8 +97,6 @@
                     </div>
                 </div>
 
-                <!-- 3. Password Reset Tokens — always empty today, see MonitoringService's own
-                     header comment: no "forgot password" email flow exists yet. -->
                 <div class="section-container" id="passwordResetTokensSectionContainer" data-permission="page:monitoring.password-reset-tokens" hidden>
                     <div class="section-header">
                         <p class="monitoring-section-title">3. Password Reset Tokens</p>
@@ -149,7 +123,6 @@
                     </div>
                 </div>
 
-                <!-- 4. Recent OTPs -->
                 <div class="section-container" id="otpsSectionContainer" data-permission="page:monitoring.otps" hidden>
                     <div class="section-header">
                         <p class="monitoring-section-title">4. Recent OTPs</p>

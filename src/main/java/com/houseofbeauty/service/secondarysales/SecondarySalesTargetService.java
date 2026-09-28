@@ -11,11 +11,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-// Backs the Secondary Sales page's "Daily Sales Trends" section's real Target line — only the two
-// range-lookup methods SecondarySalesDailyTrendService actually needs (see
-// PrimarySalesTargetService's own getMonthlyTargetsInRange/getYearlyTargetsInRange for the mirrored
-// logic this class follows); the other Primary Sales target methods (single-month lookup,
-// per-partner sums, etc.) aren't needed by this section and are left out.
 @Service
 public class SecondarySalesTargetService {
 
@@ -25,14 +20,6 @@ public class SecondarySalesTargetService {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    // Appends "AND Site_Code IN (...)" when siteCodes is non-null (the Filter Header's Channel pill
-    // — see SecondarySalesDailyTrendService's own resolveSiteCodesForChannel) — an empty list still
-    // appends a clause that always evaluates false (1 = 0) rather than an invalid empty IN(), so
-    // "channel exists in Site_Master but has zero Secondary Sales sites" correctly yields zero
-    // instead of silently falling through to "no filter at all". Unlike
-    // PrimarySalesTargetService (Primary_Sales_Target has no Site_Code column), Secondary_Sales_Target
-    // genuinely has a per-site grain (see SecondarySalesReportsService's own header comment), so this
-    // Target line can react to Channel too, not just Brand.
     private void appendSiteCodeFilter(StringBuilder sql, List<Object> params, List<String> siteCodes) {
         if (siteCodes == null) {
             return;

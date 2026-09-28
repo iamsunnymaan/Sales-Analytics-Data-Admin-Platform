@@ -11,10 +11,7 @@ import lombok.NoArgsConstructor;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-// JPA mapping for Primary_Sales — one row per sale from the company to a distributor/retailer.
-// Field order below matches the live table's physical column order (rebuilt 2026-09-02, see
-// database/migrations/2026-09-02_rebuild_primary_secondary_sales.sql) — cosmetic only, Hibernate
-// maps by @Column name regardless of declaration order.
+
 @Entity
 @Table(name = "Primary_Sales")
 @Data

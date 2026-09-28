@@ -12,12 +12,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
-// JPA mapping for IAM_Login_Unauthorized_Audit (2026-09-16 migration) — one row per blocked
-// request: a 403 from PermissionInterceptor (/api/**) or a permission-denied redirect from
-// PageAccessInterceptor (page documents). Backs the Monitoring page's "Unauthorized Access
-// Attempts" section. Always an authenticated session (both interceptors already require login
-// before this check runs), so Username_Attempted is always a real, known user — User_ID stays
-// nullable for the same survives-account-deletion reason as the other audit tables here.
+
 @Entity
 @Table(name = "IAM_Login_Unauthorized_Audit")
 @Data

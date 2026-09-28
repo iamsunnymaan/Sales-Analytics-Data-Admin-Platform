@@ -1,31 +1,3 @@
-<!-- Secondary Sales page: "1. Overview" is a REAL backend-wired cross-tab — GET
-     /api/secondary-sales/overview (SecondarySalesOverviewService) returns every real, distinct
-     Site_Master Brand as a header-row-1 group and every real, distinct Site_Master Channel as that
-     group's own sub-columns; "Total" (both the per-brand sub-column and the right-most grand-total
-     group) is synthesized on the frontend, never a real Site_Master value. The table's own
-     thead/tbody below is intentionally empty markup — renderSecondaryOverviewTable in
-     SecondarySalesPage.js builds every header/body cell from that response, so the real
-     brand/channel count (and their names) never has to match this file. Its header row's date
-     filter (#overviewDateFilter) and range label (#taOverviewRangeLabel) are both real: the range
-     label uses the same PrimarySalesPage.js#formatRangeLabel-derived format the Overview Insights
-     card uses, and the filter itself now re-fetches /overview on every change (loadOverview in
-     SecondarySalesPage.js), not just cosmetic anymore. "2. Daily Sales Trends" and "4. Reports" are
-     also REAL backend-wired sections — same Brand pill + Filter date
-     bar + Graph/Bar Graph/Compare chart as Primary Sales' own "2. Daily Sales Trends" (GET
-     /api/secondary-sales/trend-range), and the same All Report/Channel tab pair as Primary Sales'
-     own "4. Reports" (GET /api/secondary-sales/reports/brand-hierarchy + /reports/channels) minus
-     the Proj./Proj vs Tgt column pair (needs a Projection table, out of scope) — both read ONLY
-     Secondary_Sales + Secondary_Sales_Target (never Primary_Sales/Primary_Sales_Target/
-     Primary_Sales_Projection). Reports has no Brand-filter pill (removed per explicit request) and
-     no date-range Filter UI either — always "all" brands, current month-to-date. "3. Product
-     Snapshot" (added per explicit request, between Daily Sales Trends and Reports) is an exact
-     UI/backend reuse of the Dashboard Page's own "3. Product Snapshot" section, pointed at
-     GET /api/secondary-sales/product-level (SecondarySalesProductLevelService) — reads ONLY
-     Secondary_Sales/Product_Master/Site_Master (Sales_Type = 'Secondary Sales'), never Primary_Sales.
-     "5. Site Master Report" is also REAL — GET /api/secondary-sales/reports/site-master (same
-     SecondarySalesReportsService), one row per real Site_Master site ranked 1..N by real MTD Actual
-     Sales descending, no Total row and no Filter UI either (same "always all brands, current
-     month-to-date" convention as Reports). -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -59,23 +31,12 @@
 
         <main class="app-main">
             <section class="secondary-sections" id="secondarySections">
-            <!-- "Filter Header" section — same frontend as Dashboard's own copy
-                 (#dashboardFyOverviewFilterHeaderSectionContainer in index.html), sitting above
-                 "1. Overview" below. Brand/Channel/Status are all real, wired pills now (see
-                 SecondarySalesPage.js's initBrandHeader/initChannelHeader/Page.initStatusFilter) — real
-                 distinct Site_Master.Brand/Channel values scoped to Sales_Type = 'Secondary Sales', and
-                 the same fixed Active/Inactive/Upcoming Status vocabulary Primary Sales' own Filter
-                 Header Status pill uses. All three, plus the Date Filter below, drive "1. Overview",
-                 "2. Daily Sales Trends", "3. Product Snapshot", and "5. Site_Master Secondary_Sale
-                 Report" — "4. Reports" only reacts to the Date Filter, per explicit request (it has no
-                 Brand/Channel/Status pill of its own, always "all"). -->
+
             <div class="section-container" id="dashboardFyOverviewFilterHeaderSectionContainer">
             <div class="section-header">
                 <div class="secondary-overview-title-row">
                     <p class="secondary-overview-subtitle">Filter Header</p>
-                    <!-- Moved here from "1. Overview"'s own header row per explicit request — still the
-                         same #taOverviewRangeLabel loadOverview (SecondarySalesPage.js) fills in on
-                         every fetch, just relocated to sit next to "Filter Header" on the right. -->
+
                     <span class="ta-overview-range-label" id="taOverviewRangeLabel"></span>
                 </div>
             </div>
@@ -86,44 +47,26 @@
                         <div class="dashboard-fy-overview-field">
                             <span class="dashboard-fy-overview-label">Brand</span>
                             <div class="brand-header-pill" id="dashboardFyOverviewBrandToggle" data-feature="feature:brand-filter">
-                                <!-- Placeholder only — replaced with the real Site_Master-backed brand
-                                     buttons by renderBrandPill once loadBrandPillOptions() resolves (see
-                                     SecondarySalesPage.js's wirePage()). Avoids briefly showing a
-                                     hardcoded ABH/Kylie fallback that doesn't match the real Brand data. -->
+
                                 <span class="brand-header-item brand-header-loading">Loading…</span>
                             </div>
                         </div>
                         <div class="dashboard-fy-overview-field">
                             <span class="dashboard-fy-overview-label">Channel</span>
                             <div class="brand-header-pill" id="dashboardFyOverviewChannelToggle" data-feature="feature:channel-filter">
-                                <!-- Placeholder only — replaced with the real Site_Master-backed channel
-                                     buttons by renderChannelPill once loadChannelPillOptions() resolves.
-                                     Avoids briefly showing a hardcoded Offline/Online fallback that
-                                     doesn't match the real Channel data. -->
+
                                 <span class="brand-header-item brand-header-loading">Loading…</span>
                             </div>
                         </div>
-                        <!-- Same frontend as Primary Sales' own copy (#dashboardFyOverviewStatusToggle
-                             in PrimarySalesPage.html: same id, same site-status-card-field/site-status-
-                             filter-pill classes) — wired via Page.initStatusFilter (SecondarySalesPage.js)
-                             to the page's shared Brand/Channel-filterable sections. Options are fetched
-                             from GET /api/secondary-sales/statuses by renderStatusPill, same
-                             fetch-then-render-then-"Not Available"-on-failure pattern
-                             renderBrandPill/renderChannelPill already follow. -->
+
                         <div class="site-status-card-field site-status-filter-field">
                             <span class="site-status-card-label">Status</span>
                             <div class="site-status-filter-pill" id="dashboardFyOverviewStatusToggle" data-feature="feature:status-filter">
-                                <!-- Placeholder only — replaced with the real category buttons by
-                                     renderStatusPill once loadStatusPillOptions() resolves (see
-                                     SecondarySalesPage.js's wirePage()). -->
+
                                 <span class="site-status-filter-item brand-header-loading">Loading…</span>
                             </div>
                         </div>
-                        <!-- Moved here from "1. Overview"'s own header row per explicit request — still
-                             the same #overviewDateFilter driving loadOverview in SecondarySalesPage.js,
-                             just relocated. Pushed to the filter row's right edge (see
-                             .dashboard-fy-overview-filter-row .secondary-overview-header-right in
-                             SecondarySalesPage.css), same convention the old Year Filter field used. -->
+
                         <div class="secondary-overview-header-right" data-feature="feature:date-filter">
                             <div class="daily-trend-filter-cluster">
                                 <div class="sales-date-filter" id="overviewDateFilter">
@@ -148,9 +91,7 @@
                 <div class="secondary-overview-title-row">
                     <div class="secondary-overview-subtitle-group">
                         <p class="secondary-overview-subtitle">1. Overview</p>
-                        <!-- Shown only while the real GET /api/secondary-sales/overview request is in
-                             flight — see loadOverview in SecondarySalesPage.js, which toggles
-                             #secondaryOverviewSection.is-loading (an ancestor of this header). -->
+
                         <span class="section-loading-spinner" id="overviewSpinner" aria-hidden="true"></span>
                     </div>
                 </div>
@@ -159,10 +100,7 @@
             <div class="section-content">
                 <div class="secondary-overview-card">
                     <div class="secondary-overview-table-wrap scroll-hidden" id="secondaryOverviewTableWrap">
-                        <!-- renderSecondaryOverviewTable (SecondarySalesPage.js) fills this in on every
-                             loadOverview() response — full <table class="secondary-overview-table"> incl.
-                             thead/tbody, or a "Not Available" message if Site_Master has no real Brand/
-                             Channel data right now. -->
+
                     </div>
                 </div>
             </div>
@@ -181,18 +119,11 @@
                         <span class="daily-trend-mode-badge" id="dailyTrendModeBadge">—</span>
                     </div>
                     <div class="daily-trend-header-actions">
-                        <!-- Same frontend as Primary Sales' own copy (PrimarySalesPage.html's own
-                             #dailyTrendTargetToggle) — toggles the Target line on/off, works in both
-                             Graph and Bar Graph mode and in Compare mode too (see initDailyTrendGraph's
-                             renderChart in SecondarySalesPage.js: state.showTarget). -->
+
                         <button type="button" class="daily-trend-compare-toggle active" id="dailyTrendTargetToggle" aria-pressed="true" title="Overlay Sales Target for the same period">
                             <i class="bi bi-bullseye"></i> Target
                         </button>
-                        <!-- Overlays last year's same-period Sales as a dotted line on the chart
-                             (data already comes back from /trend-range as `lastYear`, previously used
-                             only for the tooltip's "vs Last Year" %). Works alongside both Bar Graph
-                             mode and Compare mode — see initDailyTrendGraph's renderChart in
-                             SecondarySalesPage.js. -->
+
                         <button type="button" class="daily-trend-compare-toggle" id="dailyTrendVsLastYearToggle" aria-pressed="false" title="Overlay last year's Sales for the same period">
                             <i class="bi bi-calendar2-week"></i> Vs Last Year
                         </button>
@@ -221,14 +152,7 @@
             </div>
 
             <div class="section-content">
-            <!-- Reuse of the Dashboard Page's own "3. Product Snapshot" section (see
-                 SecondarySalesPage.js/.css's own header comments on this block) — same UI/layout/cards/
-                 table design/filters/search-sort/pagination/interactions, pointed at this page's own
-                 GET /api/secondary-sales/product-level (SecondarySalesProductLevelService, reading ONLY
-                 Secondary_Sales — never Primary_Sales) instead of Dashboard's combined endpoint. No
-                 Brand pill of its own (same convention as Dashboard/Primary) — always loads "all"
-                 brands. Responds to "1. Overview"'s own date Filter above (see wirePage's
-                 onFilterChange in SecondarySalesPage.js). -->
+
             <div class="product-snapshot-card" id="secondaryProductSnapshotCard">
                 <div class="product-snapshot-row product-snapshot-row--split">
                     <div class="product-snapshot-panel product-snapshot-panel-01">
@@ -313,9 +237,7 @@
                         <button type="button" class="brand-header-item" data-tab="channel">Channel</button>
                         <button type="button" class="brand-header-item" data-tab="partner">Partner</button>
                     </div>
-                    <!-- Shown only while either tab's data is being (re)fetched — see initReportsSection's
-                         beginLoading/endLoading in SecondarySalesPage.js, which toggle #reportsSectionCard.is-loading
-                         (an ancestor of this header). -->
+
                     <span class="section-loading-spinner" id="reportsSectionSpinner" aria-hidden="true"></span>
                     <div class="reports-section-counts" id="reportsSectionCounts"></div>
                     <div class="product-snapshot-download-wrap">
@@ -355,9 +277,7 @@
             <div class="section-content">
             <div class="secondary-site-report-card" id="secondarySiteReportCard">
                 <div class="reports-section-header">
-                    <!-- Shown only while the one real GET /api/secondary-sales/reports/site-master-secondary-sale
-                         request is in flight — see initSecondarySiteReport in SecondarySalesPage.js, which
-                         toggles #secondarySiteReportCard.is-loading (an ancestor of this header). -->
+
                     <span class="section-loading-spinner" id="secondarySiteReportSpinner" aria-hidden="true"></span>
                 </div>
                 <div id="secondarySiteReportTableWrap"></div>

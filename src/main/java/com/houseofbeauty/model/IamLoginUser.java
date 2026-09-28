@@ -12,11 +12,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
-// JPA mapping for IAM_Login_Users — one row per company-provisioned account (no public
-// signup: accounts are created by an admin, per explicit request). Password_Hash is a BCrypt hash
-// (see AuthService/PasswordEncoderConfig), never plaintext. Failed_Login_Attempts/Is_Locked back
-// the login lockout policy in AuthService; Is_Active lets an account be disabled without deleting
-// it (and losing its audit/token history via the FK chain).
+
 @Entity
 @Table(name = "IAM_Login_Users")
 @Data

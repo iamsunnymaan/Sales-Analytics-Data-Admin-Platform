@@ -1,53 +1,21 @@
-/* Upload Data page styles. Per explicit request, the section-specific CSS that used to live in
-   separate components/* stylesheets (FileImport, ImportHistory) is inlined below instead — this
-   page is the only place either was ever used; class names are already fully namespaced so
-   there's no collision risk. TableList.css stays a separate shared stylesheet, still linked in
-   DataUploadPage.html, since ExplorerPage.html uses it too — including this page's own "Available
-   Tables" chip grid + info panel layout, which per later explicit request now lives entirely in
-   TableList.css (.table-list-columns/.table-info-*) so both pages' table pickers stay visually
-   identical, not just similarly named. */
-
-/* ==================== Tables section (compact override) ==================== */
-/* Same compact override as ExplorerPage.css's own "Tables section (compact override)" block, per
-   explicit request to keep both pages' table pickers equally dense — scoped under #tableListSection
-   here too (this page's own document), so this stays a per-page override rather than moving into
-   the shared TableList.css, matching how the rest of this file already handles page-specific
-   sizing on top of shared component classes. */
-/* Common ancestor of the page's 3 numbered .section-container groups (see below) — provides the
-   gap BETWEEN sections via flex, same pattern PrimarySalesPage.css's own .target-achievement-section
-   uses, now that .section-container/.table-list-section/.file-import-section no longer carry their
-   own inter-section margin (each zeroed below). */
 .data-upload-sections {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
 }
 
-/* Outer section boundary — wraps each numbered section's title (.section-header) and its existing
-   card (.section-content) into one structural group, same pattern PrimarySalesPage.css's own
-   .section-container follows (no box look — border/radius/background/padding disabled per that
-   same explicit request). #tableListSection/#fileImportSection keep their own .table-list-section/
-   .file-import-section class too (shared TableList.css look + this page's own --font-mono custom
-   property respectively), just with their old margin-bottom zeroed since .data-upload-sections' own
-   gap does that job now. */
 .section-container {
-    /* border: 1px solid var(--color-border); */
-    /* border-radius: 18px; */
-    /* background-color: var(--color-card-bg); */
-    /* padding: 1rem; */
+
 }
 
 .section-header {
-    /* margin: 0 0 0.6rem; */
+
 }
 
 .section-content {
     margin: 0;
 }
 
-/* TableList.css's own shared .table-list-section rule (also used by ExplorerPage) carries
-   margin-bottom: 1rem — zeroed here, scoped to just this page's instance via the ID, so
-   ExplorerPage's own copy of that component is untouched. */
 #tableListSection {
     margin-bottom: 0;
 }
@@ -92,21 +60,12 @@
     font-size: 0.56rem;
 }
 
-/* ==================== File Import (upload + preview) ==================== */
-/* Styles for the upload dropzone, live upload-progress bar, and the Data Preview card
-   (summary tiles and the row-by-row invalid/duplicate table). */
 .file-import-section {
-    /* Monospace stack for the pipeline's stepper/tally/chunk labels — matches the design-system
-       mockup's "Plex Mono" role without pulling in a webfont just for this one page. */
+
     --font-mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
     margin-bottom: 0;
 }
 
-/* Matches PrimarySalesPage's numbered "1. Overview" subtitle style (.target-achievement-subtitle)
-   for visual consistency across pages — small, uppercase, letter-spaced, secondary-colored, rather
-   than a plain large heading. #tableListSection's own equivalent heading is the compact-override
-   block at the top of this file, which scopes to just this page (ExplorerPage also uses that
-   component and keeps its own look). */
 .file-import-section .section-title {
     font-size: 0.68rem;
     font-weight: 600;
@@ -122,7 +81,6 @@
     align-items: stretch;
 }
 
-/* Base surface (background/border/radius) comes from Shared/css/card.css. */
 .file-import-card {
     padding: 0.65rem 0.8rem;
 }
@@ -146,9 +104,6 @@
     gap: 0.5rem;
 }
 
-/* The class rule above sets display:flex unconditionally, which otherwise beats the browser's
-   default display:none for [hidden] (author CSS always overrides the UA stylesheet) — so the
-   card would stay rendered as an empty box even while hidden. This wins on specificity instead. */
 .file-import-progress-card[hidden] {
     display: none;
 }
@@ -239,8 +194,6 @@
     color: var(--color-primary);
 }
 
-/* Only shown once there's at least one invalid/duplicate row to download — see
-   updateDownloadButtonVisibility() in DataUploadPage.js. */
 .file-import-progress-download-btn.scanning {
     color: var(--color-primary);
     pointer-events: none;
@@ -432,14 +385,6 @@
     gap: 0.4rem;
 }
 
-/* CHANGED: the live Validate/Commit view is now a "pipeline" block — a phase stepper, a speed
-   line + thin progress bar, a 3-tile tally row, and (once the backend reports real per-chunk
-   progress — see ImportProcessJobTracker.ChunkSlot / ChunkStatusResponse) a chunk-lane grid —
-   mirroring the design-system mockup's Data Preview panel. Still built by
-   buildRowProgressPlaceholder and updated live by updateRowProgress in DataUploadPage.js; only the
-   markup/classes changed, not the polling/SSE plumbing underneath.
-   CHANGED 2026-08-11 (superseded by the above): replaces the old spinner (.file-import-spinner-icon
-   / @keyframes file-import-spin, both removed) with a live progress bar. */
 .file-import-pipeline {
     display: flex;
     flex: 1;
@@ -449,7 +394,6 @@
     padding: 0.2rem 0.1rem;
 }
 
-/* ---- phase stepper ---- */
 .file-import-stepper {
     display: flex;
     align-items: center;
@@ -514,7 +458,6 @@
     50% { box-shadow: 0 0 0 5px rgba(27, 77, 62, 0.14); }
 }
 
-/* ---- speed line + progress bar ---- */
 .speed-line {
     display: flex;
     align-items: baseline;
@@ -567,7 +510,6 @@
     background-color: var(--color-danger);
 }
 
-/* ---- tally row (processed / valid / invalid) ---- */
 .file-import-tally-row {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -603,7 +545,6 @@
     color: var(--color-danger);
 }
 
-/* ---- chunk lanes (real per-chunk progress; see ImportProcessJobTracker.ChunkSlot) ---- */
 .file-import-lanes {
     display: flex;
     flex-direction: column;
@@ -698,7 +639,6 @@
     opacity: 0.7;
 }
 
-/* ---- live invalid-rows preview (grows as the chunk engine actually finds bad rows) ---- */
 .file-import-live-grid-label {
     font-size: 0.72rem;
     font-weight: 600;
@@ -747,12 +687,6 @@
     word-break: break-word;
 }
 
-/* Hard-stop display when validation hits the 10-invalid-row cap (ImportLimits.MAX_INVALID_ROWS) —
-   see DataUploadPage.js's buildInvalidLimitContent(). No review table, no Import button: the whole
-   upload failed and the only next step is fixing the file and uploading again. */
-
-/* The "⋮" row inside the hard-stop table (buildCappedRowsTable) separating the leading rows from
-   the final (10th) one — a single cell spanning every column instead of a normal data row. */
 .file-import-limit-ellipsis-cell {
     text-align: center;
     color: var(--color-text-secondary);
@@ -779,10 +713,6 @@
     word-break: break-word;
 }
 
-/* CHANGED (this turn): the live upload speed bar now renders inside the (tall) Data Preview card
-   alongside the Validate/Commit phase bars (see buildRowProgressPlaceholder in DataUploadPage.js) —
-   centered the same way .file-import-validating is, instead of the compact top-aligned block it used
-   to be in the narrow left Upload card. */
 .file-import-upload-progress {
     display: flex;
     flex: 1;
@@ -819,9 +749,6 @@
     transition: width 0.15s ease;
 }
 
-/* Shown once the byte transfer itself reaches 100% but the server is still scanning/parsing/storing
-   the file (see the onUploadProgress percent >= 100 branch in DataUploadPage.js) — an animated stripe
-   instead of a flat, unmoving full bar, so that gap doesn't read as a stalled/frozen upload. */
 .file-import-upload-progress-bar-fill.processing {
     background-image: linear-gradient(135deg, rgba(255, 255, 255, 0.35) 25%, transparent 25%,
         transparent 50%, rgba(255, 255, 255, 0.35) 50%, rgba(255, 255, 255, 0.35) 75%, transparent 75%, transparent);
@@ -951,7 +878,7 @@
 
 .file-import-progress-table-wrapper {
     overflow: auto;
-    /* header row + 6 data rows at ~1.8rem each */
+
     max-height: calc(1.8rem * 7);
     border: 1px solid var(--color-border);
     border-radius: 6px;
@@ -1014,8 +941,6 @@
     cursor: not-allowed;
 }
 
-/* ==================== Import History ==================== */
-/* Styles for the Upload History table and the file preview modal. */
 .import-history-header {
     display: flex;
     align-items: center;
@@ -1079,7 +1004,6 @@
     color: var(--color-danger);
 }
 
-/* Base surface (background/border/radius) comes from Shared/css/card.css. */
 .import-history-card {
     overflow: hidden;
 }
@@ -1176,10 +1100,6 @@
     color: var(--color-primary);
 }
 
-/* Shared modal chrome (backdrop centering, panel shell, header base) comes from
-   Shared/css/modal.css — only what's unique to this modal stays here. The close button
-   (.import-preview-close-btn) is a distinct icon-button design, not the shared "×" text style
-   used by the other modals, so it isn't part of Shared/css/modal.css. */
 .import-preview-overlay {
     background-color: rgba(23, 34, 30, 0.5);
     z-index: 1000;
@@ -1234,7 +1154,7 @@
 
 .import-preview-table-wrapper {
     overflow: auto;
-    /* header row + 6 data rows at ~2rem each */
+
     max-height: calc(2rem * 7);
     border: 1px solid var(--color-border);
     border-radius: 6px;
@@ -1299,10 +1219,6 @@
     background-color: var(--color-primary-hover);
 }
 
-/* ==================== Responsive (tablet/mobile) ==================== */
-/* Two breakpoints app-wide, matching Sidebar.css/app.css: <=1024px tablet (sidebar becomes a
-   compact icon rail), <=640px mobile (sidebar becomes an off-canvas drawer). .file-import-grid
-   already stacks at <=900px (see above); this fills in the remaining narrow-viewport gaps. */
 @media (max-width: 640px) {
     .file-import-upload-card {
         min-width: 0;

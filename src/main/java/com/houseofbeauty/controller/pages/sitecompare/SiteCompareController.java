@@ -14,10 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import java.util.Map;
 
-// Backs the Site Status page's own "Compare" modal (SiteStatusPage.html/.js) — its three tabs each hit
-// one of the GET endpoints below; /stores (POST, not GET — the selected-store list can get long
-// enough to not be a great fit for a query string) backs the "Selected Stores" tab's own comparison
-// once the user has picked stores from /stores-picker's list.
 @RestController
 @RequestMapping("/api/site-compare")
 @RequirePermission("page:site-insights")

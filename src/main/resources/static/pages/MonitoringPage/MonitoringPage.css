@@ -1,8 +1,3 @@
-/* Monitoring page styles. Self-contained (like every other page's own CSS file — see
-   PrimarySalesPage.css's own header comment for why this codebase inlines each page's styles rather
-   than sharing component stylesheets). Table/badge look deliberately mirrors RolesPage.css's own
-   .users-table/.users-status-badge — same audit-log-table shape, just a different prefix. */
-
 .monitoring-section {
     display: flex;
     flex-direction: column;
@@ -26,7 +21,6 @@
     margin: 0;
 }
 
-/* ==================== 1. Usage Overview ==================== */
 .monitoring-charts-row {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -70,7 +64,6 @@
     font-size: 0.75rem;
 }
 
-/* ==================== Attempts / token tables (shared shape) ==================== */
 .monitoring-card {
     box-shadow: var(--shadow-card);
     border-radius: 18px;
@@ -83,7 +76,6 @@
     overflow-y: auto;
 }
 
-/* ==================== 2. Audit ==================== */
 .monitoring-audit-card {
     width: 90%;
 }
@@ -133,8 +125,6 @@
     min-width: 7.5rem;
 }
 
-/* Success/Failed status pill — same two-state pill shape as .sales-date-filter-mode-toggle below,
-   just a plain client-side toggle (no data wired up yet, see this section's own HTML comment). */
 .monitoring-audit-status-toggle {
     display: inline-flex;
     align-items: center;
@@ -174,11 +164,6 @@
     gap: 0.3rem;
 }
 
-/* Fixed to roughly 5 data rows' worth of height (header row included) — same hidden-scrollbar
-   convention as SiteStatusPage.css's own .site-status-store-list-body: scrollable via wheel/touch/
-   drag to reach any further rows, just with no visible scrollbar track/thumb. Scoped to #auditTableWrap
-   only — the generic .monitoring-table-wrap rule (max-height:420px, visible scrollbar) still backs
-   every other section's own table untouched. */
 #auditTableWrap {
     max-height: 10.5rem;
     overflow-y: auto;
@@ -202,11 +187,6 @@
     background-color: color-mix(in srgb, var(--color-info) 6%, var(--color-card-bg));
 }
 
-/* ==================== 2. Audit — Date filter (copied from SecondarySalesPage.css's own "1.
-   Overview" date filter per explicit request — same #idPrefix-driven markup initSalesDateFilter
-   generates, so the class names below must match exactly; kept as its own copy rather than a
-   shared stylesheet per this app's own per-page-CSS convention, see this file's own header note on
-   SalesDateFilter.js's own per-instance idPrefix). ==================== */
 .sales-date-filter {
     display: inline-flex;
     align-items: center;

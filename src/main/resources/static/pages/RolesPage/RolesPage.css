@@ -1,9 +1,3 @@
-/* Roles & Users page styles. Self-contained (like every other page's own CSS file — see
-   PrimarySalesPage.css's own header comment for why this codebase inlines each page's styles rather
-   than sharing component stylesheets). The `.users-*` rules (2. User Details, folded in from the
-   old standalone Users page) keep their own prefix rather than being renamed to `.roles-*`, since
-   RolesPage.js/RolesPage.html still reference them under that name. */
-
 .roles-section {
     display: flex;
     flex-direction: column;
@@ -27,8 +21,6 @@
     margin: 0;
 }
 
-/* ==================== 1. Filter Header ==================== */
-/* Base surface (background/border/radius) comes from Shared/css/card.css. */
 .roles-filter-header-card {
     padding: 0.75rem 1rem;
     box-shadow: var(--shadow-card);
@@ -59,7 +51,6 @@
     background-color: var(--color-primary-hover);
 }
 
-/* ==================== 2. User Details (folded in from the old standalone Users page) ==================== */
 .users-details-header {
     display: flex;
     align-items: center;
@@ -117,7 +108,6 @@
     background-color: var(--color-primary-hover);
 }
 
-/* Base surface (background/border/radius) comes from Shared/css/card.css. */
 .users-card {
     box-shadow: var(--shadow-card);
     border-radius: 18px;
@@ -245,7 +235,6 @@
     border-color: var(--color-danger);
 }
 
-/* ---- New User / Edit Profile modal ---- */
 .users-modal-backdrop {
     position: fixed;
     inset: 0;
@@ -486,7 +475,6 @@
     }
 }
 
-/* ==================== 3. Roles Details ==================== */
 .roles-details-header {
     display: flex;
     align-items: center;
@@ -604,7 +592,6 @@
     border-color: var(--color-danger);
 }
 
-/* ==================== Modal ==================== */
 .roles-modal-backdrop {
     position: fixed;
     inset: 0;
@@ -716,10 +703,6 @@
     padding: 0.35rem 0.5rem;
 }
 
-/* Hierarchical Page -> Section -> Feature permission tree. Each level nests one .perm-node inside
-   the previous level's .perm-node-children, indentation coming from that wrapper's own padding —
-   see the cascade logic (setDescendantChecked/updateAncestorStates) in RolesPage.js, which relies
-   on this exact DOM shape (":scope > .perm-node-children > .perm-node") to walk parent/child. */
 .perm-node-children {
     padding-left: 1.35rem;
     display: none;
@@ -781,9 +764,6 @@
     color: var(--color-text-secondary);
 }
 
-/* The "page:"/"section:"/"feature:" prefix each row's label starts with (RolesPage.js's
-   permissionDisplayLabel) — kept smaller/lighter than the actual name so the name stays the
-   visually dominant part of the row. */
 .perm-node-kind {
     font-size: 0.68rem;
     font-weight: 400;
@@ -791,9 +771,6 @@
     opacity: 0.75;
 }
 
-/* Feature rows (see RolesPage.js's SECTION_FEATURE_KEYS/renderFeatureNode) — a real checkbox like
-   every other level, saving to IAM_Role_Feature_Grants rather than the Page/Section permission set;
-   the puzzle-piece icon is purely a visual cue distinguishing "Feature" from "Section" at a glance. */
 .perm-node-ref-icon {
     flex: 0 0 auto;
     font-size: 0.68rem;

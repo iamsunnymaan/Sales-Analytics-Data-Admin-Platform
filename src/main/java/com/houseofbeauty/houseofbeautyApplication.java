@@ -4,8 +4,6 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
-// App entry point. @EnableScheduling turns on the @Scheduled cron job in
-// TopProjectionService — without it, that annotation would just be inert.
 @SpringBootApplication
 @EnableScheduling
 public class houseofbeautyApplication {

@@ -10,17 +10,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-// JPA mapping for IAM_Login_Permissions — the seeded registry of page/section keys (e.g.
-// "page:primary-sales.reports"). Rows here are managed data (seeded/admin-maintained by
-// AuthBootstrapSeeder), not something an end user creates. Attached to roles via
-// IamLoginRolePermission and, for per-user overrides, IamLoginUserPermission.
-//
-// permissionType + parentPermissionId form the real 2-level tree (PAGE -> SECTION) the Roles page's
-// permission picker renders and Sidebar.js filters by — a Section is the finest grain there is (an
-// earlier design had a 3rd FEATURE level under each Section; removed per explicit request, see
-// AuthBootstrapSeeder's own header comment) — independent of how many dots are in permissionKey,
-// since two pre-existing keys predate even the Section concept and keep their original 2-segment
-// key (see the 2026-09-16_permission_hierarchy migration's header comment).
+
 @Entity
 @Table(name = "IAM_Login_Permissions")
 @Data

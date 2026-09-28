@@ -10,13 +10,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
-// JPA mapping for Site_Master — the store/site master data. Still no SN column (dropped by the
-// 2026-08-12 table recreate; TableDataController.resolveOrder falls back to its no-SN default for
-// this table). Brand was re-added to the live schema on 2026-08-24 (nullable at the time), then made
-// part of the table's composite PK on 2026-09-02 (Site_Code, Brand) — so the same Site_Code can carry
-// one row per Brand it stocks. @Id is still declared on siteCode alone below: no JpaRepository<SiteMaster,
-// ?> exists in this codebase (verified 2026-09-02), so this class is never used for JPA persistence —
-// if one is ever added, this needs an @IdClass/@EmbeddedId over (siteCode, brand) first.
+
 @Entity
 @Table(name = "Site_Master")
 @Data

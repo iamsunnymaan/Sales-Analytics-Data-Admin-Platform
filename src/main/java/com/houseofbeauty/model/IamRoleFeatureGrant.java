@@ -7,9 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-// JPA mapping for IAM_Role_Feature_Grants — the Roles<->Features junction: a row's presence
-// means the role grants that Feature to every user holding it (see FeatureManagementService's own
-// header comment for how this composes with the per-user IAM_Feature_User_Denials override).
+
 @Entity
 @Table(name = "IAM_Role_Feature_Grants")
 @Data

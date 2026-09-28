@@ -28,17 +28,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.stream.Collectors;
 
-// Backs the Secondary Sales page's own "3. Product Snapshot" section — a scoped copy of
-// PrimarySalesProductLevelService's logic/SQL (same shape: Category -> Sub-category -> Product tree,
-// Product Ranking panel, Product Research modal), per explicit request to reuse that page's Product
-// Snapshot implementation rather than designing a separate one. Reads ONLY Secondary_Sales (never
-// Primary_Sales) joined to Product_Master on Article_Code, and Site_Master scoped to
-// Sales_Type = 'Secondary Sales' (never 'Primary Sales') for the brand-quantity badge/available-brand
-// list/Channel filter — strict data isolation from Primary Sales, per explicit request (contrast with
-// DashboardProductLevelService's own copy, which deliberately DOES combine both tables). Reuses the
-// same generic response DTOs Primary/Dashboard already use (they're plain data shapes, not
-// page-styled UI) — only this service class itself is duplicated, matching this codebase's own
-// convention of each page keeping its own copy of page-facing logic.
 @Service
 public class SecondarySalesProductLevelService {
 
@@ -63,13 +52,7 @@ public class SecondarySalesProductLevelService {
     public ProductLevelResponse getProductLevel(LocalDate from, LocalDate to, String brand, String channel, String status) {
         String normalizedBrand = BrandFilter.normalize(brand);
         String brandFilter = BrandFilter.product(normalizedBrand);
-        // Channel/Status filtering — Secondary_Sales has a DIRECT Site_Code column (no Bill_to-style
-        // indirection Primary needs), so resolveSiteCodesForChannelAndStatus pre-fetches just the
-        // Site_Codes this channel/status combo covers, then every query adds
-        // "AND ss.Site_Code IN (...)" instead of joining Site_Master directly (a direct join risks
-        // fanning a Secondary_Sales row out across more than one Site_Master row for the same
-        // Site_Code, since Site_Master's real key is (Site_Code, Brand) — an IN-list filter can't
-        // double-count a row, a JOIN could). Mirrors PrimarySalesProductLevelService's own version.
+
         List<String> siteCodes = resolveSiteCodesForChannelAndStatus(ChannelFilter.normalize(channel), status);
 
         LocalDate periodFrom = from;
@@ -132,11 +115,6 @@ public class SecondarySalesProductLevelService {
         return CompletableFuture.supplyAsync(supplier, queryExecutor);
     }
 
-    // null = every channel/status (no filter). Otherwise the real, distinct Site_Codes Site_Master
-    // says carry this Channel/Status combo among Secondary Sales sites — an empty (non-null) list
-    // means the combo exists nowhere in Site_Master right now, so every query below correctly
-    // contributes zero instead of accidentally matching everything (see appendSiteCodeFilter's own
-    // empty-list handling).
     private List<String> resolveSiteCodesForChannelAndStatus(String channelFilter, String status) {
         String statusClause = OperationalStatusFilter.whereClause(status);
         if (channelFilter == null && statusClause.isEmpty()) {
@@ -152,10 +130,6 @@ public class SecondarySalesProductLevelService {
         return jdbcTemplate.queryForList(sql.toString(), String.class, params.toArray());
     }
 
-    // Appends "AND ss.Site_Code IN (...)" when siteCodes is non-null — an empty list still appends a
-    // clause that always evaluates false (1 = 0) rather than an invalid empty IN(), so "channel
-    // exists in Site_Master but has zero Secondary Sales sites" correctly yields zero rows instead of
-    // silently falling through to "no filter at all".
     private void appendSiteCodeFilter(StringBuilder sql, List<Object> params, List<String> siteCodes) {
         if (siteCodes == null) {
             return;
@@ -170,8 +144,6 @@ public class SecondarySalesProductLevelService {
         params.addAll(siteCodes);
     }
 
-    // Scoped to Sales_Type = 'Secondary Sales' — strict data isolation from Primary Sales, per
-    // explicit request — so this never pulls in a brand that only exists on Primary Sales sites.
     private List<String> loadAvailableBrandsFromSiteMaster() {
         String sql = "SELECT DISTINCT Brand FROM Site_Master WHERE Brand IS NOT NULL AND LTRIM(RTRIM(Brand)) <> '' " +
                 "AND Sales_Type = 'Secondary Sales'";
@@ -182,8 +154,6 @@ public class SecondarySalesProductLevelService {
         return new ArrayList<>(brands);
     }
 
-    // Maps a real Site_Master.Brand value ("Anastasia Beverly hills", "Kylie Cosmetics") to the short
-    // code BrandFilter.VALID_BRANDS/BrandFilter#product actually accept ("abh"/"kylie").
     private static String siteBrandToCode(String siteBrand) {
         String normalized = siteBrand.trim().toLowerCase(java.util.Locale.ROOT);
         if (normalized.equals("anastasia beverly hills")) {

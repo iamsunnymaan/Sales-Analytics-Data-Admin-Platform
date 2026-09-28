@@ -1,7 +1,3 @@
-/* Shared "surface" base — background, border, corner radius — reused by every card/panel-style
-   block across pages/components. Padding/margin/box-shadow/width stay on each selector's own
-   rule in its page/component CSS file since those vary per use; this file only centralizes the
-   3 declarations that were byte-identical everywhere. */
 .brand-header-filter-bar.brand-header,
 .daily-trend-card,
 .dashboard-fy-overview-filter-header-card,

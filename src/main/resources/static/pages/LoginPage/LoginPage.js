@@ -1,16 +1,7 @@
-// Login page behavior — wired to the real backend (AuthController: POST /api/auth/send-otp,
-// POST /api/auth/login; see AuthService for the validation/lockout logic behind them). A
-// successful login is cached in sessionStorage (not localStorage — cleared when the tab closes)
-// as "hob-auth-user", the same key Shared/js/auth-guard.js checks on every other page and
-// Sidebar.js's logout handler clears.
 (function () {
     const AUTH_STORAGE_KEY = "hob-auth-user";
 
-    // Where to land after signing in. auth-guard.js appends ?next=<original path> when it bounces
-    // a logged-out visitor here, so a direct deep link (e.g. a bookmark to Primary Sales) returns
-    // there instead of always dropping back to the Dashboard. Only ever honored as a same-origin
-    // path (must start with "/", not "//") — never handed straight to location.href — so a crafted
-    // ?next= can't be used as an open redirect to an external site.
+
     function resolveNextUrl() {
         const raw = new URLSearchParams(window.location.search).get("next");
         if (raw && raw.startsWith("/") && !raw.startsWith("//")) {
@@ -19,22 +10,7 @@
         return "/";
     }
 
-    // Already signed in (e.g. this tab still has a live session and the user navigated back here
-    // manually) — skip straight past the form instead of making them log in again. Confirmed
-    // against the server (not just the cached key's mere presence) before redirecting: a stale
-    // cache pointing at a session that's since expired, been invalidated (logging in as a
-    // different user from another tab replaces the one shared HttpSession), or outlived a server
-    // restart, previously sent this straight back to "/" — which PageAccessInterceptor (correctly,
-    // since that session really is dead) immediately bounces back to this same page, and since the
-    // stale cache was never cleared, back to "/" again: an infinite redirect loop that never once
-    // rendered the actual login form, leaving the tab with no way to log in at all. Clearing the
-    // cache on a failed check is what breaks that loop.
-    // Deliberately NOT returning here even though a redirect may follow: whether the cache turns
-    // out to be valid resolves asynchronously, but the login form below must still get wired up
-    // unconditionally in the meantime — otherwise the "invalid" branch would leave a visible but
-    // completely dead form (rendered HTML, no listeners) for anyone whose cache turns out to be
-    // stale. If the check does come back valid, the redirect below simply navigates away from
-    // whatever was just wired, same as it always would have.
+
     if (sessionStorage.getItem(AUTH_STORAGE_KEY)) {
         fetch("/api/auth/me")
             .then(function (response) {
@@ -84,9 +60,7 @@
         formError.textContent = "";
     }
 
-    // Every JSON error body follows GlobalExceptionHandler's shape: {timestamp, status, error,
-    // message}. Falls back to a generic message if the response isn't JSON (e.g. the server is
-    // unreachable) so a network failure never surfaces raw parse errors to the user.
+
     function extractErrorMessage(response) {
         return response.json()
             .then(function (body) {
@@ -104,7 +78,7 @@
         });
     });
 
-    // Password / OTP mode toggle — swaps which credential field is shown and required.
+
     const modeToggle = document.getElementById("loginModeToggle");
     const modePasswordBtn = document.getElementById("loginModePasswordBtn");
     const modeOtpBtn = document.getElementById("loginModeOtpBtn");
@@ -193,10 +167,7 @@
             });
     });
 
-    // "Forgot password?" — swaps the login form out for a small email-only form in the same card
-    // (mirrors the Password/OTP mode swap above). POST /api/auth/forgot-password always returns
-    // the same generic ack regardless of whether the email is registered (see AuthService), so the
-    // success message here is deliberately non-committal too.
+
     const forgotLink = document.getElementById("loginForgotPasswordLink");
     const backToLoginLink = document.getElementById("backToLoginLink");
     const forgotForm = document.getElementById("forgotPasswordForm");

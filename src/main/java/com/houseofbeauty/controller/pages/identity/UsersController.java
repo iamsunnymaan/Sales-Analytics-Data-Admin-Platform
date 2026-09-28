@@ -22,16 +22,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-// Backs the "1. User Details" section of both the Roles & Users page (RolesPage.js) and the IAM
-// page (IAMPage.js — an independently-permissioned second place to reach the exact same data): the
-// "New User" popup, the table, and its Edit Profile/Delete row actions (password reset lives inside
-// Edit Profile, not its own endpoint). The Roles checkbox list in that popup reuses the roles
-// already loaded from RolesController's /roles/details, so this controller no longer needs its own
-// role-listing endpoint. Gated behind "page:roles.user-details" OR "page:iam.user-details" — the
-// Section itself (permissions are Page->Section only, no further Feature breakdown — see
-// AuthBootstrapSeeder's own header comment), narrower than mere page:roles/page:iam access so a
-// session that can see either page's shell but wasn't granted this specific section still can't
-// touch user accounts via the API.
 @RestController
 @RequestMapping("/api/identity")
 @RequirePermission({"page:roles.user-details", "page:iam.user-details"})
@@ -67,10 +57,6 @@ public class UsersController {
         userManagementService.deleteUser(id);
     }
 
-    // Same freshness rationale as RolesController's own copy of this check — re-resolved from the
-    // DB on every call rather than trusting the session's cached AuthenticatedUser.roles. Checks the
-    // caller's real ROLE NAME (AuthService.isSuperAdmin), not a "page:superadmin" Permission — see
-    // SystemRoles' own header comment for why a Permission-based check can no longer work here.
     private boolean callerIsSuperAdmin(HttpServletRequest servletRequest) {
         HttpSession session = servletRequest.getSession(false);
         AuthenticatedUser authUser = session != null

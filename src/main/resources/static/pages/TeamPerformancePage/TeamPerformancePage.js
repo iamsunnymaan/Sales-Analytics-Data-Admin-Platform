@@ -1,5 +1,3 @@
-// Team Performance page — "Filter Header" (Date Filter) driving "Team Report" below. Wires up the
-// shared Sidebar + Quick Access Panel, same as every other page's own bottom-of-file init calls.
 import { initSidebar } from "/components/Sidebar/Sidebar.js";
 import { initQuickAccessPanel } from "/components/QuickAccessPanel/QuickAccessPanel.js";
 import { buildCsvLine, downloadCsv, initDownloadPopup } from "/components/ExcelDownloadButton/ExcelDownloadButton.js";
@@ -13,41 +11,18 @@ import { applyFeatureGating } from "/Shared/js/feature-guard.js";
 
 initSidebar();
 initQuickAccessPanel();
-// Reveals Filter Header/Team Report's own data-permission elements immediately. Person Details/
-// Daily Sales/Person Sitemaster Report start `hidden` for an unrelated reason too (no person picked
-// yet) — openPersonDetails/initTeamSiteReport's own setPerson below await this same promise (never
-// re-fetch) before ever unhiding those, so the two "still hidden" reasons never race each other.
+
 const pagePermissionsPromise = applyPagePermissions();
-// Sequenced after pagePermissionsPromise resolves (not fired in parallel) — see Dashboard.js's own
-// comment on why: permission-gating's unconditional `hidden` assignment on a [data-permission]
-// element must never resolve after (and silently undo) a feature-based hide on that same element.
+
 pagePermissionsPromise.then(() => applyFeatureGating());
 
-// ==================== Filter Header ====================
-// Date Filter — same control Dashboard.js's/SiteStatusPage.js's own "Filter Header"/date-filter
-// sections use, copied here per this codebase's per-page-own-copy convention (not centralized).
-// Tracks its own current selection here and triggers "Team Report"'s own loadTeamReport() below —
-// whenever it isn't actively set (mode "filter" with a real from/to), "Team Report" falls back to
-// the real current calendar MONTH instead (see getTeamPerformanceEffectiveRange/
-// currentMonthDateRange), per explicit request — not the FY (the FY Year Filter dropdown that used
-// to let a user pick a different FY here was removed; "Person Details"' own FY card still shows a
-// full FY, but via its own scoped FY Filter now — see initTeamPersonFyYearFilter).
+
 const teamPerformanceFilters = { from: null, to: null, dateMeta: null };
 
-// Status toggle pill (All/Active/Inactive/Upcoming) — same #siteStatusFilterToggle
-// pattern/OperationalStatusFilter classification Site Insight page's own Status field uses
-// (SiteStatusPage.html/.js), same shared components/StatusFilter/StatusFilter.js widget. "active"
-// matches this page's own previous hardcoded-Active-only behavior, so a fresh page load looks
-// identical to before this toggle existed. Wired into every section on this page (see the
-// initStatusFilter call's own onChange, further down this file) — Team Report, Person Sitemaster
-// Report, and Person Details/Daily Sales whenever a person is open.
+
 let teamStatusFilter = "active";
 
-// Status pill options — real options fetched from GET /api/team-performance/statuses (site_master.
-// Operational_Status, keyword-matched server-side by OperationalStatusFilter), same fetch-then-render-
-// then-"Not Available" convention SiteStatusPage.js's own loadStatusPillOptions/renderStatusPill
-// already use, instead of the pill's All/Active/Inactive/Upcoming buttons being hardcoded straight
-// into TeamPerformancePage.html.
+
 async function loadStatusPillOptions() {
     try {
         const res = await fetch("/api/team-performance/statuses");
@@ -61,10 +36,7 @@ async function loadStatusPillOptions() {
     }
 }
 
-// Renders into #teamPerformanceStatusFilterToggle itself. An empty `statuses` (Site_Master has no
-// usable data right now, or the DB isn't connected) shows "Not Available" instead of the pill, and
-// leaves teamStatusFilter at its default ("active") since there's nothing to select. Otherwise
-// "active" stays the default selection whenever the real options include it.
+
 function renderStatusPill(statuses) {
     const toggle = document.getElementById("teamPerformanceStatusFilterToggle");
     if (!toggle) {
@@ -84,9 +56,7 @@ function renderStatusPill(statuses) {
         .join("");
 }
 
-// Maps a real site_master.Sales_Type value ("Primary Sales", "Secondary Sales") to the short code
-// this page's own salesType already uses ("primary"/"secondary") — same fix Dashboard.js's own
-// salesTypeToCode applies.
+
 function salesTypeToCode(label) {
     const normalized = label.trim().toLowerCase();
     if (normalized === "primary sales") {
@@ -98,10 +68,7 @@ function salesTypeToCode(label) {
     return normalized;
 }
 
-// Sales Type pill options — real options fetched from GET /api/team-performance/sales-types
-// (site_master.Sales_Type), same fetch-then-render-then-"Not Available" convention
-// loadStatusPillOptions above already uses, instead of the pill's Primary/Secondary buttons being
-// hardcoded straight into TeamPerformancePage.html.
+
 async function loadSalesTypePillOptions() {
     try {
         const res = await fetch("/api/team-performance/sales-types");
@@ -115,37 +82,20 @@ async function loadSalesTypePillOptions() {
     }
 }
 
-// Set once initTeamReportSection (further down this file) finishes — lets the Filter Header's own
-// FY/Date Filter handlers push their current effective range into it. Declared this early (well
-// before that section's own definition) because the Sales Date Filter's onFilterChange below fires
-// once synchronously during setup, before initTeamReportSection has run — referencing it there needs
-// the `let` binding to already exist (even if still null) or it'd throw a temporal-dead-zone
-// ReferenceError instead of just no-op-ing via the optional chaining below. initTeamReportSection
-// computes its own correct initial range directly from teamPerformanceFilters once it does run, so
-// this early no-op call costs nothing.
+
 let teamReportSectionHandle = null;
 
-// Same early-reference reasoning as teamReportSectionHandle above, for "Person Sitemaster Report"
-// (see initTeamSiteReport further down this file) — its own Target/Sales period is driven by the
-// Filter Header's own Date Filter, same as "Team Report", but it's also person-scoped (setPerson,
-// called from openPersonDetails below whenever a name is clicked, same trigger "Person Details"/
-// "Daily Sales" use).
+
 let teamSiteReportSectionHandle = null;
 
-// Same early-reference reasoning as teamReportSectionHandle above, for "Person Details"/"Daily
-// Sales" (initPersonDetailsSection, defined near the bottom of this file) — openPersonDetails below
-// can fire before that section has initialized. Note "Person Details"/"Daily Sales" no longer react
-// to this page's own Filter Header Date Filter at all (per explicit request) — they're driven
-// entirely by "Person Details"' own scoped FY Filter instead (see initTeamPersonFyYearFilter).
+
 let personSectionHandle = null;
 
-// The real current FY, computed fresh on every page load — same reasoning Dashboard.js's own
-// DASHBOARD_FY_KEYS comment gives, so this shifts forward automatically once a new FY starts
-// instead of ever going stale.
+
 function getCurrentFyStartYear2Digit() {
     const now = new Date();
     const calendarYear2Digit = now.getFullYear() % 100;
-    // Jan-Mar (month 0-2) still belongs to the FY that started the PREVIOUS April.
+
     return now.getMonth() < 3 ? calendarYear2Digit - 1 : calendarYear2Digit;
 }
 
@@ -159,13 +109,7 @@ function fyLabelFor(startYear2Digit) {
     return `FY ${String(start).padStart(2, "0")}-${String((start + 1) % 100).padStart(2, "0")}`;
 }
 
-// ==================== Filter Header range label ====================
-// #teamPerformanceRangeLabel (team-performance-date-filter-cluster, next to the Filter button) —
-// same look/format as PrimarySalesPage.js's own formatRangeLabel ("01-Sep-2026 to 14-Sep-2026 (14
-// of 30 days)"), copied here per this codebase's per-page-own-copy convention (same copy
-// SiteStatusPage.js's own updateSiteDetailRangeLabel carries). Driven by getTeamPerformanceEffectiveRange
-// (declared further down, but hoisted — same "Date Filter wins, else the real current FY" layering
-// "Team Report" itself uses) so the label always matches whatever's actually driving that section.
+
 const RANGE_LABEL_MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
 function formatRangeDate(date) {
@@ -181,9 +125,7 @@ function lastDayOfMonthDate(date) {
     return new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
 }
 
-// A range whose end month is the current calendar month shows days-elapsed-of-days-in-that-month
-// (e.g. "14 of 30 days") instead of the plain day count — same MTD-pacing read PrimarySalesPage.js's
-// own formatRangeLabel gives its Insights card; any other range just shows its real day count.
+
 function formatRangeLabel(periodFrom, periodTo, today) {
     const fromStr = formatRangeDate(periodFrom);
     const includesCurrentMonth = periodTo.getFullYear() === today.getFullYear() && periodTo.getMonth() === today.getMonth();
@@ -205,41 +147,30 @@ function updateTeamPerformanceRangeLabel() {
     el.textContent = formatRangeLabel(periodFrom, periodTo, new Date());
 }
 
-// Always the real current FY now — the page-level FY Year Filter dropdown that used to let a user
-// pick a different one here was removed per explicit request, so there's no longer a "selected" FY
-// to track for "Team Report"/"Daily Sales" (see currentMonthDateRange for their own current fallback
-// instead). "Person Details"' own FY card still needs one, but scoped to just that card — see
-// TEAM_PERSON_FY_KEYS/initTeamPersonFyYearFilter below.
+
 const TEAM_PERFORMANCE_FY_CURRENT_KEY = fyKeyFor(getCurrentFyStartYear2Digit());
 
-// "2026-27" -> "FY 26-27" for any FY key, not just the real current one — used by the Person FY
-// card's own FY Filter (menu items + selected label) below.
+
 function fyLabelForKey(fyKey) {
     const startYear = Number(String(fyKey).split("-")[0]);
     return fyLabelFor(startYear % 100);
 }
 
-// Rolling window (current FY + the 2 before it) for the Person FY card's own FY Filter dropdown —
-// same DASHBOARD_FY_WINDOW_SIZE=3 idea Dashboard.js's own Year Filter uses, scoped to just this one
-// card (per explicit request) instead of the whole page.
+
 const TEAM_PERSON_FY_WINDOW_SIZE = 3;
 const TEAM_PERSON_FY_KEYS = Array.from(
     { length: TEAM_PERSON_FY_WINDOW_SIZE },
     (_, i) => fyKeyFor(getCurrentFyStartYear2Digit() - i),
 );
 
-// ==================== Sales Date Filter ====================
-// Now components/SalesDateFilter/SalesDateFilter.js's initSalesDateFilter, imported above.
+
 initSalesDateFilter({
     idPrefix: "teamPerformanceDateFilter",
     onFilterChange: (column, from, to, meta) => {
         teamPerformanceFilters.from = from;
         teamPerformanceFilters.to = to;
         teamPerformanceFilters.dateMeta = meta;
-        // Fires synchronously once during setup (mode: null, before the Filter panel is ever opened,
-        // before initTeamReportSection has even run yet) — teamReportSectionHandle is still null at
-        // that point, so this safely no-ops via the optional chaining; initTeamReportSection computes
-        // its own correct initial range directly from teamPerformanceFilters once it does run.
+
         const range = getTeamPerformanceEffectiveRange();
         teamReportSectionHandle?.setDateRange(range.from, range.to);
         teamSiteReportSectionHandle?.setDateRange(range.from, range.to);
@@ -247,12 +178,7 @@ initSalesDateFilter({
     },
 });
 
-// Status toggle pill (#teamPerformanceStatusFilterToggle) now lives in
-// components/StatusFilter/StatusFilter.js — a click there fans the change out to every section on
-// this page: "Team Report" (teamReportSectionHandle), "Person Sitemaster Report"
-// (teamSiteReportSectionHandle — a no-op via its own internal guard if no person is currently
-// open), and "Person Details"/"Daily Sales" (personSectionHandle — also a no-op internally if no
-// person is open).
+
 loadStatusPillOptions().then((statuses) => {
     renderStatusPill(statuses);
     initStatusFilter("teamPerformanceStatusFilterToggle", (status) => {
@@ -263,14 +189,7 @@ loadStatusPillOptions().then((statuses) => {
     });
 });
 
-// ==================== Team Report ====================
-// Exact frontend architecture mirror of PrimarySalesPage.js's own "4. Reports"
-// (getBrandHierarchy/getFlatSummary + initReportsSection/renderBrandHierarchyTable/
-// renderReportsTable) — an "All Report" hierarchy tree (RM -> AM -> CM -> SM) plus three flat
-// single-level tabs (AM/CM/SM — RM excluded, same reasoning Primary's own Brand tab is excluded
-// there), per explicit request. Every function/const below is a direct rename of Primary's own
-// (brandTree -> positionTree, brand -> rm for the achi-bar color-slot concept) — see
-// TeamPerformanceReportService's own header comment for the backend side of this mirror.
+
 function pad2(n) {
     return String(n).padStart(2, "0");
 }
@@ -279,9 +198,7 @@ function lastDayOfMonthNum(year, month) {
     return new Date(year, month, 0).getDate();
 }
 
-// The real current calendar month's own [1st, last day] range — "Team Report"'s own fallback
-// whenever the Date Filter isn't actively set, per explicit request (was the real current FY before
-// — see getTeamPerformanceEffectiveRange's own comment).
+
 function currentMonthDateRange() {
     const now = new Date();
     const y = now.getFullYear();
@@ -289,18 +206,13 @@ function currentMonthDateRange() {
     return { from: `${y}-${pad2(m)}-01`, to: `${y}-${pad2(m)}-${pad2(lastDayOfMonthNum(y, m))}` };
 }
 
-// "2026-27" -> Apr 1 2026..Mar 31 2027 — used by "Daily Sales" (initTeamPersonDailyTrend) to fetch
-// whichever FY the Person FY card's own FY Filter currently has selected.
+
 function fyKeyToDateRange(fyKey) {
     const fyStartYear = Number(String(fyKey).split("-")[0]);
     return { from: `${fyStartYear}-04-01`, to: `${fyStartYear + 1}-03-31` };
 }
 
-// Date Filter wins whenever it's actively set (mode "filter" with a real from/to); otherwise falls
-// back to the real current calendar MONTH (currentMonthDateRange), per explicit request — not the
-// FY (no picker left on this page's own Filter Header to choose a different FY; "Person Details"'
-// own FY card still shows a full FY, but via its own scoped FY Filter — see
-// initTeamPersonFyYearFilter).
+
 function getTeamPerformanceEffectiveRange() {
     if (teamPerformanceFilters.dateMeta && teamPerformanceFilters.dateMeta.mode === "filter"
         && teamPerformanceFilters.from && teamPerformanceFilters.to) {
@@ -313,8 +225,7 @@ function teamPerformanceReportMoney(value, opts) {
     return formatMoney(value, opts).replace("₹", "");
 }
 
-// Escapes a real RM/AM/CM/SM name (or the synthetic "Uncategorized" bucket) for safe use inside an
-// HTML attribute (data-person-name) — names are free-text site_master columns, not app-controlled.
+
 function escapePersonName(name) {
     return String(name).replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }
@@ -337,8 +248,7 @@ function reportsColumns(firstLabel) {
     return [firstLabel, "Sites", "Mnt", "Sales", "Achi.", "Vs LM", "Vs LY"];
 }
 
-// One icon per Reports column header, plus one per tree level (RM/AM/CM/SM — reused by the flat
-// tabs' own row icons too, see POSITION_TREE_LEVEL_ICONS).
+
 const REPORTS_COLUMN_ICONS = {
     "RM": "bi-diagram-3-fill",
     "AM": "bi-signpost-split-fill",
@@ -359,7 +269,7 @@ function reportsHeaderCell(label) {
     </span>`;
 }
 
-// 7-column widths — first column wider for the name/tree indentation.
+
 const REPORTS_TABLE_COLGROUP = `<colgroup>
     <col style="width:24%"><col style="width:10%"><col style="width:12%"><col style="width:12%">
     <col style="width:14%"><col style="width:14%"><col style="width:14%">
@@ -371,9 +281,7 @@ function reportsAchiPct(sales, target) {
     return t > 0 ? (s / t) * 100 : null;
 }
 
-// `rmSlot` (0-3, or undefined) colors the fill via .channel-report-achi-fill[data-brand-slot] in the
-// stylesheet — omitted for rows that don't belong to one single RM (the Total row, and every row in
-// the RM-less flat tabs), which fall back to a neutral color instead.
+
 function renderReportsAchiCell(sales, target, rmSlot) {
     const pct = reportsAchiPct(sales, target);
     const barWidth = pct == null ? 0 : Math.min(Math.max(pct, 0), 100);
@@ -388,9 +296,7 @@ function renderReportsAchiCell(sales, target, rmSlot) {
         </span>`;
 }
 
-// Per-tab row-tint class for renderFlatTable's own <table> — each flat tab's data rows get one
-// solid color (AM/CM/SM) instead of the base .product-snapshot-table rule's even/odd zebra stripe,
-// same tint family renderPositionHierarchyTable's own data-level rule uses.
+
 const FLAT_REPORT_TABLE_CLASS = {
     "AM": "report-flat-table--am",
     "CM": "report-flat-table--cm",
@@ -401,14 +307,11 @@ function countFlatRows(rows) {
     return (rows ?? []).filter((row) => row.name !== "Total").length;
 }
 
-// One icon per hierarchy level (0=RM, 1=AM, 2=CM, 3=SM) so the tree reads at a glance without
-// having to check indentation alone.
+
 const POSITION_TREE_LEVEL_ICONS = ["bi-diagram-3-fill", "bi-signpost-split-fill", "bi-building", "bi-shop"];
 const POSITION_TREE_LEVEL_LABELS = ["RM", "AM", "CM", "SM"];
 
-// Achi. bar color slots (0-3, matching --achi-brand-1..4 in the stylesheet) — one per RM, in fixed
-// first-seen order, so every AM/CM/SM row under an RM shares that RM's color rather than being
-// colored by its own level/category.
+
 const REPORT_RM_COLOR_SLOTS = 4;
 
 function assignRmColorSlots(rows) {
@@ -421,16 +324,10 @@ function assignRmColorSlots(rows) {
     return slotByRm;
 }
 
-// `rows` is a flat list of {name, sites, target, sales, vsLastMonthPct, vsLastYearPct} objects
-// (AM/CM/SM tabs, real per TeamPerformanceReportService.get*Summaries) — every column is real.
-// `firstLabel` doubles as the POSITION_TREE_LEVEL_LABELS lookup key so every flat tab shows the
-// exact same icon-on-top/label-underneath row icon the "All Report" hierarchy tree uses for that
-// same level, instead of one generic icon shared by all three tabs.
+
 function renderFlatTable(wrap, firstLabel, rows) {
     const level = POSITION_TREE_LEVEL_LABELS.indexOf(firstLabel);
-    // getFlatPositionSummary (backend) always appends its own trailing {name: "Total", ...} row,
-    // even when site_master itself has zero rows — countFlatRows excludes that row, so this only
-    // fires when site_master genuinely has nothing.
+
     const bodyRows = !countFlatRows(rows)
         ? `<tr><td colspan="${reportsColumns(firstLabel).length}" class="product-snapshot-table-empty">
             <div class="reports-empty-state">
@@ -446,9 +343,7 @@ function renderFlatTable(wrap, firstLabel, rows) {
                         <i class="bi ${POSITION_TREE_LEVEL_ICONS[level]} brand-tree-row-icon" data-level="${level}" aria-hidden="true"></i>
                         <span class="brand-tree-row-icon-label">${POSITION_TREE_LEVEL_LABELS[level]}</span>
                    </span>`;
-            // data-person-level/-name let the click delegation in initTeamReportSection open "Person
-            // Details" for this row — omitted on the Total row (not a real person) and on the
-            // "Uncategorized" bucket's synthetic name, same reasoning it's excluded everywhere else.
+
             const personAttrs = isTotal ? "" : ` data-person-level="${firstLabel.toLowerCase()}" data-person-name="${escapePersonName(row.name)}"`;
             return `
         <tr data-level="0"${isTotal ? ' class="channel-report-total-row"' : ""}>
@@ -478,11 +373,7 @@ function renderFlatTable(wrap, firstLabel, rows) {
         </table>`;
 }
 
-// Turns the backend's nested {name, sites, target, sales, children:[...]} tree into a flat
-// id/parent/level row list an expand/collapse table can render as one flat <table> with per-row
-// indentation. Each row carries `rm`: its own name at level 0, or its level-0 ancestor's name at
-// every level below that (so an AM/CM/SM row's Achi. bar can be colored by the RM it rolls up to).
-// The bottom Total row (level 0, name "Total") gets rm: null since it spans every RM, not just one.
+
 function flattenPositionTree(tree) {
     const rows = [];
     function walk(node, id, level, parent, rm) {
@@ -501,9 +392,7 @@ function positionTreeHasChildren(rowId, rows) {
     return rows.some((row) => row.parent === rowId);
 }
 
-// A row's full ancestor path (["RM", "AM", "CM", "SM"]) by walking `parent` back up `rows` — needed
-// here because a flat CSV loses the on-screen table's indentation. Flat-tab rows have no
-// `parent`/`level` at all (single level) and never reach this — see downloadTeamReportCsv.
+
 function reportsRowPathArray(row, rows) {
     const path = [row.name];
     let current = row;
@@ -519,8 +408,7 @@ function reportsRowPathArray(row, rows) {
 
 const REPORTS_LEVEL_COLUMNS = ["RM", "AM", "CM", "SM"];
 
-// Client-side CSV export for the Team Report download popup — `sections` is one or more
-// {label, rows} pairs.
+
 function downloadTeamReportCsv(sections) {
     const nonEmpty = sections.filter((s) => s.rows && s.rows.length);
     if (!nonEmpty.length) {
@@ -553,8 +441,7 @@ function downloadTeamReportCsv(sections) {
     downloadCsv(lines, `team-report-${new Date().toISOString().slice(0, 10)}.csv`);
 }
 
-// Total row count per hierarchy level (RM/AM/CM/SM) for the header's count strip — the bottom Total
-// row (level 0, name "Total") is excluded, it isn't a real RM.
+
 function computeHierarchyCounts(rows) {
     const counts = { rm: 0, am: 0, cm: 0, sm: 0 };
     (rows ?? []).forEach((row) => {
@@ -584,8 +471,7 @@ function renderReportsCounts(el, counts) {
         <span class="reports-section-count"><span class="reports-section-count-label">SM:</span>${counts.sm}</span>`;
 }
 
-// AM/CM/SM tabs each only carry their own flat dimension's rows — no info about the other levels to
-// compute real counts for — so only that one tab's own distinct-value count is shown here.
+
 function renderSingleReportsCount(el, label, count) {
     if (!el) {
         return;
@@ -593,11 +479,9 @@ function renderSingleReportsCount(el, label, count) {
     el.innerHTML = `<span class="reports-section-count"><span class="reports-section-count-label">${label}:</span>${count}</span>`;
 }
 
-// Every node starts collapsed and can be expanded/collapsed independently of its siblings.
+
 function renderPositionHierarchyTable(wrap, rows) {
-    // getPositionHierarchy (backend) always appends its own trailing {name: "Total", level: 0, ...}
-    // RM node, even when site_master itself has zero rows — excluding that node here means this
-    // only fires when site_master genuinely has nothing.
+
     const hasRealRows = rows.some((row) => !(row.level === 0 && row.name === "Total"));
     if (!hasRealRows) {
         wrap.innerHTML = `
@@ -646,8 +530,7 @@ function renderPositionHierarchyTable(wrap, rows) {
                         <span class="brand-tree-row-icon-label">${POSITION_TREE_LEVEL_LABELS[row.level]}</span>
                    </span>`;
             const rmSlot = row.rm ? rmColorSlots.get(row.rm) : null;
-            // Same data-person-level/-name click target renderFlatTable's own rows carry — see that
-            // function's own comment.
+
             const personAttrs = isTotal ? "" : ` data-person-level="${POSITION_TREE_LEVEL_LABELS[row.level].toLowerCase()}" data-person-name="${escapePersonName(row.name)}"`;
             return `
                 <tr data-row-id="${row.id}" data-level="${row.level}"${isTotal ? ' class="channel-report-total-row"' : ""}>
@@ -695,10 +578,7 @@ function renderPositionHierarchyTable(wrap, rows) {
     updateVisibility();
 }
 
-// Every flat (single-level) Reports tab besides "All Report" — one tab per hierarchy level (AM/CM/SM;
-// the standalone RM tab is intentionally not wired here, same as Primary's own version — RM-level
-// rows are still visible via the "All Report" hierarchy tree), each backed by its own
-// TeamPerformanceReportService#get*Summaries endpoint.
+
 const FLAT_REPORT_TABS = {
     am: { label: "AM", endpoint: "/api/team-performance/reports/am" },
     cm: { label: "CM", endpoint: "/api/team-performance/reports/cm" },
@@ -719,10 +599,7 @@ function initTeamReportSection() {
         return { setDateRange() {}, setStatus() {} };
     }
 
-    // Clicking any RM/AM/CM/SM name (either tree) opens "Person Details" below — see
-    // openPersonDetails further down this file. Delegated so it keeps working across every
-    // re-render (renderActiveTab replaces tableWrap's innerHTML wholesale on every tab/filter
-    // change) without needing to re-attach a listener per row.
+
     tableWrap.addEventListener("click", (event) => {
         const nameEl = event.target.closest(".product-snapshot-name-text[data-person-level]");
         if (!nameEl) {
@@ -731,23 +608,18 @@ function initTeamReportSection() {
         openPersonDetails(nameEl.dataset.personLevel, nameEl.dataset.personName);
     });
 
-    // Secondary active by default, per explicit request — mirrors whichever
-    // `.brand-header-item.active[data-sales-type]` TeamPerformancePage.html ships with, so the
-    // JS default can never silently drift out of sync with the markup's own default.
+
     let salesType = salesTypeToggle?.querySelector(".brand-header-item.active")?.dataset.salesType || "secondary";
     let activeTab = "all";
     let treeRows = null;
     let treeRequestSeq = 0;
     const flatRows = { am: null, cm: null, sm: null };
     const flatRequestSeq = { am: 0, cm: 0, sm: 0 };
-    // Driven by the Filter Header's Year/Date Filter above — starts on that filter's own current
-    // effective range (rather than null/null, the backend's own current-month-to-date fallback) so
-    // the very first render already matches whichever FY/date the header shows.
+
     const initialRange = getTeamPerformanceEffectiveRange();
     let currentFrom = initialRange.from;
     let currentTo = initialRange.to;
-    // Filter Header's own Status toggle pill (#teamPerformanceStatusFilterToggle) — see
-    // the initStatusFilter call/setStatus below.
+
     let currentStatus = teamStatusFilter;
 
     let pendingRequests = 0;
@@ -762,9 +634,7 @@ function initTeamReportSection() {
         }
     }
 
-    // Shown instead of the table while a tab's data is still in flight — `null` (not yet fetched,
-    // see treeRows/flatRows below) is a distinct state from "fetch resolved to zero real rows", so
-    // this never gets mistaken for (or shows alongside) the real "No data available" empty state.
+
     function renderLoadingState() {
         tableWrap.innerHTML = `
             <div class="reports-empty-state">
@@ -865,14 +735,7 @@ function initTeamReportSection() {
         });
     });
 
-    // Primary/Secondary sales-type pill — real options fetched from
-    // GET /api/team-performance/sales-types (site_master.Sales_Type), same fetch-then-render
-    // convention the Status pill above uses, instead of the pill's Primary/Secondary buttons being
-    // hardcoded straight into TeamPerformancePage.html. Not awaited here (initTeamReportSection stays
-    // synchronous, same return shape callers already expect — see teamReportSectionHandle's own
-    // header comment) — renderActiveTab already ran once above with the "secondary" fallback default
-    // (salesTypeToggle's own querySelector finding nothing in the still-"Loading…" placeholder), so
-    // this only needs to re-render/refetch if the real options settle on a different default.
+
     if (salesTypeToggle) {
         loadSalesTypePillOptions().then((types) => {
             if (!types.length) {
@@ -886,9 +749,7 @@ function initTeamReportSection() {
             salesTypeToggle.innerHTML = options
                 .map((opt) => `<button type="button" class="brand-header-item${opt.value === defaultValue ? " active" : ""}" data-sales-type="${opt.value}">${opt.label}</button>`)
                 .join("");
-            // Invalidates every tab's cache (same "new range invalidates everything" rule
-            // setDateRange below already uses) so the currently active tab refetches immediately and
-            // the other three refetch lazily on next click.
+
             initSalesTypeFilter("teamPerformanceSalesTypeToggle", (type) => {
                 salesType = type;
                 treeRows = null;
@@ -907,8 +768,7 @@ function initTeamReportSection() {
         });
     }
 
-    // Download button opens a small popup with a scope select — "Active Tab" or "All Tabs" — and its
-    // own confirm button, same pattern PrimarySalesPage.js's own Reports download uses.
+
     const downloadBtn = document.getElementById("teamPerformanceReportDownloadBtn");
     const downloadPopup = document.getElementById("teamPerformanceReportDownloadPopup");
     const downloadScope = document.getElementById("teamPerformanceReportDownloadScope");
@@ -936,10 +796,7 @@ function initTeamReportSection() {
     renderActiveTab();
 
     return {
-        // Driven by the Filter Header's own Year/Date Filter (see teamReportSectionHandle's own
-        // comment near the top of this file) — a new range invalidates every tab's cache so the
-        // currently active one refetches immediately and the other three refetch lazily on next
-        // click, same as a fresh page load.
+
         setDateRange(from, to) {
             currentFrom = from;
             currentTo = to;
@@ -949,8 +806,7 @@ function initTeamReportSection() {
             flatRows.sm = null;
             renderActiveTab();
         },
-        // Filter Header's own Status toggle pill (see the initStatusFilter call's own onChange) —
-        // same cache-invalidate-then-render-active-tab shape setDateRange above uses.
+
         setStatus(status) {
             currentStatus = status;
             treeRows = null;
@@ -964,19 +820,7 @@ function initTeamReportSection() {
 
 teamReportSectionHandle = initTeamReportSection();
 
-// ==================== Person Sitemaster Report ====================
-// Renamed from a page-wide "Site Master Report" section, per explicit request — now scoped to just
-// whichever RM/AM/CM/SM person "Person Details" is currently showing (see initTeamSiteReport's own
-// setPerson further down). Same shape/leaderboard convention as PrimarySalesPage.js's own "5.
-// Site_Master Primary_Sale Report" (Rank/Site_Code/Brand/Store_Name/City/State/Region/MNT/Sales/
-// Achi%/Vs LY, ranked by real Sales descending, one grand-total row) — backed by GET
-// /api/team-performance/reports/site-master?level=&name=&from=&to= (TeamPerformanceReportService#
-// getSiteMasterReport). Unlike that page (scoped to one sales type), this lists every one of that
-// person's own active site_master rows regardless of Sales_Type (Primary AND Secondary) — see that
-// method's own header comment. Reuses this page's own teamPerformanceReportMoney/renderReportsDelta/
-// escapePersonName (module-top-level, already used by "Team Report" above) instead of a fresh copy —
-// no block-scoping trap here, unlike the historical bug PrimarySalesReportsService's own header
-// comment documents for that page's own "5." section.
+
 const TEAM_SITE_REPORT_COLGROUP = `<colgroup>
     <col style="width:5%"><col style="width:10%"><col style="width:9%"><col style="width:8%">
     <col style="width:10%"><col style="width:10%"><col style="width:9%"><col style="width:10%">
@@ -1023,8 +867,7 @@ function renderTeamSiteReportAchiCell(sales, target) {
         </span>`;
 }
 
-// Client-side CSV export — keeps the full ₹ amount (formatMoneyFull, not stripped), same convention
-// "Team Report"'s own downloadTeamReportCsv above already uses on this page.
+
 function downloadTeamSiteReportCsv(rows) {
     if (!rows.length) {
         return;
@@ -1057,10 +900,7 @@ function downloadTeamSiteReportCsv(rows) {
 }
 
 function renderTeamSiteReportTable(wrap, rows) {
-    // The backend always appends its own grand-total row (rank: null) even when zero real sites
-    // matched — same convention Primary's own "5. Site_Master Primary_Sale Report" uses (see
-    // getSiteMasterReport's own header comment). Real "no data" here means no RANKED row at all;
-    // showing just that lone all-zero Total row would be misleading, so it's excluded too.
+
     const realRows = rows.filter((row) => row.rank != null);
     const bodyRows = !realRows.length
         ? `<tr><td colspan="${TEAM_SITE_REPORT_COLUMNS.length}" class="team-performance-site-report-table-empty">
@@ -1116,13 +956,7 @@ function renderTeamSiteReportTable(wrap, rows) {
         </table>`;
 }
 
-// "Person Sitemaster Report" — renamed from a page-wide section, per explicit request: now shown
-// only once a person is picked (setPerson, called from openPersonDetails' own open() below, same
-// trigger "Person Details"/"Daily Sales" use), scoped to just that RM/AM/CM/SM person's own sites
-// (level+name, same real site_master column filter this drill-down's other endpoints already use).
-// Still driven by the Filter Header's own Date Filter above for its own Target/Sales period (same
-// effective range "Team Report" uses, see getTeamPerformanceEffectiveRange's own comment) —
-// independent of "Person Details"' own scoped FY Filter, which only affects that card + Daily Sales.
+
 function initTeamSiteReport() {
     const sectionContainer = document.getElementById("teamPerformanceSiteReportSectionContainer");
     const card = document.getElementById("teamPerformanceSiteReportCard");
@@ -1136,16 +970,12 @@ function initTeamSiteReport() {
     let periodTo = null;
     let currentLevel = null;
     let currentName = null;
-    // Filter Header's own Status toggle pill (#teamPerformanceStatusFilterToggle) — see
-    // the initStatusFilter call/setStatus below.
+
     let currentStatus = teamStatusFilter;
     let requestSeq = 0;
     downloadBtn?.addEventListener("click", () => downloadTeamSiteReportCsv(siteReportRows));
 
-    // No-ops until a person has actually been picked (currentLevel/currentName both set by
-    // setPerson) — same "nothing to show yet" gate Person Details' own loadFyOverview implicitly
-    // gets from its section starting `hidden`, made explicit here since this function can also be
-    // called by the Filter Header's own Date Filter before any person is ever clicked.
+
     function refresh() {
         if (!currentLevel || !currentName) {
             return;
@@ -1190,12 +1020,7 @@ function initTeamSiteReport() {
         refresh();
     }
 
-    // Called by openPersonDetails' own open() (see initPersonDetailsSection below) whenever a name
-    // is clicked in "Team Report" — unhides this section (starts `hidden` in the markup, same as
-    // "Person Details"/"Daily Sales", for the unrelated "no person picked yet" reason) and
-    // (re)fetches for that person, but only once the session's real permission set confirms it
-    // actually holds "page:team-insights.person-sitemaster-report" — awaits the same promise every
-    // other gated reveal on this page does, never a second /api/auth/me fetch.
+
     async function setPerson(level, name) {
         currentLevel = level;
         currentName = name;
@@ -1204,8 +1029,7 @@ function initTeamSiteReport() {
         refresh();
     }
 
-    // Filter Header's own Status toggle pill — same "no-op until a person is picked" gate refresh()
-    // already enforces.
+
     function setStatus(status) {
         currentStatus = status;
         refresh();
@@ -1219,27 +1043,15 @@ function initTeamSiteReport() {
 
 teamSiteReportSectionHandle = initTeamSiteReport();
 
-// ==================== Person Details + Daily Sales ====================
-// Shown once a name is clicked anywhere in "Team Report" above (see the tableWrap click delegation
-// inside initTeamReportSection, which calls openPersonDetails below). Left: an FY card, exact same
-// Month x Primary/Secondary Target/Sales/Achi./Vs Last Year table design as Dashboard's own "1.
-// Overview" (index.html/Dashboard.js's renderDashboardFyOverviewTable) — defaults to the real
-// current FY (TEAM_PERFORMANCE_FY_CURRENT_KEY), with its own scoped FY Filter dropdown
-// (initTeamPersonFyYearFilter) to view a different one. Right: a
-// Person card (persona identity + assigned site-code list/count). Below both: a Daily Sales ECharts
-// graph, same frontend idea as Primary Sales page's own Daily Trend Graph, combining this person's
-// Primary+Secondary Sales.
+
 const PERSON_LEVEL_LABELS = { rm: "RM", am: "AM", cm: "CM", sm: "SM" };
 
-// HTML-attribute escaping for the money tooltips below (title="...") — same escapeAttr Dashboard.js
-// carries its own copy of, per this codebase's per-page-own-copy convention.
+
 function escapeAttr(value) {
     return String(value ?? "").replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }
 
-// Signed abbreviated money ("+1.5 Cr" / "-30,000") for the Achi./Vs Last Year cells below — same
-// formatVariance Dashboard.js's own "1. Overview" FY table uses, ported here since this page's own
-// teamPerformanceReportMoney (already ₹-stripped) doesn't sign positives on its own.
+
 function personFormatVariance(value) {
     if (value === null || value === undefined) {
         return "—";
@@ -1249,11 +1061,7 @@ function personFormatVariance(value) {
     return `${sign}${teamPerformanceReportMoney(Math.abs(num), { round: false })}`;
 }
 
-// On-screen Target/Sales cell — abbreviated Cr/L (teamPerformanceReportMoney), full un-abbreviated
-// rupee amount in the title attribute so a long hover reveals the real number — same fyMoneyCell
-// Dashboard.js's own "1. Overview" FY table uses. allowDash mirrors that table's own "no data
-// entered yet" (—) vs "the real figure is actually zero" distinction; the Total/YTD rows never want
-// that dash.
+
 function personFyMoneyTd(value, allowDash, groupClass) {
     const cls = groupClass ? ` class="${groupClass}"` : "";
     if (allowDash && !value) {
@@ -1262,9 +1070,7 @@ function personFyMoneyTd(value, allowDash, groupClass) {
     return `<td${cls} title="${escapeAttr(formatMoneyFull(value))}">${teamPerformanceReportMoney(value, { round: false })}</td>`;
 }
 
-// Same "previous is 0" null-growth rule GrowthMath.growthPct (backend) uses — mirrored here since
-// Achi./Vs Last Year are computed client-side from the raw target/sales/lastYearSales this page's
-// own /person/fy-overview response carries (see PersonFyOverviewResponse's own header comment).
+
 function personGrowthPct(current, previous) {
     const cur = Number(current ?? 0);
     const prev = Number(previous ?? 0);
@@ -1274,10 +1080,7 @@ function personGrowthPct(current, previous) {
     return cur === 0 ? 0 : null;
 }
 
-// Achi. cell — progress bar + % + a variance-amount span (e.g. "/ +1.2 L"), full tooltip on hover —
-// same renderAchiCell Dashboard.js's own "1. Overview" FY table uses (this page's own personAchiCell
-// used to be a plain bar+% with no variance span; per explicit request this card is now a faithful
-// visual copy of Dashboard's own FY table).
+
 function personAchiCell(sales, target) {
     const t = Number(target ?? 0);
     const s = Number(sales ?? 0);
@@ -1295,12 +1098,7 @@ function personAchiCell(sales, target) {
         </span>`;
 }
 
-// "Vs Last Year" cell — the variance AMOUNT alongside the growth % AND the real Last Year figure
-// itself, all in one cell — same renderYoyVariance Dashboard.js's own "1. Overview" FY table uses
-// (this page's own personDeltaCell used to show just the bare growth %; per explicit request this
-// card is now a faithful visual copy of Dashboard's own FY table). "—" when either side is missing
-// real data. The Last Year figure sits in its own .dashboard-delta-lastyear span so it keeps a fixed
-// muted color instead of inheriting the surrounding positive/negative trend color.
+
 function personYoyVarianceCell(current, previous) {
     const cur = Number(current ?? 0);
     const prev = Number(previous ?? 0);
@@ -1312,27 +1110,19 @@ function personYoyVarianceCell(current, previous) {
     return `<span class="dashboard-delta ${cls}" title="Last Year: ${escapeAttr(formatMoneyFull(prev))}">${personFormatVariance(diff)} (${formatDelta(personGrowthPct(cur, prev))}) / <span class="dashboard-delta-lastyear">${teamPerformanceReportMoney(prev, { round: false })}</span></span>`;
 }
 
-// "2026-04" -> "Apr-26", same short-month + 2-digit-year shape the rest of this app's own Daily
-// Sales axis labels use (see SiteDetailTrendService's own DAY_LABEL_FORMAT comment).
+
 function personMonthLabel(yearMonthStr) {
     const [year, month] = yearMonthStr.split("-").map(Number);
     return `${new Date(year, month - 1, 1).toLocaleString("en-US", { month: "short" })}-${String(year).slice(2)}`;
 }
 
-// Apr(0)..Mar(11) index of the real current calendar month within its own FY — same
-// getCurrentFyMonthIndex Dashboard.js's own "1. Overview" FY table uses, ported here for the same
-// Actual/Current/Projection month split (see personFyMonthType below).
+
 function getCurrentFyMonthIndex() {
     const jsMonth = new Date().getMonth();
     return (jsMonth + 9) % 12;
 }
 
-// Every month of a FULLY ELAPSED FY (any FY other than the real current one — this card's FY Filter
-// only ever offers the real current FY + the 2 before it, never a future one) renders "actual"; the
-// real current FY additionally splits into Actual (already happened)/Current (this month)/Projection
-// (hasn't happened yet) — same buildDashboardFyMonths split Dashboard.js's own "1. Overview" FY table
-// uses, driving both this row's own CSS tint (.dashboard-fy-row--actual/-current/-projection) and
-// renderPersonFyTable's own "show Target as an on-plan stand-in for Sales" rule for Projection months.
+
 function personFyMonthType(fyKey, index) {
     if (fyKey !== TEAM_PERFORMANCE_FY_CURRENT_KEY) {
         return "actual";
@@ -1344,11 +1134,7 @@ function personFyMonthType(fyKey, index) {
     return index < currentIndex ? "actual" : "projection";
 }
 
-// Exact frontend architecture mirror of Dashboard.js's own renderDashboardFyOverviewTable (money-cell
-// tooltips, Achi. variance span, combined Vs Last Year cell, Actual/Current/Projection row tinting,
-// the current month's own "See Total" button revealing a YTD subtotal row) — per explicit request,
-// this card is now a faithful visual + behavioral copy of Dashboard's own "1. Overview" FY table,
-// scoped to just this one person's own assigned sites instead of the whole business.
+
 function renderPersonFyTable(tbody, data) {
     if (!data || !data.months || !data.months.length) {
         tbody.innerHTML = `<tr class="dashboard-fy-row--loading"><td colspan="9">No data available</td></tr>`;
@@ -1356,10 +1142,7 @@ function renderPersonFyTable(tbody, data) {
     }
 
     let pTargetTotal = 0, sTargetTotal = 0, pSalesTotal = 0, sSalesTotal = 0, pLastYearTotal = 0, sLastYearTotal = 0;
-    // YTD (Apr..current month) subtotal — snapshotted the moment the "current" row is reached below
-    // (Projection months never contribute), same "See Total" idea Dashboard's own table uses. Stays
-    // all-zero (and its own row never renders) for any FY other than the real current one, which is
-    // exactly when this feature makes sense.
+
     let ytdPTarget = 0, ytdSTarget = 0, ytdPSales = 0, ytdSSales = 0, ytdPLastYear = 0, ytdSLastYear = 0;
     let ytdRowHtml = "";
 
@@ -1371,8 +1154,7 @@ function renderPersonFyTable(tbody, data) {
         const realSSales = Number(data.secondarySales[i] ?? 0);
         const pLastYear = Number(data.primaryLastYearSales[i] ?? 0);
         const sLastYear = Number(data.secondaryLastYearSales[i] ?? 0);
-        // Projection months (haven't happened yet) have no real Sales — per explicit request, they
-        // display that month's own Target instead (an "on-plan" stand-in), same as Dashboard's table.
+
         const displayPSales = type === "projection" ? pTarget : realPSales;
         const displaySSales = type === "projection" ? sTarget : realSSales;
 
@@ -1444,11 +1226,7 @@ function renderPersonFyTable(tbody, data) {
     tbody.innerHTML = monthRows + totalRow;
 }
 
-// "See Total" toggle for the current month's own row — delegated on the tbody (not bound per-button)
-// since renderPersonFyTable rebuilds every <tr>, button included, on every person/FY change — same
-// initDashboardFySeeTotal Dashboard.js's own "1. Overview" FY table uses. #teamPerformancePersonFy
-// YtdRow is rebuilt fresh (and re-hidden) on every render too, so this toggle's own on/off state
-// deliberately doesn't persist across a change — there's nothing to persist, it's a new row.
+
 (function initTeamPersonFySeeTotal() {
     const body = document.getElementById("teamPerformancePersonFyBody");
     if (!body) {
@@ -1470,11 +1248,7 @@ function renderPersonFyTable(tbody, data) {
     });
 })();
 
-// A person's assigned sites (site_master.Sales_Type, same real classification
-// SiteStatusPage.js's own resolveSalesTypeFlags reads) are Primary-only, Secondary-only, or a mix
-// of both — per explicit request, the FY card below shows only the column group(s) that person
-// actually has. No sites yet / an unrecognized value falls back to showing both, same "don't hide
-// data we can't classify" convention resolveSalesTypeFlags uses.
+
 function resolvePersonSalesTypeFlags(sites) {
     const hasPrimary = (sites || []).some((site) => String(site.salesType ?? "").toLowerCase().includes("primary"));
     const hasSecondary = (sites || []).some((site) => String(site.salesType ?? "").toLowerCase().includes("secondary"));
@@ -1484,10 +1258,7 @@ function resolvePersonSalesTypeFlags(sites) {
     return { showPrimary: hasPrimary, showSecondary: hasSecondary };
 }
 
-// Toggles which column group(s) (.dashboard-fy-overview-group-primary/-secondary, both the thead's
-// own group header/sub-headers and every tbody row's own cells — see renderPersonFyTable) are
-// visible on the FY card, scoped under #teamPerformancePersonFyCard so this never touches
-// Dashboard.js's/SiteStatusPage.js's own same-named classes elsewhere.
+
 function applyPersonSalesTypeVisibility(flags) {
     const card = document.getElementById("teamPerformancePersonFyCard");
     if (!card) {
@@ -1497,10 +1268,7 @@ function applyPersonSalesTypeVisibility(flags) {
     card.classList.toggle("hide-secondary-group", !flags.showSecondary);
 }
 
-// Same fixed identity colors the Person FY card's own Primary/Secondary Sales column-group headers
-// use (see .dashboard-fy-overview-group-primary/-secondary in TeamPerformancePage.css) — Compare
-// mode below splits the single combined Sales line into these same two series, so the two views
-// read as the same two categories at a glance instead of picking arbitrary new colors.
+
 const TEAM_DAILY_TREND_COMPARE_TYPES = [
     { key: "primary", label: "Primary Sales", color: "#16A34A" },
     { key: "secondary", label: "Secondary Sales", color: "#2563EB" },
@@ -1508,9 +1276,7 @@ const TEAM_DAILY_TREND_COMPARE_TYPES = [
 const TEAM_DAILY_TREND_GRANULARITY_LABEL = { day: "Daily", month: "Monthly", year: "Yearly" };
 const TEAM_DAILY_TREND_PERIOD_LABEL = { day: "Date", month: "Month", year: "Year" };
 
-// LINE_COLOR is a plain hex string (from the CSS var read below) — fades it to a given alpha for
-// the Sales line's own area-fill gradient stops, same helper PrimarySalesPage.js's own
-// initDailyTrendGraph uses, ported here rather than shared since nothing else on this page needs it.
+
 function teamDailyTrendHexToRgba(hex, alpha) {
     const clean = String(hex).replace("#", "");
     const r = parseInt(clean.substring(0, 2), 16);
@@ -1519,14 +1285,7 @@ function teamDailyTrendHexToRgba(hex, alpha) {
     return `rgba(${r}, ${g}, ${b}, ${alpha})`;
 }
 
-// ECharts-based Daily Sales graph — full frontend parity with Primary Sales page's own Daily Trend
-// Graph (PrimarySalesPage.js's initDailyTrendGraph), per explicit request: Vs Last Year toggle,
-// Compare toggle (there: brand vs brand; here: Primary vs Secondary Sales — a person has no Brand
-// of their own, so this page's own real per-person split dimension stands in for it), dark rich
-// tooltip, Bar Graph per-bar growth labels. No independent brand/date filter bar of its own (Primary's
-// own copy dropped that too) — always shows that FY's own 12 months (Apr-Mar, state.fyKey), driven
-// entirely by "Person Details"' own scoped FY Filter (setFyKey, see initTeamPersonFyYearFilter) — not
-// this page's own Filter Header Date Filter, per explicit request.
+
 function initTeamPersonDailyTrend() {
     const chartDom = document.getElementById("teamPerformanceDailyTrendChart");
     const modeBadge = document.getElementById("teamPerformanceDailyTrendModeBadge");
@@ -1541,24 +1300,18 @@ function initTeamPersonDailyTrend() {
     }
 
     const chart = window.echarts.init(chartDom);
-    // showTarget starts true (unlike showLastYear) — the Target line used to always be drawn
-    // unconditionally here, same reasoning Dashboard.js's own state.showTarget default gives.
+
     const state = {
         chartType: "line", level: null, name: null, compare: false, showLastYear: false, showTarget: true,
-        // Which FY this chart shows — driven by "Person Details"' own FY card FY Filter (see
-        // setFyKey below), not the page's Filter Header Date Filter (that one only drives "Team
-        // Report" now — see getTeamPerformanceEffectiveRange's own comment).
+
         fyKey: TEAM_PERFORMANCE_FY_CURRENT_KEY,
-        // Filter Header's own Status toggle pill (#teamPerformanceStatusFilterToggle) — see
-        // the initStatusFilter call/setStatus below.
+
         status: teamStatusFilter,
     };
     let currentData = null;
     let requestSeq = 0;
 
-    // Theme-aware colors, re-resolved on "theme-changed" (dispatched by QuickAccessPanel.js's theme
-    // toggle) — same pattern PrimarySalesPage.js's own resolveDailyTrendColors uses, so switching
-    // theme repaints this chart immediately instead of leaving it stuck on stale colors.
+
     let axisColor, gridLineColor, salesColor, targetColor, posColor, negColor, naColor, lastYearColor;
     function resolveColors() {
         const root = getComputedStyle(document.documentElement);
@@ -1573,28 +1326,22 @@ function initTeamPersonDailyTrend() {
     }
     resolveColors();
 
-    // Always monthly (12 points, Apr-Mar) — this chart shows the same FY the Person FY card above it
-    // is currently showing (state.fyKey, set by that card's own FY Filter), per explicit request, so
-    // "month" is the only granularity that ever makes sense here now.
+
     function resolveGranularity() {
         return "month";
     }
 
-    // Short axis/label amount ("1.5 Cr") — reuses this page's own teamPerformanceReportMoney (same
-    // Cr/Lakh abbreviation every other card here already uses) instead of duplicating
-    // PrimarySalesPage.js's own separate formatIndianAmount.
+
     function shortAmount(value) {
         return teamPerformanceReportMoney(value, { round: false });
     }
 
-    // Full comma-grouped amount for tooltip precision — reuses formatMoneyFull (imported), same
-    // convention this page's own CSV export already uses.
+
     function fullAmount(value) {
         return formatMoneyFull(value).replace("₹", "");
     }
 
-    // "2026-04-05"/"2026-04"/"2026" -> the full, unambiguous period shown on hover ("05 Apr 2026" /
-    // "April 2026" / "2026") — mirrors PrimarySalesPage.js's own formatPeriod.
+
     function formatPeriod(dateStr, granularity) {
         if (!dateStr) return "";
         if (granularity === "year") return dateStr;
@@ -1611,8 +1358,7 @@ function initTeamPersonDailyTrend() {
         return new Date(y, m - 1, d).toLocaleDateString(undefined, { day: "2-digit", month: "short", year: "numeric" });
     }
 
-    // The overall selected window (backend's `period.from`/`period.to`) formatted the way a user
-    // would describe their own selection — mirrors PrimarySalesPage.js's own formatSelectedPeriod.
+
     function formatSelectedPeriod(period, granularity) {
         if (!period || !period.from || !period.to) return "—";
         if (granularity === "month" && period.from.slice(0, 7) === period.to.slice(0, 7)) {
@@ -1623,9 +1369,7 @@ function initTeamPersonDailyTrend() {
         return `${formatFullDate(period.from)} – ${formatFullDate(period.to)}`;
     }
 
-    // Colored % for the tooltip's dark background — brighter tints than the app's normal
-    // --color-success/--color-danger (tuned for light card backgrounds) so they stay readable here,
-    // same convention PrimarySalesPage.js's own formatGrowth uses.
+
     function formatGrowthTooltip(value) {
         if (value === null || value === undefined) {
             return '<span style="color:#9CA3AF;">— N/A</span>';
@@ -1636,10 +1380,7 @@ function initTeamPersonDailyTrend() {
         return `<span style="color:${color};font-weight:600;">${sign}${Math.abs(value).toFixed(1)}%</span>`;
     }
 
-    // Right-aligned summary line under the header — spells out every input this chart currently
-    // reads (period, point count, the person it's scoped to, Vs Last Year/Compare state) all at
-    // once, same idea as PrimarySalesPage.js's own updateSelectionSummary (there: Brand/Channel
-    // instead of Person, since this page has no Brand/Channel dimension of its own).
+
     function updateSelectionSummary(granularity) {
         if (!summaryEl) return;
         if (!currentData) {
@@ -1670,13 +1411,9 @@ function initTeamPersonDailyTrend() {
         const periodField = TEAM_DAILY_TREND_PERIOD_LABEL[granularity] || "Period";
         const periodValue = formatPeriod((currentData.dates || [])[idx], granularity) || first.name;
 
-        // Compare mode: one block per sales type (Sales/Target/Sales Variance, both real per this
-        // page's own /person/trend-range response) plus a combined Total row — mirrors
-        // PrimarySalesPage.js's own Compare-mode tooltip (there: one block per brand).
+
         if (state.compare) {
-            // No per-sales-type Last Year row here — /person/trend-range only ever returns one
-            // combined `lastYear` array (not split by sales type), same reason Compare mode has no
-            // per-type Target row either.
+
             let totalSales = 0;
             const rows = TEAM_DAILY_TREND_COMPARE_TYPES.map((type) => {
                 const salesVal = Number((currentData[type.key] || [])[idx] ?? 0);
@@ -1742,13 +1479,7 @@ function initTeamPersonDailyTrend() {
         let legendData;
 
         if (state.compare) {
-            // One series per sales type instead of the single combined Sales line — same color
-            // every solid-fill data row on this page's Person FY card already uses for that sales
-            // type, so Compare mode reads as the same two categories at a glance. No Target overlay
-            // (a single combined target isn't meaningfully split per sales type — this page's own
-            // /person/trend-range response only ever returns one combined `target` array) and no
-            // per-bar value labels (2 series grouped per x-axis point would just collide) — same
-            // reasoning PrimarySalesPage.js's own Compare mode uses for brands.
+
             series = TEAM_DAILY_TREND_COMPARE_TYPES.map((type) => ({
                 name: type.label,
                 type: state.chartType,
@@ -1791,9 +1522,7 @@ function initTeamPersonDailyTrend() {
                 z: 2,
             };
 
-            // Bar Graph mode only: every bar always shows its own short Sales value + growth-vs-Target
-            // above it — same always-on (no click needed) two-line rich-text label
-            // PrimarySalesPage.js's own Bar Graph mode uses.
+
             if (isBar) {
                 salesSeries.label = {
                     show: true,
@@ -1829,11 +1558,7 @@ function initTeamPersonDailyTrend() {
             if (!isBar && state.showTarget) legendData.push("Target");
         }
 
-        // "Vs Last Year" overlay — same-period Sales from a year ago, drawn as a thin dotted line
-        // even in Bar Graph mode (a second bar-per-category would crowd out the growth-% labels
-        // above each bar) — only drawn once the user opts in via the Vs Last Year toggle
-        // (currentData.lastYear is already fetched on every load() regardless, the tooltip's own
-        // Sales vs Target/vs Last Year rows rely on it too).
+
         if (state.showLastYear) {
             series.push({
                 name: "Last Year", type: "line", data: currentData.lastYear || [], smooth: false,
@@ -1928,9 +1653,7 @@ function initTeamPersonDailyTrend() {
         });
     });
 
-    // Compare toggle — every real sales type is shown at once instead of the single combined Sales
-    // line. No re-fetch needed: /person/trend-range already returns primary/secondary/total in one
-    // response regardless of this toggle, so flipping it just changes what renderChart() draws.
+
     compareToggle?.addEventListener("click", () => {
         state.compare = !state.compare;
         compareToggle.classList.toggle("active", state.compare);
@@ -1963,9 +1686,7 @@ function initTeamPersonDailyTrend() {
     renderEmpty();
 
     return {
-        // `fyKey` is whichever FY the Person FY card's own FY Filter currently has selected (see
-        // initTeamPersonFyYearFilter) — passed in here so the very first load already matches it
-        // instead of a separate setFyKey call causing a second, immediately-discarded fetch.
+
         setPerson(level, name, fyKey) {
             state.level = level;
             state.name = name;
@@ -1975,23 +1696,16 @@ function initTeamPersonDailyTrend() {
             if (titleEl) {
                 titleEl.textContent = `Sales Trend — ${name}`;
             }
-            // The chart was echarts.init()'d while its section-container was still `hidden`
-            // (display:none), so its cached size is 0x0 from that first paint — resize() re-measures
-            // the now-visible container before this load()'s setOption, otherwise the chart renders
-            // squeezed into a sliver at its old cached width.
+
             chart.resize();
             load();
         },
-        // Called by the Person FY card's own FY Filter (see initTeamPersonFyYearFilter's onSelect
-        // wiring in initPersonDetailsSection) whenever the user picks a different FY — re-fetches
-        // this same person's trend for the new FY's Apr-Mar range.
+
         setFyKey(fyKey) {
             state.fyKey = fyKey;
             load();
         },
-        // Filter Header's own Status toggle pill — always updates state.status (even with no person
-        // set yet, so whichever person is opened next already has it); load()'s own
-        // "!state.level || !state.name" guard makes the reload itself a no-op until then.
+
         setStatus(status) {
             state.status = status;
             load();
@@ -2002,12 +1716,7 @@ function initTeamPersonDailyTrend() {
     };
 }
 
-// FY Filter for the Person FY card only (#teamPersonFyYearFilter, right side of
-// #teamPerformancePersonFyCard's own header) — scoped to just this card, per explicit request, not
-// the whole page. Same shared components/FyYearFilter/FyYearFilter.js widget Dashboard's own
-// "1. Overview" card and Site Insight's own Monthly History card use. Builds the menu/label from
-// TEAM_PERSON_FY_KEYS (page-specific) itself, then hands the open/close/select mechanics to
-// initScopedFyYearFilter, which returns { setSelected(fyKey) } for resyncing the dropdown later.
+
 function initTeamPersonFyYearFilter(onSelect) {
     const label = document.getElementById("teamPersonFyYearFilterLabel");
     const menu = document.getElementById("teamPersonFyYearFilterMenu");
@@ -2034,25 +1743,14 @@ function initPersonDetailsSection() {
     let current = null;
     let sitesRequestSeq = 0;
     let fyRequestSeq = 0;
-    // Selected FY for the Person FY card only — defaults to the real current FY, changed only by
-    // this card's own FY Filter (fyYearFilter below), independent of the page's own Filter Header
-    // Date Filter (which drives "Team Report"/"Daily Sales" instead — see
-    // getTeamPerformanceEffectiveRange). Persists across switching to a different person, same as
-    // Dashboard's own Year Filter selection persists across other filter changes.
+
     let currentFyKey = TEAM_PERFORMANCE_FY_CURRENT_KEY;
-    // Filter Header's own Status toggle pill (#teamPerformanceStatusFilterToggle) — see
-    // the initStatusFilter call/setStatus below. Unlike currentFyKey above, this one IS shared with
-    // the page's own Filter Header (not scoped to just this card).
+
     let currentStatus = teamStatusFilter;
-    // Last-fetched /person/fy-overview response — read by the Download button below (no separate
-    // fetch, same as Dashboard's own "3. Partner Wise" plain click-to-download convention: it just
-    // exports whatever's already on screen).
+
     let lastFyData = null;
 
-    // The site-code chip list itself was removed per explicit request — this still fetches the same
-    // /person/sites data (siteCount for the Person card's own count text, sites for the FY card's own
-    // Primary/Secondary column visibility via resolvePersonSalesTypeFlags), just no longer renders a
-    // chip per site.
+
     async function loadSites(level, name) {
         const countEl = document.getElementById("teamPerformancePersonSiteCount");
         const requestId = ++sitesRequestSeq;
@@ -2112,9 +1810,7 @@ function initPersonDetailsSection() {
         renderPersonFyTable(tbody, data);
     }
 
-    // CSV-text counterparts of personAchiCell/personYoyVarianceCell above — same "—" for no-target/
-    // no-previous-year convention, plain text instead of that HTML. Mirrors
-    // SiteStatusPage.js's own monthlyFyAchiCsvText/monthlyFyVsLyCsvText.
+
     function personAchiCsvText(sales, target) {
         const t = Number(target ?? 0);
         const s = Number(sales ?? 0);
@@ -2129,9 +1825,7 @@ function initPersonDetailsSection() {
         return formatDelta(personGrowthPct(current, previous));
     }
 
-    // Exports whichever FY this card's own Filter currently has selected — reuses the exact same
-    // months/type/display-value logic renderPersonFyTable above uses, producing CSV-safe plain-text
-    // cells instead of that function's HTML.
+
     function buildPersonFyCsvLines(data) {
         const header = ["Month", "Primary Target", "Primary Sales", "Primary Achi %", "Primary Vs LY %", "Secondary Target", "Secondary Sales", "Secondary Achi %", "Secondary Vs LY %"];
         const lines = [buildCsvLine(header)];
@@ -2190,9 +1884,7 @@ function initPersonDetailsSection() {
         downloadCsv(lines, `person-${current.name}-fy-overview-${currentFyKey}-${new Date().toISOString().slice(0, 10)}.csv`);
     });
 
-    // Scoped to just this card + "Daily Sales" below it — picking a different FY here reloads the FY
-    // card's own data (loadFyOverview) AND re-fetches "Daily Sales" for that same FY's Apr-Mar range
-    // (dailyTrend.setFyKey), per explicit request; it never touches "Team Report" above.
+
     initTeamPersonFyYearFilter((fyKey) => {
         currentFyKey = fyKey;
         if (current) {
@@ -2203,11 +1895,7 @@ function initPersonDetailsSection() {
 
     async function open(level, name) {
         current = { level, name };
-        // Both sections start `hidden` in the markup for an unrelated reason (no person picked
-        // yet) — awaits the same permission promise every other gated reveal on this page does
-        // (never a second /api/auth/me fetch) before deciding whether picking a person actually
-        // unhides either one; a session lacking "page:team-insights.person-details"/
-        // "page:team-insights.daily-sales" never sees them regardless of what gets clicked.
+
         const permissions = await pagePermissionsPromise;
         const hasPersonDetails = permissions.has("page:team-insights.person-details");
         const hasDailySales = permissions.has("page:team-insights.daily-sales");
@@ -2221,9 +1909,7 @@ function initPersonDetailsSection() {
 
         loadSites(level, name);
         loadFyOverview(level, name);
-        // dailyTrend.setPerson's own chart.resize() (see initTeamPersonDailyTrend's own comment)
-        // needs trendContainer's hidden already resolved — the assignment above already ran, so
-        // this measures the real, final visibility state rather than a still-hidden 0x0 container.
+
         dailyTrend.setPerson(level, name, currentFyKey);
         teamSiteReportSectionHandle?.setPerson(level, name);
 
@@ -2234,9 +1920,7 @@ function initPersonDetailsSection() {
 
     return {
         open,
-        // Filter Header's own Status toggle pill — always keeps dailyTrend's own status in sync
-        // (even with no person open yet, so whichever person is opened next already has it), but
-        // only reloads "Person Details"' own site count/FY card when a person is actually open.
+
         setStatus(status) {
             currentStatus = status;
             dailyTrend.setStatus(status);

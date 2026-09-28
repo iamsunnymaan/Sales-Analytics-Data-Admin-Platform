@@ -1,11 +1,7 @@
-/* Styles for the table-picker chip grid. */
 .table-list-section {
     margin-bottom: 1rem;
 }
 
-/* Same typography as PrimarySalesPage.css's .target-achievement-subtitle ("1. Overview", "2. Daily
-   Sales Trends", …) — small, uppercase, secondary-colored section labels, for a consistent look
-   between the two pages' section headers. */
 .table-list-section .section-title {
     font-size: 0.75rem;
     font-weight: 600;
@@ -15,7 +11,6 @@
     color: var(--color-text-secondary);
 }
 
-/* Base surface (background/border/radius) comes from Shared/css/card.css. */
 .table-list-grid {
     display: flex;
     flex-wrap: wrap;
@@ -75,14 +70,6 @@
     color: var(--color-danger);
 }
 
-/* ==================== Chip grid + info panel (80:20) ==================== */
-/* Splits the table-list section into two partitions inside one shared card surface, with a
-   vertical rule between them — the table chip grid on the left, a quick-reference info panel for
-   whichever table is currently selected on the right (see initTableInfoPanel above). Shared by
-   both DataUploadPage.html and ExplorerPage.html so the two pages' table pickers read as the same
-   component everywhere, not just visually similar. The card surface (background/border/radius)
-   moves here from .table-list-grid itself (see the override right below) since this wrapper is now
-   the single visible box. */
 .table-list-columns {
     display: grid;
     grid-template-columns: 80% 20%;
@@ -93,10 +80,6 @@
     overflow: hidden;
 }
 
-/* Card surface (background/border/radius) reset — a structural requirement of the two-partition
-   layout above (the outer .table-list-columns is now the single visible box). Padding/gap are
-   trimmed from this file's own plain .table-list-grid default to shrink the section's overall
-   height — the chip pills themselves (.table-chip) stay completely untouched. */
 .table-list-columns .table-list-grid {
     display: flex;
     background-color: transparent;
@@ -144,9 +127,6 @@
     color: var(--color-danger);
 }
 
-/* Row 01: icon + table name, with the last committed-import date/time (see TableSummaryResponse's
-   own doc on why this can read "No import yet" even for a table with real data — committed_at only
-   survives roughly a day) tucked directly underneath as one compact block. */
 .table-info-primary-row {
     display: flex;
     flex-direction: column;
@@ -174,11 +154,6 @@
     color: var(--color-text-secondary);
 }
 
-/* Row 02: duplicate-check status (see TableImportRules#alwaysInsertNew) — a rounded pill, colored by
-   state: green/"on" for a table whose normal duplicate check applies, amber/"off" for one where every
-   uploaded row always inserts as new. Same success/warning palette DataUploadPage.css's chunk-lane
-   status pills use (.file-import-chunk.passed/.flagged), for one consistent "safe vs. caution"
-   language across the app rather than a second one-off color pair. */
 .table-info-dup-badge {
     align-self: flex-start;
     padding: 0.22rem 0.5rem;

@@ -23,22 +23,15 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
-// Backs the Primary Sales page's "Daily Trend Graph" section: a real amount series (with a real
-// Monthly Target pace line and the same period last year), bucketed by day, month, or year
-// depending on the active date-filter mode.
 @Service
 public class PrimarySalesDailyTrendService {
 
     private static final Set<String> VALID_GRANULARITIES = Set.of("day", "month", "year");
-    // Caps how many buckets getTrendRange's loops can generate for a given granularity — guards
-    // against a pathological [from, to] (e.g. a malformed request, or a partially-typed date input
-    // firing a request mid-edit) making the day/month/year loops build an enormous label/data list.
+
     private static final int MAX_DAY_SPAN = 400;
     private static final int MAX_MONTH_SPAN = 600;
     private static final int MAX_YEAR_SPAN = 200;
-    // "5-Jan-26" — day granularity's x-axis label is now a full date (not just day-of-month), since
-    // By Date can span multiple months/years and a bare day number would be ambiguous. 2-digit year
-    // per explicit request (matches SecondarySalesDailyTrendService's own DAY_LABEL_FORMAT).
+
     private static final DateTimeFormatter DAY_LABEL_FORMAT = DateTimeFormatter.ofPattern("d-MMM-uu", Locale.ENGLISH);
 
     private final JdbcTemplate jdbcTemplate;
@@ -56,35 +49,11 @@ public class PrimarySalesDailyTrendService {
         return value == null ? BigDecimal.ZERO : new BigDecimal(value.toString());
     }
 
-    // Single real amount series for an arbitrary [from, to] window, bucketed by whichever
-    // granularity the frontend's active SalesDateFilter mode implies:
-    // "day" for a single selected month (x-axis = day-of-month 1..N), "month" for an arbitrary date
-    // range (x-axis = the months the range touches), "year" for a year range (x-axis = the years).
-    // [from, to] defaults to the current calendar month, matching PrimarySalesProductLevelService.
     public TrendRangeResponse getTrendRange(LocalDate from, LocalDate to, String granularity, String brand, String channel, String status) {
         String normalizedBrand = BrandFilter.normalize(brand);
-        // FIXED 2026-09-07: Primary_Sales_Target.Brand stores the SAME full-name vocabulary as
-        // Product_Master.Brand ("Anastasia Beverly hills"/"Kylie Cosmetics" — confirmed live against
-        // the DB), NOT BrandFilter.target()'s short-code vocabulary ("ABH"/"Kylie") that column used
-        // to use before the 2026-09-02 Primary/Secondary Sales rebuild. This used to pass
-        // BrandFilter.target() into primarySalesTargetService, which silently matched zero
-        // Primary_Sales_Target rows for any specific brand — Target (and Sales vs Target) stayed
-        // stuck at 0 the instant a real brand was selected, while "All" (both null) worked by
-        // accident — same bug independently found and fixed in SecondarySalesDailyTrendService.
-        // Both Sales (Product_Master-joined) and Target now share one brandFilter value.
+
         String brandFilter = BrandFilter.product(normalizedBrand);
-        // Channel/Status filtering — Primary_Sales has no Channel/Status column of its own and no
-        // Site_Master join in this class's own queries (unlike PrimarySalesReportsService, which
-        // already loads Site_Master rows for Overview/Reports); resolveBillToCodesForChannelAndStatus
-        // below pre-fetches just the Site_Codes this channel/status combo covers, then every query
-        // adds "AND ps.Bill_to IN (...)" rather than joining Site_Master directly (a direct join risks
-        // fanning a Primary_Sales row out across more than one Site_Master row for the same Site_Code,
-        // since Site_Master's real key is (Site_Code, Brand) — an IN-list filter can't double-count a
-        // row, a JOIN could). Target (getMonthlyTargetsInRange/getYearlyTargetsInRange below) stays
-        // brand-only — Primary_Sales_Target has no Site_Code/Channel/Status dimension this service can
-        // filter by without a much bigger change (see PrimarySalesReportsService's own targetsByCombo
-        // for the one place that combo-matching is already done), so the pace line intentionally does
-        // not react to Channel or Status.
+
         List<String> billToCodes = resolveBillToCodesForChannelAndStatus(ChannelFilter.normalize(channel), status);
 
         String normalizedGranularity = granularity == null ? "day" : granularity.toLowerCase();
@@ -116,11 +85,6 @@ public class PrimarySalesDailyTrendService {
                 series.data(), series.target(), series.lastYear());
     }
 
-    // null = every channel AND every status (no filter of either). Otherwise the real, distinct
-    // Site_Codes Site_Master says match whichever of Channel/Status is active among Primary Sales
-    // sites — an empty (non-null) list means that combo exists nowhere in Site_Master right now, so
-    // every query below correctly contributes zero instead of accidentally matching everything (see
-    // appendBillToFilter's own empty-list handling).
     private List<String> resolveBillToCodesForChannelAndStatus(String channelFilter, String status) {
         String statusClause = OperationalStatusFilter.whereClause(status);
         if (channelFilter == null && statusClause.isEmpty()) {
@@ -136,10 +100,6 @@ public class PrimarySalesDailyTrendService {
         return jdbcTemplate.queryForList(sql.toString(), String.class, params.toArray());
     }
 
-    // Appends "AND ps.Bill_to IN (...)" when billToCodes is non-null — an empty list still appends a
-    // clause that always evaluates false (1 = 0) rather than an invalid empty IN(), so "channel
-    // exists in Site_Master but has zero Primary Sales sites" correctly yields zero rows instead of
-    // silently falling through to "no filter at all".
     private void appendBillToFilter(StringBuilder sql, List<Object> params, List<String> billToCodes) {
         if (billToCodes == null) {
             return;
@@ -154,8 +114,6 @@ public class PrimarySalesDailyTrendService {
         params.addAll(billToCodes);
     }
 
-    // Internal shape shared by the three bucketing strategies below — getTrendRange wraps this with
-    // granularity/brand/period into the public TrendRangeResponse.
     private record TrendSeries(List<String> labels, List<String> dates, List<BigDecimal> data,
                                 List<BigDecimal> target, List<BigDecimal> lastYear) {
     }
@@ -250,18 +208,10 @@ public class PrimarySalesDailyTrendService {
         return totals;
     }
 
-    // X-axis is every calendar day in [from, to], labelled by day-of-month. `dates` carries the
-    // full ISO date per bucket (yyyy-MM-dd) for the frontend tooltip. `labels` (the axis tick text)
-    // is a full "5-Jan-2026" date, not just the day-of-month, since By Date can span an arbitrary
-    // range crossing months/years where a bare day number would be ambiguous. `lastYear` is each
-    // day's own total exactly one calendar year earlier (LocalDate#minusYears handles Feb 29 by
-    // folding to Feb 28).
     private TrendSeries buildDayRangeView(LocalDate from, LocalDate to, String brand, List<String> billToCodes) {
         Map<LocalDate, BigDecimal> totals = dayTotalsInRange(from, to, brand, billToCodes);
         Map<LocalDate, BigDecimal> lastYearTotals = dayTotalsInRange(from.minusYears(1), to.minusYears(1), brand, billToCodes);
 
-        // Target line: each day's target is its own month's real Monthly Target ÷ days in that
-        // month (a flat "expected pace" line), so days in different months get different levels.
         Map<YearMonth, BigDecimal> monthlyTargets = primarySalesTargetService.getMonthlyTargetsInRange(
                 YearMonth.from(from), YearMonth.from(to), brand);
 
@@ -283,11 +233,6 @@ public class PrimarySalesDailyTrendService {
         return new TrendSeries(labels, dates, data, target, lastYear);
     }
 
-    // X-axis is every calendar month the range touches, one bucket per month regardless of how
-    // wide the range is (even a single selected month stays one bucket — never expands into its
-    // days, that's what By Date is for). Labels always include the year ("Jan 2026") for clarity —
-    // `dates` (yyyy-MM) carries the same unambiguous period for the frontend tooltip. `lastYear` is
-    // each month's own total exactly one calendar year earlier.
     private TrendSeries buildMonthRangeView(LocalDate from, LocalDate to, String brand, List<String> billToCodes) {
         Map<YearMonth, BigDecimal> totals = monthTotalsInRange(from, to, brand, billToCodes);
         Map<YearMonth, BigDecimal> lastYearTotals = monthTotalsInRange(from.minusYears(1), to.minusYears(1), brand, billToCodes);
@@ -313,9 +258,6 @@ public class PrimarySalesDailyTrendService {
         return new TrendSeries(labels, dates, data, target, lastYear);
     }
 
-    // X-axis is every calendar year the range touches. `lastYear` is that year's own predecessor's
-    // total (year-1) — already visible as its own bucket if in range, kept for tooltip consistency
-    // with the day/month views.
     private TrendSeries buildYearRangeView(LocalDate from, LocalDate to, String brand, List<String> billToCodes) {
         Map<Integer, BigDecimal> totals = yearTotalsInRange(from, to, brand, billToCodes);
         Map<Integer, BigDecimal> lastYearTotals = yearTotalsInRange(from.minusYears(1), to.minusYears(1), brand, billToCodes);

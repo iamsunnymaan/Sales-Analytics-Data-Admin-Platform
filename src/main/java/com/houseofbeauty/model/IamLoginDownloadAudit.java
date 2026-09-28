@@ -12,12 +12,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
-// JPA mapping for IAM_Login_Download_Audit — created by the 2026-09-15 migration for the
-// sibling Admin_Page console's own Downloads page (see that migration's header comment); this
-// house_of_beauty entity is the first thing in this codebase to actually read/write it, backing
-// the Monitoring page's "Download Attempts" section and MonitoringAuditService's recordDownload().
-// Same nullable-User_ID + redundant Username_Attempted survives-account-deletion shape as
-// IamLoginLoginAudit.
+
 @Entity
 @Table(name = "IAM_Login_Download_Audit")
 @Data

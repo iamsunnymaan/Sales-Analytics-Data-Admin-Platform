@@ -1,17 +1,3 @@
-<!-- IAM — Sidebar.html's own "Admin" section (separate from "Super Admin"). "1. User Details"
-     reproduces the same section from the Roles & Users page (RolesPage.html) verbatim — same
-     markup/modal/IDs (each page is its own document, so no collision), same underlying
-     UsersController/FeaturesController endpoints — but gated by its own page:iam.user-details key
-     instead of page:roles.user-details, independently grantable (see RequirePermission's own header
-     comment on the OR semantics that makes those controllers accept either). "2. Role and Details"
-     is real role management (New/Edit/Delete Role, the Permission/Feature picker) moved here from
-     the Roles & Users page per explicit request — that page no longer has any role management at
-     all, this is now the only place it exists, gated by its own page:iam.roles-details key
-     (RolesController's create/update/delete endpoints check this key, not page:roles.*). No
-     ADMIN/SUPERADMIN filtering on this table (unlike the User Details table/the New User modal's
-     own Roles picker below, which both still filter those two out per the original explicit
-     request) — since this is the only surface left to manage any role, hiding ADMIN/SUPERADMIN here
-     would make them permanently unmanageable. See IAMPage.js. -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -118,8 +104,6 @@
 
     <div class="quick-access-panel" id="quickAccessPanel"></div>
 
-    <!-- New User / Edit Profile popup — same modal, toggled between "create" and "edit" mode by
-         IAMPage.js (openUserModal), verbatim copy of RolesPage.html's own. -->
     <div class="users-modal-backdrop" id="usersModalBackdrop" hidden>
         <div class="users-modal" role="dialog" aria-modal="true" aria-labelledby="usersModalTitle">
             <div class="users-modal-header">
@@ -191,9 +175,6 @@
         </div>
     </div>
 
-    <!-- New Role / Edit Role popup — same modal, toggled by IAMPage.js (openRoleModal), verbatim
-         copy of RolesPage.html's own (before role management moved here — see this file's own
-         header comment). -->
     <div class="roles-modal-backdrop" id="rolesModalBackdrop" hidden>
         <div class="roles-modal" role="dialog" aria-modal="true" aria-labelledby="rolesModalTitle">
             <div class="roles-modal-header">

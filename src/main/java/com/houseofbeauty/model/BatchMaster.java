@@ -11,11 +11,7 @@ import lombok.NoArgsConstructor;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-// JPA mapping for Batch_Master — one row per product batch (MRP/COGS/expiry). Primary key is
-// Batch_Code alone (Article_Code+Batch_Code is a separate UNIQUE constraint, not the PK — see
-// database/01_schema.sql). No SN column — a live-only addition dropped by the 2026-08-12 table
-// recreate. Currently unused (data access for this table goes through raw JdbcTemplate SQL, not
-// this entity).
+
 @Entity
 @Table(name = "Batch_Master")
 @Data

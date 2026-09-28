@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeSet;
 
-// Backs the Primary Sales page's Sales Comparison 02 section's Year checkbox list.
 @Service
 public class PrimarySalesYearTrendService {
 
@@ -18,7 +17,6 @@ public class PrimarySalesYearTrendService {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    // Distinct years with data, plus the current year, for the section's Year checkbox list.
     public List<Integer> listYears() {
         TreeSet<Integer> years = new TreeSet<>(
                 jdbcTemplate.queryForList("SELECT DISTINCT YEAR(Sales_Date) FROM Primary_Sales", Integer.class));

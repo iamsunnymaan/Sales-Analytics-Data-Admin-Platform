@@ -1,10 +1,3 @@
-// Shared Channel pill — exact structural twin of BrandFilter.js, just for Channel. Channel has no
-// fixed short-code vocabulary like Brand's "abh"/"kylie": data-channel carries the raw real
-// Site_Master.Channel string straight through, matched case-insensitively server-side (see
-// ChannelFilter.java's own normalize()).
-//
-// Previously copy-pasted near-identically in PrimarySalesPage.js and SecondarySalesPage.js — same
-// signatures, same behavior, just centralized. Each page keeps passing its own storageKey/endpoint.
 import { hasFeatureSync } from "/Shared/js/feature-guard.js";
 
 export async function loadChannelPillOptions(apiUrl) {

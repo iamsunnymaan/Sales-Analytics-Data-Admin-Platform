@@ -2,12 +2,7 @@ package com.houseofbeauty.service.dataupload.tables;
 
 import com.houseofbeauty.service.dataupload.import_common.TableImportRules;
 
-/**
- * Import rules for {@code Product_Master}. Its primary key (Article_Code) is a genuine business
- * key, so this uses the default, generic behavior: every uploaded row IS duplicate-checked against
- * the table's live primary key, and a row whose key already exists is skipped as a duplicate rather
- * than re-inserted — see {@link TableImportRules#alwaysInsertNew}.
- */
+
 public final class ImportProductMaster implements TableImportRules {
 
     public static final ImportProductMaster INSTANCE = new ImportProductMaster();

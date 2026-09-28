@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 
-// Composite key (User_ID, Feature_ID) for IAM_Feature_User_Denials — see IamFeatureUserDenial.
+
 @Embeddable
 @Data
 @NoArgsConstructor

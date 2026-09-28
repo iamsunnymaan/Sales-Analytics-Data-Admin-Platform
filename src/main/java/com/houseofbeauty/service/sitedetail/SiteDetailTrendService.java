@@ -22,26 +22,15 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
-// Backs the Site Detail page's own "Sales Trend" card — same bucketing shape/rules as
-// PrimarySalesDailyTrendService (day/month/year granularity off the active date-filter mode, day
-// granularity's target is the bucket's own month's target ÷ days in that month), scoped to one real
-// (Site_Code, Brand) site_master row instead of a whole-brand aggregate, and split into
-// Primary/Secondary/Total series instead of one — matching how the rest of this page already presents
-// those three separately (KPI row, Monthly History table). Target combines the same
-// Primary_Sales_Target Channel/Partner combo-match + Secondary_Sales_Target direct-site-match
-// SiteDetailService's own loadKpis/loadMonthlyHistory already use, just windowed to [from, to] instead
-// of summed across all time.
 @Service
 public class SiteDetailTrendService {
 
     private static final Set<String> VALID_GRANULARITIES = Set.of("day", "month", "year");
-    // Same caps as PrimarySalesDailyTrendService, same reasoning (guards a pathological/malformed
-    // [from, to] from building an enormous label/data list).
+
     private static final int MAX_DAY_SPAN = 400;
     private static final int MAX_MONTH_SPAN = 600;
     private static final int MAX_YEAR_SPAN = 200;
-    // 2-digit year ("1-Sep-26"), matching Secondary/Primary Sales pages' own Daily Sales Trends
-    // X-axis format for UI/UX parity across all three.
+
     private static final DateTimeFormatter DAY_LABEL_FORMAT = DateTimeFormatter.ofPattern("d-MMM-uu", Locale.ENGLISH);
 
     private final JdbcTemplate jdbcTemplate;
@@ -50,11 +39,6 @@ public class SiteDetailTrendService {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    // "Sales Trend" card's own "By Year" filter mode's Year picklist — distinct years this one
-    // (Site_Code, Brand) site has real Primary (Bill_to+Brand) or Secondary (Site_Code+Brand) sales
-    // in, plus the current year always included (same convention PrimarySalesYearTrendService/
-    // SecondarySalesYearTrendService already use for their own whole-brand equivalents), so a brand-
-    // new site with no sales yet still gets a usable current-year default instead of an empty list.
     public List<Integer> getYearsWithData(String siteCode, String brand) {
         TreeSet<Integer> years = new TreeSet<>();
         years.addAll(jdbcTemplate.queryForList(
@@ -87,10 +71,6 @@ public class SiteDetailTrendService {
         }
         validateSpan(periodFrom, periodTo, normalizedGranularity);
 
-        // Same Channel/Partner combo-match Primary_Sales_Target needs everywhere else on this page
-        // (see SiteDetailService's own class javadoc) — looked up directly here rather than requiring
-        // the caller to pass the whole profile map, so this service only depends on what it actually
-        // needs.
         List<Map<String, Object>> profileRows = jdbcTemplate.queryForList(
                 "SELECT Channel, Partner FROM site_master WHERE Site_Code = ? AND Brand = ?", siteCode, brand);
         String channel = profileRows.isEmpty() ? null : (String) profileRows.get(0).get("Channel");
@@ -171,13 +151,6 @@ public class SiteDetailTrendService {
         return totals;
     }
 
-    // Primary_Sales_Target/Secondary_Sales_Target's own Month column is always the first-of-month
-    // date (same convention SiteDetailService's loadMonthlyHistory relies on), so a plain BETWEEN on
-    // it — no YEAR()/MONTH() extraction needed — is enough to window an arbitrary [from, to].
-    // Channel/Partner compared case-insensitively (LOWER(LTRIM(RTRIM(...)))) — same fix as
-    // SiteDetailService's own loadMonthlyHistory/monthTarget (see its header comment): `channel`/
-    // `partner` come from this site's own Site_Master row, but Primary_Sales_Target can spell the same
-    // logical Partner with different casing, so an exact-case `=` risked silently showing zero Target.
     private Map<YearMonth, BigDecimal> primaryMonthlyTargets(String channel, String partner, String brand,
                                                                LocalDate from, LocalDate to) {
         if (channel == null || partner == null) {
@@ -222,9 +195,7 @@ public class SiteDetailTrendService {
         Map<LocalDate, BigDecimal> primaryTotals = dayTotals("Primary_Sales", "Bill_to", siteCode, brand, from, to);
         Map<LocalDate, BigDecimal> secondaryTotals = dayTotals("Secondary_Sales", "Site_Code", siteCode, brand, from, to);
         Map<YearMonth, BigDecimal> monthlyTargets = combinedMonthlyTargets(siteCode, brand, channel, partner, from, to);
-        // "Vs Last Year" overlay — same [from, to] window shifted back a year, same combined
-        // Primary+Secondary Total this view already shows, matching Primary/Secondary Sales's own
-        // Daily Sales Trends "lastYear" convention (see DashboardDailyTrendService's own copy).
+
         Map<LocalDate, BigDecimal> primaryLastYearTotals = dayTotals("Primary_Sales", "Bill_to", siteCode, brand, from.minusYears(1), to.minusYears(1));
         Map<LocalDate, BigDecimal> secondaryLastYearTotals = dayTotals("Secondary_Sales", "Site_Code", siteCode, brand, from.minusYears(1), to.minusYears(1));
 

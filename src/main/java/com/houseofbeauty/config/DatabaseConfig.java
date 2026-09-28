@@ -6,8 +6,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.sql.DataSource;
 
-// Exposes a JdbcTemplate bean over the auto-configured DataSource — used for the raw/dynamic
-// SQL in TableAccessService (querying arbitrary tables isn't a good fit for Spring Data JPA repos).
 @Configuration
 public class DatabaseConfig {
 

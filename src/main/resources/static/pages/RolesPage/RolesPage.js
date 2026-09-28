@@ -1,10 +1,3 @@
-// Identity — real CRUD against IAM_Login_Users (UsersController: /api/identity/users). New User
-// popup creates an account; the User Details table's row actions cover Edit Profile (which also
-// resets the password, via its own optional New Password field) and Delete. The Users page was
-// folded into this one. Role management (New/Edit/Delete Role, the Role and Details table, the
-// Permission/Feature picker) moved to the IAM page per explicit request — see IAMPage.js. loadRoles
-// below is still needed regardless, purely to populate the New/Edit User popup's own Roles picker
-// (RolesController's /roles/details, read-only from here), same as IAMPage.js's own copy.
 import { initSidebar } from "/components/Sidebar/Sidebar.js";
 import { initQuickAccessPanel } from "/components/QuickAccessPanel/QuickAccessPanel.js";
 import { applyPagePermissions } from "/Shared/js/permission-guard.js";
@@ -13,21 +6,13 @@ import { initSearchBar } from "/components/SearchBar/SearchBar.js";
 
 initSidebar();
 initQuickAccessPanel();
-// Reveals User Details' own static data-permission elements (New User button, table view wrap)
-// once the session's real permission set resolves. Also cached here (not just fire-and-forget)
-// because renderUsersTable below builds each row's own Edit/Delete buttons dynamically on every
-// render — it reads knownPermissions synchronously rather than re-fetching or re-applying after
-// the fact.
+
 let knownPermissions = new Set();
-// applyFeatureGating sequenced after applyPagePermissions resolves — see Dashboard.js's own comment
-// on why (prevents permission-gating's unconditional `hidden` assignment from undoing a
-// feature-based hide on an element carrying both attributes).
+
 applyPagePermissions().then((permissions) => {
     knownPermissions = permissions;
     applyFeatureGating();
-    // A render may have already run (with knownPermissions still the empty default) before this
-    // resolved — re-render once real permissions are in hand so Edit/Delete buttons don't stay
-    // wrongly hidden for a session that does hold that permission.
+
     renderUsersTable();
 });
 
@@ -46,8 +31,7 @@ function extractErrorMessage(response) {
         .catch(() => "Something went wrong. Please try again.");
 }
 
-// Backend sends a LocalDateTime ISO string with no timezone (e.g. "2026-09-15T10:23:45") — parsed
-// as local time here, same as every other page's own date rendering assumes.
+
 function formatDateTime(value) {
     if (!value) {
         return "—";
@@ -64,7 +48,7 @@ function formatDateTime(value) {
     return `${dd}-${mm}-${yyyy} ${hh}:${min}`;
 }
 
-// ==================== "1. User Details" table ====================
+
 
 function getFilteredUsers() {
     const query = document.getElementById("usersSearchInput").value.trim().toLowerCase();
@@ -123,9 +107,7 @@ function renderUsersTable() {
                 </td>
             </tr>`;
     }).join("");
-    // Rows above are freshly injected on every render — the one-time applyFeatureGating() pass at
-    // page load never sees them, so each render needs its own pass (reapplyFeatureGating is a no-op
-    // until that first pass has resolved at least once, per its own header comment).
+
     reapplyFeatureGating(body);
 }
 
@@ -143,9 +125,7 @@ async function loadUsers() {
     }
 }
 
-// The New User/Edit Profile popup's "Roles" list reuses the `roles` array populated by loadRoles()
-// below instead of a separate fetch — every role's id/name is already loaded there. Single-select
-// (radio) — a user holds exactly one role.
+
 function renderUserRoleCheckboxes(selectedRoleNames) {
     const container = document.getElementById("usersRoleList");
     if (!roles.length) {
@@ -165,7 +145,7 @@ function getCheckedUserRoleIds() {
     return checked ? [Number(checked.value)] : [];
 }
 
-// ==================== New User / Edit Profile popup ====================
+
 
 const usersModalBackdrop = document.getElementById("usersModalBackdrop");
 const usersModalTitle = document.getElementById("usersModalTitle");
@@ -275,8 +255,7 @@ usersModalForm.addEventListener("submit", async (event) => {
             return;
         }
     } else if (usersNewPasswordInput.value && usersNewPasswordInput.value.length < 8) {
-        // Blank is fine (means "keep the current password") — only validate length once
-        // something's actually been typed.
+
         showUserModalError("New password must be at least 8 characters.");
         return;
     }
@@ -320,7 +299,7 @@ usersModalForm.addEventListener("submit", async (event) => {
     }
 });
 
-// ==================== User row action dispatch (event delegation — rows are re-rendered on every load) ====================
+
 
 document.getElementById("usersTableBody").addEventListener("click", async (event) => {
     const button = event.target.closest("button[data-action]");
@@ -354,10 +333,7 @@ document.getElementById("usersTableBody").addEventListener("click", async (event
 
 initSearchBar({ inputId: "usersSearchInput", onQuery: () => renderUsersTable() });
 
-// ==================== Roles data (read-only from this page — feeds the User modal's picker only) ====================
-//
-// No "Role and Details" table/New Role modal on this page anymore (moved to the IAM page per
-// explicit request); this just keeps `roles` fresh for renderUserRoleCheckboxes above.
+
 async function loadRoles() {
     try {
         const response = await fetch("/api/identity/roles/details");
@@ -367,12 +343,7 @@ async function loadRoles() {
     }
 }
 
-// ==================== Cross-section sync ====================
-//
-// User Details' role badges and its New/Edit User modal's Roles checkbox list both depend on
-// `roles` staying fresh, so every user-mutating action reloads both rather than just the users
-// table — otherwise a role renamed on the IAM page would keep showing a stale name here until the
-// next full page load.
+
 async function refreshAllSections() {
     await Promise.all([
         loadUsers(),

@@ -7,8 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-// JPA mapping for IAM_Login_User_Roles — the Users<->Roles junction. A user can hold more
-// than one role; AuthService unions the permissions of every role a user has.
+
 @Entity
 @Table(name = "IAM_Login_User_Roles")
 @Data

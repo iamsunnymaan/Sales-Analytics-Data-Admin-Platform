@@ -2,13 +2,6 @@ package com.houseofbeauty.model;
 
 import java.util.Arrays;
 
-// Single source of truth for the 8 real values ImportSession.status ever holds. The DB column and
-// every outbound JSON field stay plain String (unchanged schema, unchanged frontend contract) — this
-// enum exists so every Java call site that assigns or compares a status goes through one named
-// constant instead of a magic string literal repeated (and possibly mistyped) across
-// ImportSessionController/ImportSessionCleanupService. value() is the exact literal persisted to the
-// DB and serialized to callers today, including "Committed with errors" (space, no underscore) — do
-// not change these strings without also migrating existing import_sessions rows.
 public enum ImportSessionStatus {
 
     UPLOADED("Uploaded"),

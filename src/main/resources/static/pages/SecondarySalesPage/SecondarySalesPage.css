@@ -1,8 +1,3 @@
-/* Secondary Sales page styles. */
-
-/* ==================== 1. Overview ==================== */
-/* Same numbered-subtitle convention as PrimarySalesPage.css's .target-achievement-subtitle
-   ("1. Overview", "2. Daily Sales Trends", …) for a consistent look across pages. */
 .secondary-overview-subtitle {
     font-size: 0.75rem;
     font-weight: 600;
@@ -12,63 +7,35 @@
     margin: 0 0 0.6rem;
 }
 
-/* Pairs "1. Overview" with the range label on the same row, label pinned to the right edge — same
-   layout idea as PrimarySalesPage.css's .ta-overview-header-row. The subtitle's own bottom margin
-   is reset here since the row wrapper now owns that spacing instead. */
 .secondary-overview-title-row {
     display: flex;
     align-items: center;
     justify-content: space-between;
     flex-wrap: wrap;
     gap: 0.5rem;
-    /* margin-bottom: 0.6rem; */
+
 }
 
 .secondary-overview-title-row .secondary-overview-subtitle {
     margin: 0;
 }
 
-/* Groups "1. Overview" with its own loading spinner so the spinner hugs the text's right side
-   (fits its content, doesn't stretch/space out) instead of sitting with the far-right filter/range-
-   label group — per explicit request. */
 .secondary-overview-subtitle-group {
     display: flex;
     align-items: center;
     gap: 0.35rem;
 }
 
-/* Common ancestor of the page's 4 numbered .section-container groups (see below) — provides the
-   gap BETWEEN sections via flex, same pattern PrimarySalesPage.css's own .target-achievement-section
-   uses. Replaces the old per-section margin-bottom: 2rem convention (see #dailyTrendCard/
-   #reportsSectionCard below, now zeroed) with one consistent gap. */
 .secondary-sections {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
 }
 
-/* Outer section boundary — wraps each numbered section's title (.section-header) and its existing
-   card (.section-content) into one structural group, so the title reads as part of the section
-   instead of floating separately above it. No box look (border/radius/background/padding) per the
-   same explicit request PrimarySalesPage.css's own .section-container follows — purely structural. */
 .section-container {
-    /* border: 1px solid var(--color-border); */
-    /* border-radius: 18px; */
-    /* background-color: var(--color-card-bg); */
-    /* padding: 1rem; */
-    /* margin: 0 0 1.5rem; */
+
 }
 
-/* Sticks to the top of the scrollable .app-main once the user scrolls past it, so the Filter
-   Header's Brand/Channel/Date controls stay reachable without scrolling back up — per explicit
-   request. Returns to its normal in-flow position automatically once scrolled back above it (native
-   position:sticky behavior, no JS needed). background-color is opaque so page content scrolling
-   underneath doesn't show through; z-index keeps it above ordinary page content but still well
-   under the sidebar/modals (see Sidebar.css's own 1099-1101 range). top is negative, matching
-   .app-main's own padding-top (Shared/css/app.css) — sticky's own "top" offset is measured from
-   .app-main's padding edge, which sits inset by that padding, so without this the header would
-   stick with a permanent gap above it instead of touching the very top of the scroll viewport; see
-   the matching breakpoint below for .app-main's own responsive padding. */
 #dashboardFyOverviewFilterHeaderSectionContainer {
     position: sticky;
     top: -1.5rem;
@@ -83,24 +50,19 @@
 }
 
 @media (max-width: 640px) {
-    /* .app-main's own top padding here is reserved clearance for the fixed hamburger toggle button
-       (Sidebar.css's #sidebarToggle), not just spacing — pulling this flush to the very top like the
-       desktop/tablet breakpoints above would tuck it underneath that button instead. */
+
     #dashboardFyOverviewFilterHeaderSectionContainer {
         top: 0;
     }
 }
 
 .section-header {
-    /* margin: 0 0 0.6rem; */
+
 }
 
 .section-content {
     margin: 0;
-    /* Padding OUTSIDE each section's own card (i.e. here, not on the card itself) — same convention
-       Dashboard.css's own #dailyTrendSectionContainer/#dashboardSiteReportSectionContainer
-       .section-content rules use. Scoped to .section-content only (not .section-header) so each
-       section's title stays flush/unpadded. */
+
     padding: 0.65rem 0.75rem;
 }
 
@@ -112,17 +74,10 @@
     margin: 0;
     padding: 0;
     box-shadow: var(--shadow-card);
-    /* Clips the table's own top-right "TOTAL" header cell (solid/tinted background, square corner)
-       to this card's own rounded corner — without this, that background color squares off past the
-       border-radius instead of following its curve. No sticky-positioned element inside this card
-       relies on an unclipped ancestor, so this is safe to add. */
+
     overflow: hidden;
 }
 
-/* Groups the range label + date Filter together as one right-aligned unit on the title row — same
-   idea as PrimarySalesPage.css's .ta-overview-header-right. Purely cosmetic here (see this page's
-   own HTML header comment): there's no real Overview data source yet for a filter change to
-   actually re-fetch, so this only updates the range label text. */
 .secondary-overview-header-right {
     display: flex;
     align-items: center;
@@ -130,8 +85,6 @@
     gap: 0.5rem;
 }
 
-/* Same look as PrimarySalesPage.css's own .ta-overview-range-label (e.g. "01-Sep-2026 to
-   01-Sep-2026 (1 of 30 days)" — see formatRangeLabel in SecondarySalesPage.js). */
 .ta-overview-range-label {
     font-size: 0.7rem;
     font-weight: 400;
@@ -145,9 +98,6 @@
     box-shadow: var(--shadow-card);
 }
 
-/* Shrunk just in the Filter Header section (sits next to "Filter Header" in its own
-   .section-header now, see SecondarySalesPage.html) — smaller to match that header's own reduced
-   scale instead of the bigger size it had inline with "1. Overview"'s own title. */
 #dashboardFyOverviewFilterHeaderSectionContainer .ta-overview-range-label {
     font-size: 0.58rem;
     padding: 0.2rem 0.45rem;
@@ -155,12 +105,7 @@
 
 .secondary-overview-table-wrap {
     overflow-x: auto;
-    /* Reserves the same height a real table/"Not Available" message would take, so the card doesn't
-       shrink-then-grow while loadOverview's own fetch is in flight (see #overviewSpinner/
-       #secondaryOverviewSection.is-loading in SecondarySalesPage.js/.html) — per explicit request.
-       Tightened from 14rem (224px) to 13.65rem (~218px, the real table's own measured height) —
-       the old value left a visible ~6px strip of plain card background below the table's own last
-       row (SOB), noticeable against that row's tinted brand/Total cells stopping short of it. */
+
     min-height: 13.65rem;
 }
 
@@ -181,8 +126,6 @@
     border: 1px solid var(--color-border);
 }
 
-/* Metric row labels (Month Target/Actual Sales/% Vs Target/Vs LY/SOB) — left-aligned, bold, same
-   treatment PrimarySalesPage.css's .ta-insights-table gives its own first column. */
 .secondary-overview-metric-header,
 .secondary-overview-metric-label {
     text-align: left;
@@ -190,11 +133,6 @@
     color: var(--color-text-primary);
 }
 
-/* Every Overview header cell ("Metric" corner + each Brand group + each Channel sub-column) shares
-   this layout, per explicit request: same icon-on-top/name-below-it-small style the Reports
-   section's own row icons already use (.brand-tree-row-icon-wrap/-label below) — the icon with the
-   literal column name small underneath it, then the row's own real value (when it has one) beside
-   that unit. */
 .secondary-overview-header-cell {
     display: flex;
     align-items: center;
@@ -228,17 +166,6 @@
     white-space: nowrap;
 }
 
-/* Brand group header row (real Site_Master brands + the synthesized "Total" group, each spanning
-   their own real-Channel-count sub-columns) — brand-colored text (see renderSecondaryOverviewTable
-   in SecondarySalesPage.js for how each real brand's own color is resolved: ABH/Kylie keep their
-   fixed identity colors used everywhere else in the app, any further real brand rotates through
-   the same --achi-brand-* categorical palette Reports' own Achi. bars use). Total's group always
-   stays the fixed primary green via .secondary-overview-brand-grandtotal below. */
-/* Per explicit request: each real brand's own header background is now its own identity color
-   (inline style set by renderSecondaryOverviewTable, via colorByBrand — same color already used for
-   this row's icon + the body rows' own tint below), so Kylie's header reads as visually distinct
-   from ABH's, not just one shared flat tint for every real brand. Total's own background instead
-   comes from .secondary-overview-grandtotal-col (fixed green) below, no inline style. */
 .secondary-overview-brand-header {
     font-size: 0.7rem;
     font-weight: 700;
@@ -251,12 +178,6 @@
     color: var(--color-primary);
 }
 
-/* Offline/Online/Total (or however many real Channels exist) sub-header row — small, uppercase,
-   secondary-colored, same typographic weight as .ta-insights-table's own thead th. Per explicit
-   request: one flat, consistent background across every cell in this row — this selector's higher
-   specificity (thead/tr/:last-child/th vs. the plain single-class .secondary-overview-col-total/
-   .secondary-overview-grandtotal-col rules below) overrides those tints here without touching the
-   body <td> cells they still tint below the header. */
 .secondary-overview-table thead tr:last-child th {
     font-size: 0.6rem;
     font-weight: 600;
@@ -266,44 +187,20 @@
     background-color: var(--color-card-bg);
 }
 
-/* Each brand group's own "Total" sub-column (sum across every real Channel) — same tint value as
-   .secondary-overview-grandtotal-col below (0.08, not the previous 0.05) per explicit request: every
-   "Total"-labeled column, per-brand or the grand-total group's own, now shares one consistent
-   background, instead of the per-brand one reading visibly lighter than the grand-total corner cell
-   it used to lose the cascade tie-break to. Applied as a CSS class (not nth-child, since the real
-   column count/position now varies with how many real Brands/Channels Site_Master has) — see
-   renderSecondaryOverviewTable. A real brand's own inline tint (set directly on every cell in its
-   group, including this one) takes precedence over this rule via specificity, same visual layering
-   the old nth-child version had. */
 .secondary-overview-col-total {
     background-color: rgba(27, 77, 62, 0.08);
     font-weight: 600;
 }
 
-/* The right-most brand group is the actual grand total across every real brand — stronger tint
-   than the per-brand "Total" sub-columns above, so it reads as the table's real bottom line, same
-   "total column" emphasis PrimarySalesPage.css's own summary tables use elsewhere in the app.
-   Class-based (secondary-overview-grandtotal-col), applied to every cell — header and body — in
-   the grand Total brand group, same reason .secondary-overview-col-total is class-based now. */
 .secondary-overview-grandtotal-col {
     background-color: rgba(27, 77, 62, 0.08);
 }
 
-/* Grand Total's own "Total" sub-column (bottom-right corner) — the single most important number
-   in the table (every brand, every channel), bolded and primary-colored so it's the first thing
-   the eye lands on. */
 .secondary-overview-grandtotal-total-col {
     font-weight: 700;
     color: var(--color-primary);
 }
 
-/* Vertical rule before the first sub-column of each brand-or-Total group, so the groups read as
-   distinct blocks at a glance, matching the header row's own grouping — class-based (applied to
-   the first cell of every group, header and body, by renderSecondaryOverviewTable) since a fixed
-   nth-child position no longer holds once the real brand/channel count varies. Per explicit
-   request: strengthened from the plain 2px --color-border grid-line shade to a bolder, on-brand
-   3px --color-primary line, so each brand's own section boundary reads as a clear, deliberate
-   partition rather than blending in with the table's regular thin gray cell borders. */
 .secondary-overview-group-divider {
     border-left: 3px solid var(--color-primary);
 }
@@ -319,10 +216,6 @@
     font-size: 0.78rem;
 }
 
-/* ==================== Brand Header (shared by every section's brand pill) ==================== */
-/* Styles for the brand filter pill (All / ABH / Kylie) shown at the top of every page. Copied
-   verbatim from PrimarySalesPage.css so this page's Daily Sales Trends section reads identically —
-   see that file's own header comment for the full rationale. */
 .brand-header {
     position: Static;
     top: 0;
@@ -365,13 +258,6 @@
     color: #fff;
 }
 
-/* .brand-header-empty: shown instead of All/brand buttons when Site_Master currently has no Brand
-   data at all — see renderBrandPill in SecondarySalesPage.js. .brand-header-loading: the Filter
-   Header pill's initial static-HTML placeholder, shown only until loadBrandPillOptions()/
-   loadChannelPillOptions()'s fetch resolves and renderBrandPill/renderChannelPill replace it with
-   the real buttons (or this same empty state) — prevents briefly showing a stale fallback that
-   doesn't match the real Brand/Channel data on a slow network. Neither is a button: no hover/active
-   state, not clickable. */
 .brand-header-empty,
 .brand-header-loading {
     font-style: italic;
@@ -385,10 +271,6 @@
     color: var(--color-text-secondary);
 }
 
-/* ==================== Sales Date Filter ==================== */
-/* Styles for this page's date filter (Filter -> By Date/By Month/By Year). Base surface
-   (background/border/radius) is set in Shared/css/card.css, which lists
-   .brand-header-filter-bar.brand-header alongside every other card/panel-style block app-wide. */
 .brand-header-filter-bar.brand-header {
     flex-wrap: wrap;
     justify-content: space-between;
@@ -428,10 +310,6 @@
     box-shadow: var(--shadow-card);
 }
 
-/* Per explicit request: this toggle is always just the single "Filter" button (mode is either null
-   or "filter" — see initSalesDateFilter), so it reads as plain gray text with no color of its own
-   until opened. Colored primary-green at rest now (icon + text), same as the rest of this page's
-   colored/branded controls, so it's discoverable as clickable instead of blending into plain text. */
 .sales-date-filter-mode-btn {
     border: none;
     background: transparent;
@@ -460,9 +338,6 @@
     flex-wrap: wrap;
 }
 
-/* initSalesDateFilter (SecondarySalesPage.js) empties this div's innerHTML rather than hiding it
-   when the filter is closed — remove it from flow entirely while genuinely empty so the
-   space-between row it sits in doesn't keep a zero-width gap where it used to be. */
 .sales-date-filter-body:empty {
     display: none;
 }
@@ -477,10 +352,6 @@
     background-color: var(--color-card-bg);
 }
 
-/* Per explicit request: made more visible against the page's own tinted background — border +
-   shadow now match .sales-date-filter-mode-toggle's own pill treatment above (this one used to be
-   just a flat background-color fill with no border/shadow, so it read as less distinct than its
-   sibling "Filter" toggle sitting right next to it). */
 .sales-date-filter-range-type {
     display: inline-flex;
     align-items: center;
@@ -544,22 +415,14 @@
     }
 }
 
-/* ==================== 2. Daily Sales Trends ==================== */
-/* Real amount series (Sales, with a real Monthly Target pace line and the same period last year),
-   backed by GET /api/secondary-sales/trend-range — see SecondarySalesDailyTrendService, which reads
-   Secondary_Sales/Secondary_Sales_Target only. Copied from PrimarySalesPage.css's own Daily Trend
-   Graph block (unused .daily-trend-stats/-stat/-period rules skipped — this page's markup never
-   uses them). Base surface (background/border/radius) comes from Shared/css/card.css. */
 .daily-trend-card {
     padding: 0.5rem;
     box-shadow: var(--shadow-card);
     border-radius: 18px;
     background-color: color-mix(in srgb, var(--color-info) 6%, var(--color-card-bg));
-    /* margin-bottom: 2rem; */
+
 }
 
-/* Gap before "3. Reports" — ID-scoped (not the .daily-trend-card class rule commented out above,
-   left disabled per explicit request) so this section's own bottom spacing is independent of that. */
 #dailyTrendCard {
     margin-bottom: 0;
 }
@@ -762,22 +625,8 @@
     position: relative;
 }
 
-/* ==================== Responsive (tablet/mobile) ==================== */
-/* Ported from PrimarySalesPage.css's own consolidated responsive block — only the generic
-   .brand-header/.brand-header-pill rules and the .daily-trend-* ones, since this page has no
-   .ta-insights-brand-row (Overview Insights card) equivalent to also carry over. Two breakpoints
-   app-wide, matching Sidebar.css/app.css: <=1024px tablet (sidebar becomes a compact icon rail),
-   <=640px mobile (sidebar becomes an off-canvas drawer). */
 @media (max-width: 1024px) {
-    /* Real bug, same class as PrimarySalesPage.css's .product-snapshot-card fix (see that file's
-       2026-08-25 history): .secondary-overview-card (section "1. Overview", the first thing on this
-       page) was hardcoded to a fixed width: 910px with no override anywhere in this file. Below
-       ~950px viewport width (most tablets, every phone, even a half-width laptop window),
-       .app-main's own overflow-x: hidden (Shared/css/app.css) clipped the card instead of letting it
-       shrink — content past the clip line was completely inaccessible, not just squeezed. The card's
-       own inner table already scrolls horizontally on its own (.secondary-overview-table-wrap's
-       overflow-x: auto + .secondary-overview-table's min-width: 640px), so letting the card itself
-       go full-width here is enough — same fix shape as .reports-section-card's own override below. */
+
     .secondary-overview-card {
         width: 100%;
     }
@@ -786,18 +635,11 @@
         padding-bottom: 1rem;
     }
 
-    /* Touch-target bump for the brand pill's buttons and Filter toggle — desktop sizing is aimed
-       at a mouse pointer and too small to comfortably tap. */
     .daily-trend-brand-header .brand-header-item,
     .daily-trend-brand-header .sales-date-filter-mode-btn {
         padding: 0.42rem 0.7rem;
     }
 
-    /* Per explicit request, opening the Filter should push a genuine new row into the card's
-       normal flow (like an accordion) rather than float a popup over the chart — forced to the
-       full header width only once actually opened (idPrefixBody gets filled), so the pill still
-       shares row 1 with the closed "Filter" button at any width down to where they'd stop
-       fitting together on their own. */
     .daily-trend-filter-cluster:has(.sales-date-filter-body:not(:empty)) {
         width: 100%;
     }
@@ -812,7 +654,6 @@
         height: 160px;
     }
 
-    /* Stack the brand pill above the date filter instead of squeezing both onto one row. */
     .brand-header {
         justify-content: flex-start;
     }
@@ -826,13 +667,6 @@
         justify-content: center;
     }
 
-    /* Undo the generic mobile rules above for this section specifically — .brand-header-pill's
-       own width:100% would otherwise make the Brand pill alone claim the whole row and squeeze
-       the Filter cluster out, and .sales-date-filter's width:100%/justify-content:center would
-       stretch #dailyTrendDateFilter to fill the leftover space and center the button inside it
-       instead of pinning it to the row's right edge. Letting each side shrink to its own content
-       lets space-between (on #dailyTrendBrandHeader) / justify-content: flex-end (on
-       .daily-trend-filter-cluster) do the actual left/right positioning. */
     .daily-trend-brand-header .brand-header-pill {
         width: auto;
         flex: 0 1 auto;
@@ -851,9 +685,6 @@
         font-size: 0.62rem;
     }
 
-    /* Keeps the From/To inputs (once wrapped to their own row by the <=1024px block above) narrow
-       enough that a By Date/By Month/By Year selection's two inputs, separator, and the Clear
-       button all comfortably fit a phone's width without forcing horizontal scroll. */
     .daily-trend-brand-header .sales-date-filter-input {
         flex: 1 1 auto;
         min-width: 0;
@@ -861,9 +692,6 @@
     }
 }
 
-/* Very narrow phones (e.g. a folded device) — Brand Select + Filter stay on one row at every
-   width instead of dropping to two full-width rows; shrinks the brand pill's own padding/gap and
-   button padding/font a little further than the <=640px sizing so the row keeps fitting. */
 @media (max-width: 400px) {
     .daily-trend-brand-header .brand-header-pill {
         padding: 0.1rem;
@@ -877,15 +705,6 @@
     }
 }
 
-/* ==================== 3. Reports ==================== */
-/* Copied from PrimarySalesPage.css's own "5. Reports" block (product-snapshot-table base +
-   reports-section-* + achi-bar + brand-tree styles) — this page has no Product Snapshot section of
-   its own, so these shared classes are ported here purely for Reports' use. No Proj./Proj vs Tgt
-   column pair (see SecondarySalesPage.js's reportsColumns/REPORTS_TABLE_COLGROUP) — 6 columns, not
-   Primary's 8. */
-/* A real circular ring loader (border-based, not a rotating icon glyph) — per explicit request.
-   Shown/hidden purely via each section's own .is-loading toggle (loadOverview/beginLoading-
-   endLoading/initSecondarySiteReport in SecondarySalesPage.js), same as before. */
 .section-loading-spinner {
     display: none;
     width: 0.85rem;
@@ -989,28 +808,14 @@
     color: var(--color-text-primary);
 }
 
-/* Base look for the download icon button + its popup comes from the shared
-   components/ExcelDownloadButton/ExcelDownloadButton.css (see its own <link> in this page's
-   <head>) — this page keeps only the one rule that genuinely differs from some other pages:
-   styling the button as "active" while its popup is open, not just on :hover. */
 .product-snapshot-download-btn:hover,
 .product-snapshot-download-btn[aria-expanded="true"] {
     color: var(--color-primary);
     border-color: var(--color-primary);
 }
 
-/* ==================== 3. Product Snapshot ==================== */
-/* Exact reuse of the Dashboard Page's own "3. Product Snapshot" section per explicit request — copied
-   verbatim from Dashboard.css (same class names, since this stylesheet is only ever loaded on this
-   page — no collision risk), pointed at this page's own secondaryProductSnapshot-prefixed and
-   secondaryProductResearch-prefixed element ids. .product-snapshot-table-wrap/-table/-delta/
-   -table-empty/-name-cell/-toggle/-toggle-spacer/-download-wrap/-btn/-popup/-popup-title/-range/
-   -confirm-btn and .region-summary-download-btn/.section-loading-spinner are NOT redefined here —
-   this page already has its own copies (see this file's own "4. Reports" section below, which
-   already reuses the same .product-snapshot-table look) and they already match Dashboard's values
-   exactly. */
 .product-snapshot-card {
-    /* padding: 0.7rem; */
+
     box-shadow: none;
     width: 65%;
     background-color: transparent;
@@ -1322,10 +1127,6 @@
     font-size: 0.64rem;
 }
 
-/* Scoped to this section's own two table ids (not a page-wide .product-snapshot-table selector like
-   Dashboard.css's own copy of this rule) — "4. Reports" below also renders .product-snapshot-table
-   markup with its own .product-snapshot-col-index cells, and an unscoped width:2.2rem here would
-   silently narrow that unrelated section's own index column too. */
 #secondaryProductSnapshotPanelBodyA .product-snapshot-table th:first-child,
 #secondaryProductSnapshotPanelBodyA .product-snapshot-table td.product-snapshot-col-index,
 #secondaryProductResearchTableWrap .product-snapshot-table th:first-child,
@@ -1374,20 +1175,13 @@
 
 .reports-section-card {
     width: 65%;
-    /* padding: 0.7rem; */
+
     box-shadow: var(--shadow-card);
-    /* Same rounded/clipped corners Dashboard.css's own "1. Site_Master Full Report" card uses. */
+
     border-radius: 18px;
     overflow: hidden;
 }
 
-/* Shared "No data available" empty state — used by "3. Reports" (all 4 tabs) and "4. Site_Master
-   Secondary_Sale Report" whenever their own backend query comes back with nothing (including when
-   the database itself is unreachable — every fetch on this page already falls back to an empty rows
-   array on a failed/erroring request, so this same state also covers "database not connected"
-   without needing a separate error UI). Works both as a lone block (brand hierarchy's own wrap,
-   which isn't a <table>) and inside a <td> (the flat-tab/site-report tables' own empty row). Same
-   convention PrimarySalesPage.css's own copy of this class uses. */
 .reports-empty-state {
     display: flex;
     flex-direction: column;
@@ -1420,10 +1214,7 @@
 #reportsSectionTableWrap {
     overflow-x: auto;
     overflow-y: auto;
-    /* Caps visible height to exactly the header row + 8 data rows, per explicit request — anything
-       beyond that scrolls (scrollbar hidden via scrollbar-width/-ms-overflow-style below +
-       ::-webkit-scrollbar). Calibrated from this table's own live-measured row heights (identical
-       across all 4 tabs): header 28.65px + 8 * 35.54px data row ≈ 313px = 19.625rem. */
+
     max-height: 19.625rem;
     scrollbar-width: none;
     -ms-overflow-style: none;
@@ -1441,24 +1232,13 @@
     justify-content: flex-start;
     flex-wrap: wrap;
     gap: 0.6rem;
-    /* margin-bottom: 0.6rem; */
-    /* padding: 0.7rem 0.7rem 0; */
+
 }
 
-/* Full padding (top/left/right/bottom), scoped to "3. Reports" own header alone
-   (#reportsSectionCard) — NOT the shared .reports-section-header rule above, which "4. Site_Master
-   Secondary_Sale Report" section (#secondarySiteReportCard) also uses and must stay untouched.
-   Compensates for .reports-section-card's own padding being commented out above (0), so this
-   header's content doesn't sit flush against the card's edges while the table below it still runs
-   edge-to-edge. */
 #reportsSectionCard .reports-section-header {
     padding: 0.7rem;
 }
 
-/* This section's own independent Brand pill sits in the same header row as the All Report/Channel
-   tab toggle — both compacted to the same scale as the page-level .brand-header-pill/-item look.
-   Neutralizes the base .brand-header rule's own padding/background (meant for a full-width
-   standalone bar), since here it's just a wrapper around one inline pill. */
 .reports-section-header .brand-header {
     padding: 0;
     background-color: transparent;
@@ -1498,19 +1278,10 @@
     text-align: center;
 }
 
-/* Row data text size matched to "4. Site_Master Secondary_Sale Report"'s own
-   .secondary-site-report-table td (0.68rem) — this table's shared base .product-snapshot-table rule
-   otherwise leaves it at 0.78rem, per explicit request to keep both sections' text sizes the same. */
 #reportsSectionTableWrap .product-snapshot-table td {
     font-size: 0.68rem;
 }
 
-/* Sub-Channel/Channel/Partner tabs (flat, non-tree tables) — per explicit request, every data row
-   gets one solid tint instead of the base .product-snapshot-table rule's even/odd stripe above,
-   Total row excluded (keeps its own solid --color-primary background below). Same tint family
-   .brand-hierarchy-table's own data-level rule uses further below (Channel=success,
-   Sub-Channel=info, Partner=warning), just applied to a flat single-level table instead of a tree —
-   see FLAT_REPORT_TABLE_CLASS in SecondarySalesPage.js for how each table gets its own class. */
 #reportsSectionTableWrap .report-flat-table--subchannel tbody tr:not(.channel-report-total-row) {
     background-color: color-mix(in srgb, var(--color-info) 6%, var(--color-card-bg));
 }
@@ -1523,9 +1294,6 @@
     background-color: color-mix(in srgb, var(--color-warning) 6%, var(--color-card-bg));
 }
 
-/* Total row remade to the exact same look Dashboard.css's own "1. Site_Master Full Report" Total
-   row uses (.dashboard-total-row) — solid --color-primary background/white text instead of the
-   previous neutral gray tint, same 0.6rem/0.2rem-0.6rem-padding text size, per explicit request. */
 #reportsSectionTableWrap tr.channel-report-total-row {
     background-color: var(--color-primary);
 }
@@ -1546,16 +1314,10 @@
     background-color: var(--color-primary);
 }
 
-/* Vs LM/Vs LY's own .product-snapshot-delta already sets an explicit font-weight (600) — bumped here
-   so the Total row's own delta text visibly bolds too, same convention Dashboard's own
-   .dashboard-total-row .dashboard-delta uses (color/positive-negative meaning left untouched). */
 #reportsSectionTableWrap tr.channel-report-total-row .product-snapshot-delta {
     font-weight: 700;
 }
 
-/* Contrast fixes so the calculator icon / Achi. bar stay visible now that the Total row's own
-   background matches the header's solid --color-primary instead of a light neutral tint — same
-   fixes Dashboard's own .dashboard-total-row applies to its equivalent classes. */
 #reportsSectionTableWrap tr.channel-report-total-row .channel-report-row-icon {
     color: #FFFFFF;
 }
@@ -1572,11 +1334,6 @@
     color: #FFFFFF;
 }
 
-/* The "Total" label itself: .product-snapshot-table tbody tr[data-level="0"] .product-snapshot-
-   name-text (below) sets its own explicit dark color, which otherwise wins over the plain white the
-   Total row's td sets — this row also carries data-level="0" (see renderReportsTable in
-   SecondarySalesPage.js), so without this override "Total" renders unreadably dark-on-dark against
-   the row's own --color-primary background. */
 #reportsSectionTableWrap tr.channel-report-total-row .product-snapshot-name-text {
     color: #FFFFFF;
 }
@@ -1640,10 +1397,6 @@
     background-color: color-mix(in srgb, var(--color-warning) 6%, var(--color-card-bg));
 }
 
-/* Achi. column progress bar — 4 fixed categorical slots, one per Brand in first-seen order (see
-   assignBrandColorSlots in SecondarySalesPage.js). Same light/dark values as PrimarySalesPage.css's
-   own --achi-brand-* (this page has no achi-bar use of its own yet outside Reports, so these are
-   scoped here rather than in a shared file). */
 :root {
     --achi-fill-neutral: var(--color-text-secondary);
     --achi-brand-1: #2a78d6;
@@ -1706,21 +1459,10 @@
     color: var(--color-text-secondary);
 }
 
-/* Gap before the next section below — ID-scoped, same convention #dailyTrendCard already uses for
-   the gap before "3. Reports" (.reports-section-card's own class rule carries no margin-bottom). */
 #reportsSectionCard {
     margin-bottom: 0;
 }
 
-/* Column header icons (secondary-overview-header-icon-*, reused from "1. Overview") default to a
-   muted gray label meant for a plain-bordered header — Reports' own table (#reportsSectionTableWrap)
-   fills its th solid with --color-primary and white text instead, so both the icon and label need to
-   stay legible against that dark background. Sized smaller (icon) / bigger (label) than that shared
-   default too, per explicit request, so the text reads as the primary content and the icon as a
-   small accent next to it — same icon set as reportsIconHeaderCell/REPORTS_COLUMN_ICONS in
-   SecondarySalesPage.js. CHANGED 2026-09-03: previously shared with the now-removed "4. Site Master
-   Report" section's own #siteMasterReportTableWrap — that half of each selector was removed, these
-   rules now belong to Reports alone. */
 #reportsSectionTableWrap .secondary-overview-header-icon {
     color: #FFFFFF;
     font-size: 0.58rem;
@@ -1732,8 +1474,6 @@
     font-size: 0.58rem;
 }
 
-/* Icon then text, side by side — per explicit request, unlike Overview's own header cell layout
-   (.secondary-overview-header-cell, icon+value on top with the caption below). */
 #reportsSectionTableWrap .site-master-header-cell {
     display: flex;
     align-items: center;
@@ -1746,36 +1486,13 @@
         width: 100%;
     }
 
-    /* Same real gap already found and fixed on Dashboard/Primary Sales Page's own identical
-       .product-snapshot-card (2026-08-25 responsive audit) — 60% only makes sense with a wide
-       viewport to spare, so this page's own copy gets the same override. */
     .product-snapshot-card {
         width: 100%;
     }
 }
 
-/* ==================== 5. Site_Master Secondary_Sale Report ==================== */
-/* Same look Dashboard.css's own "1. Site_Master Full Report" section uses (cornsilk body rows,
-   rounded/clipped card, bold key columns, count-labeled Total row) — copied here rather than
-   imported, per this codebase's own convention of each page keeping its own copy of shared-look
-   styles (see e.g. Dashboard.css's own header comment). Base card surface (background/border/8px
-   radius) comes from Shared/css/card.css's shared list, which .secondary-site-report-card was added
-   to. Title row reuses this page's own .secondary-overview-title-row/-subtitle and download button
-   reuses .product-snapshot-download-wrap/-btn/.region-summary-download-btn — all already defined
-   above, not redefined here. Loading spinner reuses this page's own .section-loading-spinner/
-   @keyframes section-loading-spin the same way, not redefined either. CHANGED 2026-09-03: this
-   section used to be numbered "5." and sit after a separate "4. Site Master Report" section (its
-   own .site-master-report-card etc.) — that section was removed per explicit request and this one
-   renumbered 5 -> 4 to fill the gap; its own .secondary-site-report-* class prefix was already
-   independent, so the removal needed no changes here beyond the number. CHANGED again (this
-   session): renumbered 4 -> 5 to make room for the new "3. Product Snapshot" section inserted
-   between "2. Daily Sales Trends" and (now) "4. Reports". */
-/* .reports-section-header's own shared rule (used above by "3. Reports") carries margin-bottom:
-   0.6rem — Dashboard's own copy of this same header had that margin commented out per an earlier
-   explicit request, so it's zeroed here too, scoped to only this card's own header, leaving "3.
-   Reports" own spacing untouched. */
 #secondarySiteReportCard .reports-section-header {
-    /* margin-bottom: 0; */
+
 }
 
 .secondary-site-report-card {
@@ -1831,23 +1548,11 @@
     cursor: default;
 }
 
-/* FIXED (dark mode): this table's own tbody/td rule below hardcodes a fixed light "cornsilk"
-   background regardless of theme (matching Dashboard.css's own "1. Site_Master Full Report" look,
-   see this section's own header comment) — but its text color used to be var(--color-text-primary),
-   which flips to a light color in dark theme, leaving near-white text on that still-light cornsilk
-   background almost unreadable. Fixed to the same literal dark shade --color-text-primary resolves
-   to in LIGHT mode (#17221E) always, regardless of active theme, so contrast against this
-   intentionally-fixed-light background stays correct in both themes. */
 .secondary-site-report-table td {
     font-size: 0.68rem;
     color: #17221E;
 }
 
-/* Per explicit request: lightened from the full/vivid "cornsilk" (#FFF8DC) to a paler cream
-   (#FFFBEF) — same fixed-light-background design intent either way (this section always reads as
-   a light cream panel regardless of the app's own active theme, see the dark-text fix's own comment
-   above), just a softer/less saturated shade, in both light AND dark mode (this rule isn't
-   theme-conditional at all, so there's no separate dark-mode value to keep in sync). */
 .secondary-site-report-table tbody,
 .secondary-site-report-table tfoot,
 .secondary-site-report-table tr,
@@ -2008,10 +1713,6 @@
     color: #FFFFFF;
 }
 
-/* "Filter Header" section — own copy of Dashboard.css's identical block (each page owns its own
-   copy, same convention Daily Sales Trends already follows), sitting above "1. Overview" via
-   #dashboardFyOverviewFilterHeaderSectionContainer in SecondarySalesPage.html. Not yet wired to any
-   JS — background/border/radius come from the shared list in Shared/css/card.css. */
 .dashboard-fy-overview-filter-header-card {
     box-shadow: var(--shadow-card);
 }
@@ -2030,9 +1731,6 @@
     color: var(--color-text-secondary);
 }
 
-/* Sales Type / Brand / Channel filter row — reuses .brand-header-pill/.brand-header-item (the same
-   pill toggle look the Daily Sales Trends section's own Sales Type/Brand pills use) at a smaller
-   size. */
 .dashboard-fy-overview-filter-row {
     display: flex;
     flex-wrap: wrap;
@@ -2041,10 +1739,6 @@
     padding: 10px;
 }
 
-/* Date Filter + range label — moved here from "1. Overview"'s own header row per explicit request.
-   margin-left: auto pushes it to the row's right edge while Brand/Channel stay grouped on the left,
-   same "auto margin splits a flex row into a left group + a right item" trick the Filter Header's
-   own (now-removed) Year Filter field used. */
 .dashboard-fy-overview-filter-row .secondary-overview-header-right {
     margin-left: auto;
 }
@@ -2064,7 +1758,6 @@
     white-space: nowrap;
 }
 
-/* Status pill field — same frontend as Primary Sales' own copy (PrimarySalesPage.css). */
 .site-status-card-field {
     display: flex;
     flex-direction: column;
@@ -2089,9 +1782,6 @@
     font-size: 0.52rem;
 }
 
-/* Date Filter, shrunk to the same smaller scale as the Brand/Channel pills above, just for this
-   row — its own base .sales-date-filter-mode-btn/.sales-date-filter-clear rules (further down this
-   file) stay full-size everywhere else the Date Filter appears (e.g. "2. Daily Sales Trends"). */
 .dashboard-fy-overview-filter-row .sales-date-filter-mode-toggle {
     padding: 0.1rem;
 }
@@ -2106,8 +1796,6 @@
     padding: 0.1rem;
 }
 
-/* Opened filter body (By Date/Month/Year toggle + From/To inputs, see renderFilter/renderRangeInputs
-   in SecondarySalesPage.js) — same smaller scale as the rest of this row's own controls above. */
 .dashboard-fy-overview-filter-row .sales-date-filter-body {
     gap: 0.35rem;
 }
@@ -2130,8 +1818,6 @@
     font-size: 0.58rem;
 }
 
-/* Filter button + dropdown list, same funnel-icon-button-opens-a-panel convention the app's other
-   Filter buttons use. */
 .dashboard-fy-year-filter {
     position: relative;
 }
@@ -2206,8 +1892,7 @@
 }
 
 @media (max-width: 640px) {
-    /* This field's own margin-left: auto has nothing to push against once the row wraps here — go
-       full-width instead so it doesn't sit stranded at an arbitrary indent. */
+
     .dashboard-fy-overview-filter-row .secondary-overview-header-right {
         width: 100%;
         margin-left: 0;

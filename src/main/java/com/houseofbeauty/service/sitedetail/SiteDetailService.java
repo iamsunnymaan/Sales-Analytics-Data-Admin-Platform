@@ -15,20 +15,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-// Backs the Site Status page's site detail view (SiteStatusPage.html/.js) — reached by picking a
-// Site Code/Brand there directly or via that same page's own Geo Map popup's district click-through
-// deep-linking in with ?siteCode=&brand= (GeoMap.js/DashboardGeoMapService): the full profile,
-// all-time/Current/Previous/Last-Year-Same-Month KPIs, month-by-month sales-vs-target history, and
-// recent transactions for one real (Site_Code, Brand) site_master row.
-//
-// Primary Sales attribution uses Bill_to (+Brand), same composite FK site_master's own
-// FK_PrimarySales_Billto_SiteMaster uses. Secondary Sales/Target attribute directly by (Site_Code,
-// Brand), same convention DashboardSiteReportService's own header comment documents as safe.
-// Primary_Sales_Target does NOT have a real per-site grain — its real key is (Brand, Channel,
-// Partner, Month) — so this site's own Channel/Partner (from its profile row) is combo-matched
-// against it, same approach DashboardSiteReportService uses for the same reason: two sites sharing a
-// Partner will show the same Primary Target figure, because that's the finest grain the table
-// actually has.
 @Service
 public class SiteDetailService {
 
@@ -77,28 +63,12 @@ public class SiteDetailService {
         BigDecimal primaryAllTime = asDecimal(primary.get("totalSales"));
         BigDecimal secondaryAllTime = asDecimal(secondary.get("totalSales"));
 
-        // Earliest month "Total" actually spans — the earlier of Primary/Secondary Sales' own
-        // MIN(Sales_Date), so the card can show "<that month> – <current month>" underneath the
-        // figure. MIN() over zero matching rows still returns one row with a NULL date (not an empty
-        // result set), so a site with no sales at all in one or both tables just comes back null here.
         Date primaryMinDate = jdbcTemplate.queryForObject(
                 "SELECT MIN(Sales_Date) FROM Primary_Sales WHERE Bill_to = ? AND Brand = ?", Date.class, siteCode, brand);
         Date secondaryMinDate = jdbcTemplate.queryForObject(
                 "SELECT MIN(Sales_Date) FROM Secondary_Sales WHERE Site_Code = ? AND Brand = ?", Date.class, siteCode, brand);
         LocalDate earliestSalesMonth = earliestOf(primaryMinDate, secondaryMinDate);
 
-        // All-time target for the "Total" card's progress bar — same combo-match Primary_Sales_Target
-        // needs everywhere else on this page (see the class javadoc): summed across every month that
-        // table has a row for this Brand/Channel/Partner, not just the ones Sales_History happens to
-        // cover. Secondary_Sales_Target has a real per-site grain, summed directly. Channel/Partner
-        // compared case-insensitively (LOWER(LTRIM(RTRIM(...)))) here and in monthTarget/
-        // loadMonthlyHistory below — BUG FOUND AND FIXED 2026-09-21: `channel`/`partner` come from this
-        // SITE's own Site_Master row, but Primary_Sales_Target can spell the same logical Partner with
-        // different casing (live-verified elsewhere: Secondary_Sales_Target's "Nykaa-Offline" vs
-        // Site_Master/Primary_Sales_Target's own "Nykaa-offline" — the same bug class that undercounted
-        // the Dashboard's "3. Partner Wise Target Vs Achievement"), so an exact-case `=` here risked
-        // silently showing ₹0 Target for a real site whose Partner combo just happened to be cased
-        // differently in this table.
         String channel = (String) profile.get("Channel");
         String partner = (String) profile.get("Partner");
         BigDecimal primaryTargetAllTime = (channel == null || partner == null) ? BigDecimal.ZERO
@@ -111,15 +81,9 @@ public class SiteDetailService {
                 BigDecimal.class, siteCode, brand));
         BigDecimal totalTargetAllTime = primaryTargetAllTime.add(secondaryTargetAllTime);
         BigDecimal totalSalesAllTime = primaryAllTime.add(secondaryAllTime);
-        // null (not 0%) when there's no target at all to measure against — the card hides the whole
-        // progress bar rather than showing a misleading "0% of nothing".
+
         BigDecimal totalAchievementPct = achievementPct(totalSalesAllTime, totalTargetAllTime);
 
-        // Same combo-match, scoped to a single calendar month — "Current Month"/"Previous Month"/"Last
-        // Year Same Month" each get the same achievement-vs-target progress bar as "Total", just
-        // measured against that one month's target instead of the all-time one. Server's own
-        // LocalDate.now() (not GETDATE()) so Previous Month/Last Year Same Month can be derived from
-        // it with plain date math instead of three more ad-hoc SQL expressions.
         LocalDate now = LocalDate.now();
         LocalDate previousMonth = now.minusMonths(1);
         LocalDate lastYearSameMonth = now.minusYears(1);
@@ -157,8 +121,6 @@ public class SiteDetailService {
         return kpis;
     }
 
-    // Primary+Secondary combined Sales for one calendar month — shared by Current/Previous/Last Year
-    // Same Month (loadKpis above).
     private BigDecimal monthSales(String siteCode, String brand, LocalDate month) {
         BigDecimal primary = asDecimal(jdbcTemplate.queryForObject(
                 "SELECT COALESCE(SUM(Sales), 0) FROM Primary_Sales WHERE Bill_to = ? AND Brand = ? " +
@@ -171,10 +133,6 @@ public class SiteDetailService {
         return primary.add(secondary);
     }
 
-    // Primary+Secondary combined Target for one calendar month — same combo-match (Brand/Channel/
-    // Partner) the class javadoc documents, shared by Current/Previous/Last Year Same Month. Target
-    // tables' own Month column is always the first-of-month date (see loadMonthlyHistory's "Month AS
-    // ym" grouping), so YEAR/MONTH match it exactly like Sales_Date above.
     private BigDecimal monthTarget(String siteCode, String brand, String channel, String partner, LocalDate month) {
         BigDecimal primaryTarget = (channel == null || partner == null) ? BigDecimal.ZERO
                 : asDecimal(jdbcTemplate.queryForObject(
@@ -189,9 +147,6 @@ public class SiteDetailService {
         return primaryTarget.add(secondaryTarget);
     }
 
-    // null (not 0%) when there's no target at all to measure against — shared by all four KPI cards'
-    // progress bars, each of which hides entirely on null rather than show a misleading "0% of
-    // nothing" (see SiteStatusPage.js's renderProgress).
     private static BigDecimal achievementPct(BigDecimal sales, BigDecimal target) {
         return target.compareTo(BigDecimal.ZERO) > 0
                 ? sales.multiply(BigDecimal.valueOf(100)).divide(target, 1, RoundingMode.HALF_UP)
@@ -238,10 +193,6 @@ public class SiteDetailService {
                         "WHERE Site_Code = ? AND Brand = ? GROUP BY Month",
                 siteCode, brand);
 
-        // Union of every month any of the four sources has a real row for, most recent first — a
-        // month only shows "—" (null, not 0) for whichever of Target columns has no row at all,
-        // since "no target set" and "target of zero" are different things; Sales columns default to
-        // a real 0 since a month with no sales genuinely sold nothing.
         TreeMap<LocalDate, Boolean> months = new TreeMap<>(Comparator.reverseOrder());
         primarySales.keySet().forEach(m -> months.put(m, true));
         secondarySales.keySet().forEach(m -> months.put(m, true));
@@ -281,10 +232,6 @@ public class SiteDetailService {
         return getSecondaryTransactions(siteCode, brand, TRANSACTIONS_LIMIT);
     }
 
-    // "Primary/Secondary Sales — Recent Transactions" section's own rows-to-show dropdown
-    // (SiteStatusPage.js's wireTransactionLimitControls) — same query getSiteDetail's own
-    // primaryTransactions already runs, just with a caller-supplied TOP N instead of the fixed
-    // TRANSACTIONS_LIMIT default.
     public Map<String, Object> getPrimaryTransactions(String siteCode, String brand, int limit) {
         List<Map<String, Object>> rows = jdbcTemplate.queryForList(
                 "SELECT " + dialect.topPrefix(limit) + "ps.Sales_Date, ps.Article_Code, pm.Description, " +

@@ -12,9 +12,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
-// JPA mapping for IAM_Login_Password_Reset_Tokens — reserved for the future "forgot password"
-// email flow (raw token emailed to the user, only its hash stored here, Used_At stamped once
-// redeemed so it can't be replayed). Not wired to any endpoint yet.
+
 @Entity
 @Table(name = "IAM_Login_Password_Reset_Tokens")
 @Data

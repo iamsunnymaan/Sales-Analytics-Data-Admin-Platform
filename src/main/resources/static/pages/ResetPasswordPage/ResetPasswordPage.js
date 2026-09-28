@@ -1,6 +1,3 @@
-// Reset-password page behavior — wired to POST /api/auth/reset-password (AuthController /
-// AuthService.resetPassword). The token comes from this page's own URL (?token=...), the same
-// value AuthService.forgotPassword logs/emails as part of the reset link — never typed by hand.
 (function () {
     const token = new URLSearchParams(window.location.search).get("token");
 

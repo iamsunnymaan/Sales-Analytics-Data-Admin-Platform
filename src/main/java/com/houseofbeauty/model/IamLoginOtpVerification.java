@@ -12,11 +12,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
-// JPA mapping for IAM_Login_Otp_Verifications — one row per OTP issued (POST /api/auth/send-otp),
-// consumed by POST /api/auth/login when mode=otp. OTP_Code_Hash is BCrypt-hashed, same as a
-// password — the raw code is never persisted. User_ID is a plain scalar FK (see
-// IamLoginUserRoleId's header comment on this codebase's usual no-relationship-mapping
-// convention), not a @ManyToOne.
+
 @Entity
 @Table(name = "IAM_Login_Otp_Verifications")
 @Data

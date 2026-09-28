@@ -24,10 +24,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-// Backs the Secondary Sales page's "Daily Sales Trends" section: a real amount series (with a real
-// Monthly Target pace line and the same period last year), bucketed by day, month, or year
-// depending on the active date-filter mode. Exact mirror of PrimarySalesDailyTrendService, scoped
-// to Secondary_Sales/Secondary_Sales_Target only.
 @Service
 public class SecondarySalesDailyTrendService {
 
@@ -35,9 +31,7 @@ public class SecondarySalesDailyTrendService {
     private static final int MAX_DAY_SPAN = 400;
     private static final int MAX_MONTH_SPAN = 600;
     private static final int MAX_YEAR_SPAN = 200;
-    // Per explicit request: 2-digit year ("1-Sep-26") instead of 4-digit ("1-Sep-2026") — this feeds
-    // the Daily Sales Trends chart's own X-axis category labels directly (day granularity only;
-    // month/year granularity build their own separate label strings, untouched).
+
     private static final DateTimeFormatter DAY_LABEL_FORMAT = DateTimeFormatter.ofPattern("d-MMM-uu", Locale.ENGLISH);
 
     private final JdbcTemplate jdbcTemplate;
@@ -55,11 +49,6 @@ public class SecondarySalesDailyTrendService {
         return value == null ? BigDecimal.ZERO : new BigDecimal(value.toString());
     }
 
-    // Real distinct Brand values Site_Master currently has, trimmed/deduped/sorted — backs this
-    // page's Daily Sales Trends brand pill (GET /api/secondary-sales/brands), same query/convention
-    // as PrimarySalesTodayService.getAvailableBrands (Site_Master is the one shared table both pages'
-    // pills read from, so the two endpoints are duplicated rather than one page reaching into the
-    // other's service, matching this codebase's own "each page owns its own copy" convention).
     public List<String> getAvailableBrands() {
         String sql = "SELECT DISTINCT Brand FROM Site_Master " +
                 "WHERE Brand IS NOT NULL AND LTRIM(RTRIM(Brand)) <> ''";
@@ -70,14 +59,6 @@ public class SecondarySalesDailyTrendService {
         return new ArrayList<>(brands);
     }
 
-    // Channel/Status filtering — Secondary_Sales/Secondary_Sales_Target both carry a DIRECT Site_Code
-    // column (no Bill_to-style indirection Primary needs), so this resolves the real Site_Codes the
-    // Filter Header's Channel/Status pills cover (Sales_Type = 'Secondary Sales' only) once, then
-    // every query below adds "AND ss.Site_Code IN (...)" (Secondary_Sales) or "AND Site_Code IN (...)"
-    // (Secondary_Sales_Target, via SecondarySalesTargetService's own appendSiteCodeFilter) instead of
-    // joining Site_Master directly — an IN-list filter can't double-count a row across Site_Master's
-    // real (Site_Code, Brand) composite key, a direct JOIN could. Mirrors
-    // PrimarySalesDailyTrendService's own resolveBillToCodesForChannelAndStatus.
     private List<String> resolveSiteCodesForChannelAndStatus(String channelFilter, String status) {
         String statusClause = OperationalStatusFilter.whereClause(status);
         if (channelFilter == null && statusClause.isEmpty()) {
@@ -93,9 +74,6 @@ public class SecondarySalesDailyTrendService {
         return jdbcTemplate.queryForList(sql.toString(), String.class, params.toArray());
     }
 
-    // Appends "AND ss.Site_Code IN (...)" when siteCodes is non-null — an empty list still appends a
-    // clause that always evaluates false (1 = 0) rather than an invalid empty IN(), same convention
-    // SecondarySalesTargetService's own appendSiteCodeFilter follows.
     private void appendSiteCodeFilter(StringBuilder sql, List<Object> params, List<String> siteCodes) {
         if (siteCodes == null) {
             return;
@@ -112,14 +90,7 @@ public class SecondarySalesDailyTrendService {
 
     public TrendRangeResponse getTrendRange(LocalDate from, LocalDate to, String granularity, String brand, String channel, String status) {
         String normalizedBrand = BrandFilter.normalize(brand);
-        // FIXED 2026-09-07: Secondary_Sales_Target.Brand stores the SAME full-name vocabulary as
-        // Product_Master.Brand ("Anastasia Beverly hills"/"Kylie Cosmetics" — confirmed live), NOT
-        // Primary_Sales_Target's own short-code vocabulary ("ABH"/"Kylie"). This used to pass
-        // BrandFilter.target() (that Primary_Sales_Target-only vocabulary, see its own javadoc) into
-        // secondarySalesTargetService, which silently matched zero Secondary_Sales_Target rows for
-        // any specific brand — Target (and so Sales vs Target/the tooltip's own Target row) stayed
-        // stuck at 0 the instant a real brand was selected, while "All" (both null) worked by
-        // accident. Both Sales (Product_Master-joined) and Target now share one brandFilter value.
+
         String brandFilter = BrandFilter.product(normalizedBrand);
         List<String> siteCodes = resolveSiteCodesForChannelAndStatus(ChannelFilter.normalize(channel), status);
 

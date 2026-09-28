@@ -23,27 +23,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
-// Backs the Dashboard page's "2. Daily Sales Trends" section — the only section on this page that
-// represents BOTH sales channels together, per explicit request: Total Sales = Primary_Sales +
-// Secondary_Sales, Total Target = Primary_Sales_Target + Secondary_Sales_Target, both summed
-// directly per real Brand column. Primary_Sales.Brand/Secondary_Sales.Brand/
-// Primary_Sales_Target.Brand/Secondary_Sales_Target.Brand all carry the SAME full-name vocabulary
-// as Site_Master.Brand ("Anastasia Beverly hills"/"Kylie Cosmetics") via their own FK to
-// site_master(Site_Code, Brand) — confirmed live against the DB — so a direct `Brand = ?` filter on
-// each fact table already correctly attributes every row to a Brand with no Site_Master join
-// needed. Exact mirror of SecondarySalesDailyTrendService's own day/month/year bucketing shape,
-// just summing both tables at every step instead of one.
-//
-// Channel/Status (added so the "Filter Header" section's own Channel/Status pills can drive this
-// chart too, same as they already drive "1. Overview"/"3. Partner Wise Target Vs Achievement"):
-// unlike Brand, no fact/target table here carries Channel or Operational_Status as a direct column
-// except Primary_Sales_Target's own Channel — Primary_Sales/Secondary_Sales/Secondary_Sales_Target
-// all need a join back to Site_Master (on their own site-code column + Brand) to filter by either
-// one, same per-table split DashboardOverviewService's own header comment describes. SalesTable/
-// TargetTable below carry each table's own site-code column (null on Primary_Sales_Target, which
-// needs no join for Channel but still does for Status, since Operational_Status lives only on
-// Site_Master) so every query method below can add that join only when a Channel or Status filter is
-// actually active.
 @Service
 public class DashboardDailyTrendService {
 
@@ -52,8 +31,7 @@ public class DashboardDailyTrendService {
     private static final int MAX_DAY_SPAN = 400;
     private static final int MAX_MONTH_SPAN = 600;
     private static final int MAX_YEAR_SPAN = 200;
-    // 2-digit year ("1-Sep-26"), matching Secondary/Primary Sales/Site Status pages' own Daily Sales
-    // Trends X-axis format for UI/UX parity across all four.
+
     private static final DateTimeFormatter DAY_LABEL_FORMAT = DateTimeFormatter.ofPattern("d-MMM-uu", Locale.ENGLISH);
 
     private final JdbcTemplate jdbcTemplate;
@@ -69,9 +47,6 @@ public class DashboardDailyTrendService {
         return value == null ? BigDecimal.ZERO : new BigDecimal(value.toString());
     }
 
-    // Distinct years with data across BOTH Primary_Sales and Secondary_Sales, plus the current year
-    // — backs the Daily Sales Trends date filter's Year checkbox/dropdown list, same convention as
-    // SecondarySalesYearTrendService/PrimarySalesYearTrendService's own listYears.
     public List<Integer> listYears() {
         TreeSet<Integer> years = new TreeSet<>();
         years.addAll(jdbcTemplate.queryForList("SELECT DISTINCT YEAR(Sales_Date) FROM Primary_Sales", Integer.class));
@@ -80,8 +55,6 @@ public class DashboardDailyTrendService {
         return new ArrayList<>(years);
     }
 
-    // Real distinct Brand values Site_Master currently has — backs this page's Daily Sales Trends
-    // brand pill, same query/convention every other page's own copy of this method uses.
     public List<String> getAvailableBrands() {
         String sql = "SELECT DISTINCT Brand FROM Site_Master " +
                 "WHERE Brand IS NOT NULL AND LTRIM(RTRIM(Brand)) <> ''";
@@ -92,17 +65,9 @@ public class DashboardDailyTrendService {
         return new ArrayList<>(brands);
     }
 
-    // table.siteCodeColumn() is the column this table joins to Site_Master(Site_Code) on when a
-    // Channel and/or Status filter is active; null means Channel is already a direct column on the
-    // table itself (only Primary_Sales_Target) — Status still needs the join even then, since
-    // Operational_Status only ever lives on Site_Master.
     private record SalesTable(String name, String siteCodeColumn) {}
     private record TargetTable(String name, String siteCodeColumn) {}
 
-    // Resolves the "Sales Type" filter (All/Primary Sales/Secondary Sales, see the frontend's own
-    // #dailyTrendSalesTypeToggle) to the Sales fact table(s) each combined*TotalsInRange method
-    // should sum — "all" (the always-default) keeps the original both-tables-combined behavior,
-    // "primary"/"secondary" restrict to just that one channel.
     private List<SalesTable> salesTables(String salesType) {
         return switch (salesType) {
             case "primary" -> List.of(new SalesTable("Primary_Sales", "Bill_to"));
@@ -111,7 +76,6 @@ public class DashboardDailyTrendService {
         };
     }
 
-    // Same idea as salesTables, for the Target fact tables combined*TargetsInRange methods sum.
     private List<TargetTable> targetTables(String salesType) {
         return switch (salesType) {
             case "primary" -> List.of(new TargetTable("Primary_Sales_Target", null));
@@ -367,17 +331,10 @@ public class DashboardDailyTrendService {
         return new TrendSeries(labels, dates, data, target, lastYear);
     }
 
-    // "all"/blank/null all mean "no Channel filter" — same convention DashboardController's own
-    // resolveChannel uses for the Overview endpoints, kept here (rather than resolved by the
-    // controller) so this method stays self-contained the same way it already resolves brand/
-    // salesType itself instead of trusting a pre-resolved caller.
     private String resolveChannel(String channel) {
         return (channel == null || channel.isBlank() || "all".equalsIgnoreCase(channel)) ? null : channel.trim();
     }
 
-    // "all"/blank/null all mean "no Status filter" — OperationalStatusFilter.whereClause itself
-    // already treats any other unrecognized value as "no filter" too, so this just normalizes the
-    // "skip the join entirely" case the same way resolveChannel above does.
     private String resolveStatus(String status) {
         return (status == null || status.isBlank() || "all".equalsIgnoreCase(status)) ? null : status.trim();
     }
@@ -393,9 +350,6 @@ public class DashboardDailyTrendService {
             throw new IllegalArgumentException("Invalid granularity: must be one of " + VALID_GRANULARITIES);
         }
 
-        // "Sales Type" filter — All (default)/Primary Sales/Secondary Sales, see this page's own
-        // #dailyTrendSalesTypeToggle. Restricts salesTables()/targetTables() below to just the one
-        // picked channel; "all" keeps the section's original both-channels-combined behavior.
         String normalizedSalesType = salesType == null ? "all" : salesType.toLowerCase();
         if (!VALID_SALES_TYPES.contains(normalizedSalesType)) {
             throw new IllegalArgumentException("Invalid salesType: must be one of " + VALID_SALES_TYPES);

@@ -17,18 +17,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-// Backs the Site Status page's site detail view "Product Snapshot" section: this one site's own
-// products (Primary+Secondary combined, same site scoping SiteDetailService uses everywhere else in
-// that view), at Product/Category/Sub-category level. Two shapes off the same underlying data:
-//   - products/categories/subCategories: flat ranked lists (Sales desc, no deltas) backing the
-//     "Product Ranking" panel's own Top-by-Value/Qty toggle.
-//   - tree: the real Category -> Sub-category -> Product nesting, each level carrying vs-Last-Year/
-//     vs-Last-Month growth and contribution %, backing the "Product Research" popup — same shape
-//     PrimarySalesProductLevelService#buildTree produces for its own whole-brand equivalent (see that
-//     class's own header comment), just built from three already-fetched per-article maps (current/
-//     last-year/last-month) via plain Java grouping instead of separate GROUP BY queries — a single
-//     site's own product catalog is small enough that the extra-query optimization that method needs
-//     at whole-brand scale isn't worth the complexity here.
 @Service
 public class SiteDetailProductLevelService {
 
@@ -42,9 +30,6 @@ public class SiteDetailProductLevelService {
                                  String ean, String hsn, BigDecimal tax, BigDecimal sales, BigDecimal qty) {
     }
 
-    // Groups the tree's own Category -> Sub-category level (buildResearchTree below) — Uncategorized-
-    // normalized (orUncategorized), so a null Category/SubCategory groups with every other null of the
-    // same kind instead of each becoming its own key.
     private record CatKey(String category, String subCategory) {
     }
 
@@ -129,11 +114,6 @@ public class SiteDetailProductLevelService {
         }
     }
 
-    // Groups current/lastYear/lastMonth by the same groupKey (Category or Sub-category) so each
-    // ranked group row can carry real vs-Last-Year/vs-Last-Month growth and a contribution-delta —
-    // same three-window comparison toRow already does for individual products, just summed per group
-    // first. A group absent from lastYear/lastMonth (never sold outside the current window) falls
-    // back to ZERO_PAIR, same "no data" convention used elsewhere in this class.
     private List<RankedRow> rankByGroup(java.util.Collection<ArticleTotal> current,
                                          java.util.Collection<ArticleTotal> lastYear,
                                          java.util.Collection<ArticleTotal> lastMonth,
@@ -152,8 +132,6 @@ public class SiteDetailProductLevelService {
         return rows.stream().sorted(Comparator.comparing(RankedRow::sales).reversed()).toList();
     }
 
-    // [sales, qty] per group label (Uncategorized-normalized) — shared by rankByGroup's own
-    // current/lastYear/lastMonth calls above.
     private Map<String, BigDecimal[]> groupTotals(java.util.Collection<ArticleTotal> articles,
                                                     java.util.function.Function<ArticleTotal, String> groupKey) {
         Map<String, BigDecimal[]> totals = new LinkedHashMap<>();
@@ -178,14 +156,6 @@ public class SiteDetailProductLevelService {
                 contribDelta(contribPct, contribLYPct));
     }
 
-    // "Product Research" popup's own Category -> Sub-category -> Product tree — every level real,
-    // grouped in Java off the three already-fetched per-article maps (current/lastYear/lastMonth)
-    // rather than more SQL round trips. contribPct at every level is that row's share of its PARENT's
-    // current sales (category: share of the grand total; sub-category/product: share of their own
-    // parent's total) — same "share of parent, not grand total" convention
-    // PrimarySalesProductLevelService#buildTree documents. contribDeltaLYPct is the percentage-point
-    // difference between this year's and last year's contribution share, null (not zero) whenever
-    // either side has no sales to measure against.
     private List<Map<String, Object>> buildResearchTree(Map<String, ArticleTotal> current,
                                                           Map<String, ArticleTotal> lastYear,
                                                           Map<String, ArticleTotal> lastMonth) {
@@ -309,10 +279,6 @@ public class SiteDetailProductLevelService {
 
     private static final BigDecimal[] ZERO_PAIR = {BigDecimal.ZERO, BigDecimal.ZERO};
 
-    // [salesValue, salesQty] per (category, subCategory) — for the lastYear/lastMonth windows, whose
-    // individual ArticleTotal rows buildResearchTree only needs in aggregate at the sub-category
-    // level (per-product LY/LM deltas there instead look each article code up directly in the
-    // lastYear/lastMonth maps themselves, not through this grouping).
     private Map<CatKey, BigDecimal[]> aggregateByKey(java.util.Collection<ArticleTotal> articles) {
         Map<CatKey, BigDecimal[]> totals = new LinkedHashMap<>();
         for (ArticleTotal a : articles) {

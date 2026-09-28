@@ -1,17 +1,3 @@
-<!-- Site Status page: pick a real Site_Code (and Brand, if that code carries more than one) from
-     site_master, then view its full profile, all-time/Current/Previous/Last-Year-Same-Month KPIs,
-     Sales Trend chart, Product Snapshot, month-by-month sales-vs-target history, and recent
-     Primary/Secondary transactions inline below the picker. This content was merged in from the
-     former standalone SiteDetailPage. The "Geo Map" card right after the picker opens a popup
-     with the same India map the Dashboard page used to show (moved here in full, see GeoMap.js's own
-     header comment) — its district click-through popup deep-links back into this same picker with
-     ?siteCode=&brand= (same tab, full reload). Two more cards join the same row on every site load
-     (manual pick, deep link, or a store-list row click — see SiteStatusPage.js's updateGeoMapContext,
-     called from loadSiteDetail with that site's own State): a minimized state map (GeoMap.js's
-     renderStateSnapshot) — its has-site districts still click through to the same site-list popup the
-     full Geo Map popup uses — and a card listing every real site_master store in that state; picking a
-     store from either one re-loads the site detail view below in place (no reload), same as the picker
-     itself. -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -46,25 +32,12 @@
         <main class="app-main">
             <div class="site-status-top-row">
                 <div class="site-status-card" id="siteStatusPickerCard" data-permission="page:site-insights.site-picker" hidden>
-                    <!-- Top row — search (left) + real Site_Code count for the current Status/Sales
-                         Type toggle combo (right, per explicit request). Search filters the Site Code
-                         dropdown below by code or store name, client-side over the same fetch's own
-                         result (see SiteStatusPage.js's renderSiteCodeOptions) — no separate search
-                         endpoint. Count is filled in by loadSiteCodes (initial load + every
-                         reloadForStatus()/Sales Type change) from that same fetch's own result length,
-                         so it's never a separate count query. -->
+
                     <div class="site-status-card-search-row">
                         <div class="site-status-search-wrap" data-feature="feature:search-bar">
                             <i class="bi bi-search"></i>
                             <input type="text" id="siteStatusSearchInput" placeholder="Code or store…" autocomplete="off">
-                            <!-- Own floating match list (SiteStatusPage.js's renderSearchResultsDropdown) —
-                                 NOT the native Site Code <select>'s own showPicker() popup, which used to be
-                                 opened here on every keystroke: that native popup swallows all further
-                                 keystrokes (even ones sent right back to this input) until it's closed, which
-                                 truncated typing to just the first character or two. This list is plain page
-                                 DOM instead, so it can show live-filtered matches while the input keeps taking
-                                 every keystroke normally; click (or Enter/Arrow keys) picks a row, which sets
-                                 the real Site Code select's value the same way choosing it there directly would. -->
+
                             <div class="site-status-search-results" id="siteStatusSearchResults" hidden></div>
                         </div>
                         <span class="site-status-card-count" id="siteStatusCodeCount"></span>
@@ -82,15 +55,6 @@
                         <select class="site-status-card-select" id="siteStatusBrandSelect"></select>
                     </div>
 
-                    <!-- Status toggle pill — real options fetched from GET /api/site-status/statuses
-                         (site_master.Operational_Status, keyword-matched server-side by
-                         OperationalStatusFilter). Scopes the Site Code dropdown above plus the Geo Map
-                         popup and Compare modal below, all via the shared siteStatusFilter state in
-                         SiteStatusPage.js, wired through components/StatusFilter/StatusFilter.js's
-                         initStatusFilter. Rendered dynamically by loadStatusPillOptions/renderStatusPill
-                         (SiteStatusPage.js) — Active stays the default selection whenever the real
-                         options include it, per explicit request; this placeholder is only ever shown
-                         while that fetch is still in flight. -->
                     <div class="site-status-card-field site-status-filter-field">
                         <span class="site-status-card-label">Status</span>
                         <div class="site-status-filter-pill" id="siteStatusFilterToggle" data-feature="feature:status-filter">
@@ -98,19 +62,6 @@
                         </div>
                     </div>
 
-                    <!-- Sales Type toggle pill — real options fetched from
-                         GET /api/site-status/sales-types (site_master.Sales_Type). Reuses
-                         components/SalesTypeFilter/SalesTypeFilter.js's initSalesTypeFilter for the
-                         click/active-class mechanics (it looks for .brand-header-item[data-sales-type]
-                         inside the toggle, hence that class on each rendered button alongside this
-                         page's own .site-status-filter-item — the visual pill look still comes entirely
-                         from components/StatusFilter/StatusFilter.css, already loaded above for the
-                         Status toggle; .brand-header-item itself carries no styling here). Scopes the
-                         Site Code dropdown above via site_master.Sales_Type, keyword-matched server-side
-                         by SiteSalesTypeFilter — same convention as the Status toggle. Rendered
-                         dynamically by loadSalesTypePillOptions/renderSalesTypePill (SiteStatusPage.js) —
-                         "All" stays the default selection; this placeholder is only ever shown while
-                         that fetch is still in flight. -->
                     <div class="site-status-card-field site-status-filter-field">
                         <span class="site-status-card-label">Sales Type</span>
                         <div class="site-status-filter-pill" id="siteStatusSalesTypeToggle" data-feature="feature:sales-type-filter">
@@ -120,27 +71,18 @@
                 </div>
 
                 <div class="site-status-action-btn-stack" data-permission="page:site-insights.geo-compare" hidden>
-                    <!-- Button that opens the Geo Map popup below (GeoMap.js, dynamically imported on
-                         first open — see SiteStatusPage.js's wireGeoMapModal). Same India map the
-                         Dashboard page used to show in its own "4. Geo Map" section, moved here in full. -->
+
                     <button type="button" class="site-status-geo-map-toggle-card" id="siteStatusGeoMapToggleCard" title="View site coverage on the India map">
                         <i class="bi bi-geo-alt"></i>
                         <span>Geo Map</span>
                     </button>
 
-                    <!-- Button that opens the Compare modal below (SiteStatusPage.js's
-                         wireCompareModal) — three tabs comparing all-time Sales-vs-Target across real
-                         States, the Sites within one picked State, or a hand-picked list of Stores. -->
                     <button type="button" class="site-status-geo-map-toggle-card" id="siteStatusCompareToggleCard" title="Compare states, sites, or hand-picked stores">
                         <i class="bi bi-bar-chart-line"></i>
                         <span>Compare</span>
                     </button>
                 </div>
 
-                <!-- display:contents wrapper (SiteStatusPage.css) — its two children join this same
-                     flex row as if they were direct children, rather than nesting as one combined
-                     block. Hidden until the first site loads; SiteStatusPage.js's updateGeoMapContext
-                     unhides/repopulates it on every loadSiteDetail() call, for that site's own State. -->
                 <div class="site-status-context-row" id="siteStatusContextRow" hidden>
                     <div class="site-status-mini-map-card">
                         <div class="site-status-store-list-header">
@@ -165,12 +107,6 @@
                 </div>
             </div>
 
-            <!-- siteDetailLoading/Error/Content: same three states the old standalone SiteDetailPage
-                 used. #siteDetailContent starts empty — SiteStatusPage.js injects a fresh copy of
-                 SITE_DETAIL_CONTENT_TEMPLATE into it on every loadSiteDetail() call (not static
-                 markup here) so switching sites without a page reload always gets brand-new DOM
-                 nodes for the Sales Trend/Product Snapshot widgets, instead of re-wiring duplicate
-                 event listeners onto the same persistent elements. -->
             <div id="siteDetailLoading" class="site-detail-loading" hidden>Loading site details…</div>
             <div id="siteDetailError" class="site-detail-error" hidden>Site not found.</div>
             <div id="siteDetailContent" data-permission="page:site-insights.site-detail" hidden></div>
@@ -179,9 +115,6 @@
 
     <div class="quick-access-panel" id="quickAccessPanel"></div>
 
-    <!-- Geo Map popup — opened by the toggle card above. GeoMap.js's initFilterMap re-renders
-         #siteStatusGeoMapCard's own innerHTML each time a filter changes; the outer modal shell here
-         stays static markup. -->
     <div class="site-status-geo-map-modal-backdrop" id="siteStatusGeoMapModalBackdrop">
         <div class="site-status-geo-map-modal">
             <div class="site-status-geo-map-modal-header">
@@ -192,13 +125,6 @@
         </div>
     </div>
 
-    <!-- Compare modal — opened by the Compare button above (SiteStatusPage.js's wireCompareModal).
-         Three tabs, one panel each, all-time Sales/Target/Achievement % (same all-time convention the
-         site detail view's own "Total" KPI card uses — no date-range picker here) via SiteCompareService:
-         States (every real State, GET /api/site-compare/states), Sites in a State (one picked State's
-         own sites, GET /api/site-compare/sites-in-state), and Selected Stores (a hand-picked list from
-         a searchable checklist, POST /api/site-compare/stores). Each panel's own table reuses
-         .product-snapshot-table's already-styled sticky colored header instead of a new table look. -->
     <div class="site-status-compare-modal-backdrop" id="siteStatusCompareModalBackdrop">
         <div class="site-status-compare-modal">
             <div class="site-status-geo-map-modal-header">

@@ -1,21 +1,3 @@
-// Monitoring page — Password Reset Tokens, Recent OTPs, a "Usage Overview" graph (login activity
-// by hour of day + most-active users), and "2. Audit" — a single Type/Status/Search/Date-filtered
-// table covering all 4 attempt kinds (login, download, upload, unauthorized) that used to each
-// have their own standalone always-visible section here; those were folded into this one filterable
-// view instead (per explicit request) — don't re-add them as their own sections. Each Type option
-// still reads MonitoringController's original per-type endpoint (/login-attempts, /download-
-// attempts, /upload-attempts, /unauthorized-attempts), and each of THOSE still enforces its own
-// original page:monitoring.login-attempts/download-attempts/upload-attempts/unauthorized-attempts
-// permission (independent of page:monitoring.audit, which only gates the Audit section's own
-// visibility) — see AuthBootstrapSeeder's own PERMISSION_TREE comment. A session with page:
-// monitoring.audit but not, say, page:monitoring.upload-attempts sees the Audit card but gets an
-// HTTP 403 (rendered as a plain error row) the moment it picks Type=Upload; that's intentional, not
-// a bug. "Sessions (Refresh Tokens)" was removed per explicit request too — it only ever reflected
-// another application's own use of this shared database, house_of_beauty itself never issues one
-// (see IamLoginRefreshTokenRepository's own header comment) — don't re-add it unasked. All backed
-// by real data via MonitoringController/MonitoringService. Password Reset Tokens reads from a real
-// table that's always empty today (no forgot-password flow exists yet) — it simply renders its
-// normal empty state, same as any other table with nothing to show.
 import { initSidebar } from "/components/Sidebar/Sidebar.js";
 import { initQuickAccessPanel } from "/components/QuickAccessPanel/QuickAccessPanel.js";
 import { applyPagePermissions } from "/Shared/js/permission-guard.js";
@@ -24,17 +6,9 @@ import { initSalesDateFilter } from "/components/SalesDateFilter/SalesDateFilter
 
 initSidebar();
 initQuickAccessPanel();
-// Reveals this page's Section-gated elements (see this file's own data-permission attributes)
-// once the session's real permission set resolves; every one of them ships `hidden` in the static
-// HTML itself, so there's no flash of content this session doesn't hold permission for. Also
-// drives which of the fetches below actually run — no point calling an endpoint the session was
-// never going to be allowed to see the result of.
+
 const permissionsPromise = applyPagePermissions();
-// "2. Audit"'s Search bar/Date filter carry data-feature="feature:search-bar"/"feature:date-filter"
-// (the same global Feature keys those widgets use everywhere else) — applyFeatureGating only ever
-// ADDS `hidden` to the rare one a session had revoked, so it must run after permissions have
-// revealed the section itself, same ordering every other page combining both gates already uses
-// (see e.g. SecondarySalesPage.js's own permissionsPromise.then(() => applyFeatureGating())).
+
 permissionsPromise.then(() => applyFeatureGating());
 
 function escapeHtml(value) {
@@ -43,8 +17,7 @@ function escapeHtml(value) {
     return div.innerHTML;
 }
 
-// Backend sends a LocalDateTime ISO string with no timezone — parsed as local time, same as every
-// other page's own date rendering assumes (see e.g. RolesPage.js's own formatDateTime).
+
 function formatDateTime(value) {
     if (!value) {
         return "—";
@@ -125,12 +98,7 @@ async function loadOtps() {
     }
 }
 
-// ==================== 1. Usage Overview charts ====================
-// Colors resolved from the app's own design tokens (variables.css), same "read the CSS custom
-// property at render time, re-resolve on theme-changed" convention every other page's own
-// ECharts instance uses (see e.g. PrimarySalesPage.js's resolveDailyTrendColors) — not a
-// one-time read, so a theme switch after load repaints these with their last-loaded data instead
-// of staying stuck on the wrong mode's colors until a full reload.
+
 let AXIS_COLOR, GRID_LINE_COLOR, HOUR_BAR_COLOR, USER_BAR_COLOR, TOOLTIP_BG, TOOLTIP_BORDER, TOOLTIP_TEXT;
 function resolveMonitoringChartColors() {
     const rootStyle = getComputedStyle(document.documentElement);
@@ -205,9 +173,7 @@ function renderUserChart(byUser) {
     if (!userChart) {
         userChart = window.echarts.init(dom);
     }
-    // Most-active user on top — ECharts' own category axis draws bottom-up, so the list is
-    // reversed once here rather than fighting that with inverse:true (which would also flip the
-    // value axis's gridlines).
+
     const ordered = [...byUser].reverse();
     userChart.setOption({
         grid: { left: 90, right: 20, top: 8, bottom: 20 },
@@ -256,11 +222,7 @@ window.addEventListener("resize", () => {
     hourChart?.resize();
     userChart?.resize();
 });
-// Every chart on this page lives inside a Section that ships `hidden` by default (see
-// data-permission="page:monitoring.login-attempts" in the HTML) until applyPagePermissions
-// confirms the session holds it — a chart initialized while its container is display:none draws
-// at 0x0, so it needs an explicit remeasure once revealed (same convention every other page's own
-// ECharts instance uses — see e.g. Dashboard.js's own permissions-applied listener).
+
 document.addEventListener("permissions-applied", () => {
     hourChart?.resize();
     userChart?.resize();
@@ -273,16 +235,7 @@ window.addEventListener("theme-changed", () => {
     }
 });
 
-// ==================== 2. Audit ====================
-// One Type/Status/Search/Date-filtered table standing in for what used to be 4 separate always-
-// visible "Attempts" sections — Type picks which of MonitoringController's own 4 (still separately
-// permissioned, see this file's own header comment) attempt endpoints to read, Status/Search/Date
-// all filter client-side over whatever that endpoint returns (each already carries all 300 of its
-// own capped rows, so no new paginated/filtered backend endpoint was needed just for this). Status
-// only applies to the 3 types that actually have a success/failure outcome (login/download/upload)
-// — Unauthorized Login is, by definition, always blocked, so its own Result column shows the real
-// block reason text instead of a badge, and the Status toggle is simply ignored while that type is
-// selected.
+
 const AUDIT_TYPE_CONFIG = {
     login: {
         endpoint: "/api/monitoring/login-attempts",
@@ -426,10 +379,7 @@ function wireAuditHeader() {
         searchDebounce = setTimeout(loadAuditRows, 300);
     });
 
-    // Same widget/idPrefix convention as SecondarySalesPage.js's own "1. Overview" date filter
-    // (initSalesDateFilter, imported above) — see SalesDateFilter.js for what each mode reports.
-    // from/to arrive as plain "YYYY-MM-DD" strings (or null/null once cleared), matching the same
-    // slice(0, 10) comparison filterAuditRows does against each row's own attemptedAt.
+
     initSalesDateFilter({
         idPrefix: "auditDateFilter",
         onFilterChange: (column, from, to) => {
@@ -442,9 +392,7 @@ function wireAuditHeader() {
     loadAuditRows();
 }
 
-// ==================== Page wiring ====================
-// Each section only fetches once the session's real permission set confirms it can actually see
-// that section — matches the sidebar/other pages' own "don't fetch what you can't show" rule.
+
 permissionsPromise.then((permissions) => {
     if (permissions.has("page:monitoring.login-attempts")) {
         loadUsageStats();

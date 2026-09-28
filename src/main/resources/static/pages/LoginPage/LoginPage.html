@@ -1,14 +1,3 @@
-<!-- Login / entry screen. Standalone page (no sidebar shell) — this is the first thing a user sees
-     before reaching the app. Single centered card: brand header, welcome message, a Password/OTP
-     sliding-pill toggle, User ID, then whichever credential field matches the selected mode
-     (Password, or OTP with its own Send OTP button), and a Login button. Wired to the real backend
-     (AuthController: POST /api/auth/send-otp, POST /api/auth/login — see LoginPage.js) — a
-     successful login is cached in sessionStorage and redirects into the app root ("/"); a failed
-     one shows the server's error message in #loginFormError instead of proceeding. Reuses the same
-     --color-* tokens as every other page (variables.css) so it stays visually consistent. No manual
-     dark/light toggle here (there's no sidebar to host QuickAccessPanel's control) — theme-init.js
-     still applies whatever was last persisted under "hob-theme" so the page doesn't flash the
-     wrong theme, it's just not switchable from this screen. -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -89,10 +78,6 @@
                 </button>
             </form>
 
-            <!-- Swapped in over the login form when "Forgot password?" is clicked. Asks for the
-                 account's registered email (POST /api/auth/forgot-password) and, on success, shows
-                 a generic confirmation — no email/SMS provider is wired up yet (see AuthService),
-                 so the actual reset link is only logged server-side for now, never shown here. -->
             <form id="forgotPasswordForm" class="d-none" novalidate>
                 <div class="login-forgot-intro">
                     <p class="login-forgot-intro-text">Enter the email registered to your account and we'll send you a link to reset your password.</p>

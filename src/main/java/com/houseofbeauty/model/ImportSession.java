@@ -12,9 +12,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
-// JPA mapping for import_sessions — one row per uploaded file, tracking its lifecycle from
-// Uploaded -> Validated -> Committed. Also the Upload History / Queue list the UI displays.
-// Purged after one day by ImportSessionCleanupService.
+
 @Entity
 @Table(name = "import_sessions")
 @Data
@@ -75,9 +73,7 @@ public class ImportSession {
     @Column(name = "duration_ms")
     private Long durationMs;
 
-    // Not persisted — set only on the /upload response when this file's checksum matches a session
-    // uploaded to the same table within the dedupe window (see ImportSessionController#upload and
-    // ImportFileChecksum). A soft warning the uploader can act on or ignore, never a block.
+
     @Transient
     private String duplicateWarning;
 }

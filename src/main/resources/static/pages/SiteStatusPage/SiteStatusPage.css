@@ -1,7 +1,3 @@
-
-
-/* Header bar — same title-left/controls-right convention other data pages use (e.g. Inventory's own
-   .inventory-header); no controls yet since the page itself has no content wired up. */
 .site-status-header {
     display: flex;
     align-items: flex-start;
@@ -29,22 +25,10 @@
     color: var(--color-text-secondary);
 }
 
-/* Geo Map deep-link cards (SiteStatusPage.html/.js's wireGeoMapContextRow) — hidden unless the page was
-   reached via a Geo Map district click-through, which carries the picked state's name in ?state=.
-   display:contents so its two children (mini-map, store-list) join .site-status-top-row's own flex row
-   as if they were direct children, right alongside the picker/Geo-Map-button, instead of nesting as one
-   combined block — this wrapper element itself never gets a box, so none of flex/gap/spacing rules
-   would do anything placed here; `hidden` on it still works (the UA [hidden] rule wins with no
-   display:contents of ours to fight it while the attribute is present — see this file's own header
-   comment on the same [hidden]-vs-author-CSS tie elsewhere for why order/specificity would matter if
-   it didn't). */
 .site-status-context-row {
     display: contents;
 }
 
-/* Same header bar look as .site-status-store-list-header below (own header, "Map" label) — a fixed
-   header + fixed-height body (matching .site-status-store-list-body's own 9.8rem, so the two cards read
-   as the same height side by side) instead of the map filling the whole card. */
 .site-status-mini-map-card {
     flex: 0 0 auto;
     width: 16rem;
@@ -57,9 +41,6 @@
     flex-direction: column;
 }
 
-/* Same has-site click-through as the full popup map (GeoMap.js's renderStateSnapshot wires
-   wireDistrictClicks here too) — position:relative so the site-list popup it opens anchors/centers
-   inside this box instead of the page. */
 .site-status-mini-map-body {
     flex: 1 1 auto;
     height: 9.8rem;
@@ -78,9 +59,6 @@
     flex-direction: column;
 }
 
-/* Solid primary-color fill per explicit request — light text/count to stay readable against it (same
-   #fff-on-primary convention Dashboard.css's own .region-summary-download-btn uses). Shared by both
-   this card's header and the mini-map card's own "Map" header above, so they read as a matched pair. */
 .site-status-store-list-header {
     display: flex;
     align-items: center;
@@ -95,8 +73,6 @@
     color: #fff;
 }
 
-/* Right side of the header — state name + store count grouped together, so "Stores" (left, plain
-   label) reads as the section title and this side reads as "which state, how many". */
 .site-status-store-list-header-right {
     display: flex;
     align-items: baseline;
@@ -117,10 +93,6 @@
     white-space: nowrap;
 }
 
-/* Fixed to exactly 5 rows' worth of height (row height set on .geo-map-site-popup-row below) — the
-   first 5 stores sit visible with no scrolling; anything past that scrolls inside this same box. The
-   scrollbar itself is hidden (kept scrollable via wheel/touch/drag) per explicit request — scrollbar-
-   width/-ms-overflow-style cover Firefox/old Edge, the ::-webkit-scrollbar rule covers Chrome/Safari. */
 .site-status-store-list-body {
     flex: 1 1 auto;
     height: 9.8rem;
@@ -135,9 +107,6 @@
     display: none;
 }
 
-/* Store rows here read left-to-right (code/name/meta in one line) rather than the full popup's own
-   stacked layout (.geo-map-site-popup-row's own default) — scoped to this card only, the Geo Map
-   modal's own site-list popup keeps its stacked look. */
 .site-status-store-list-card .geo-map-site-popup-row {
     flex-direction: row;
     align-items: center;
@@ -161,10 +130,6 @@
     white-space: nowrap;
 }
 
-/* Top row — Site Code/Brand picker card, the compact Geo Map button, and (once a Geo Map deep-link
-   sets ?state=) the minimized state map + store-list card, all in one row. flex-start (not flex-end —
-   fine when every card was short/form-field-shaped, but the map/store-list cards are much taller) so
-   every card's top edge lines up instead of their bottoms. */
 .site-status-top-row {
     display: flex;
     align-items: flex-start;
@@ -172,17 +137,12 @@
     gap: 0.5rem;
 }
 
-/* Geo Map + Compare buttons stacked vertically (Compare below Geo Map, per explicit request) instead
-   of side by side — this stack itself is just one flex item in .site-status-top-row. */
 .site-status-action-btn-stack {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
 }
 
-/* Site Code / Brand picker card — plain label+select fields in a wrapping row, Brand only shown when
-   SiteStatusPage.js finds more than one brand for the picked Site Code (single-brand sites auto-load
-   with no Brand field shown at all). */
 .site-status-card {
     position: relative;
     display: flex;
@@ -198,11 +158,6 @@
     min-width: 0;
 }
 
-/* Top row of the card — search (left) + real Site_Code count for the currently selected Status/
-   Sales Type combo (right), per explicit request. flex-basis: 100% + order: -1 puts it on its own
-   row above every other field regardless of source order/wrapping (same "own row" trick
-   .site-status-filter-field below uses, just pinned to the top instead of wherever it sits in the
-   markup). */
 .site-status-card-search-row {
     order: -1;
     flex-basis: 100%;
@@ -226,12 +181,6 @@
     transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
-/* Live match list, anchored under the search pill — own plain DOM list, not the native Site Code
-   select's popup (see this list's own id comment in SiteStatusPage.html for why). display:none by
-   default so the [hidden] attribute (SiteStatusPage.js toggles it) actually takes effect — an
-   unconditional `display` here would out-cascade the UA's own [hidden] rule regardless of
-   specificity, since author stylesheets always beat the user-agent one for normal-priority
-   declarations of any specificity. */
 .site-status-search-results {
     display: none;
     position: absolute;
@@ -337,12 +286,6 @@
     outline: none;
 }
 
-/* Site Code select specifically (not Brand/Compare, which share .site-status-card-select) — capped to
-   a fixed width narrower than its longest "Code - Store Name" option instead of growing with it, per
-   explicit request, with the closed-state text ellipsis-truncated; the select's own title attribute
-   (kept in sync with the selected option's full label by SiteStatusPage.js) supplies the hover
-   tooltip for whatever got clipped. Each <option> also carries its own title so hovering a truncated
-   row inside the OPEN dropdown still shows the complete name (native browser tooltip). */
 #siteStatusSiteCodeSelect {
     width: 9.5rem;
     max-width: 100%;
@@ -351,12 +294,6 @@
     white-space: nowrap;
 }
 
-/* Status toggle pill — All/Active/Inactive/Upcoming, per explicit request. flex-basis: 100% forces
-   it onto its own row below the Site Code/Brand fields even though .site-status-card is a wrapping
-   flex row (same trick a 100%-width flex item always uses to force a line break), so it always reads
-   as sitting "below" the picker regardless of viewport width. Same rounded-pill look as this page's
-   own .sales-date-filter-mode-toggle/-btn (own copy, not shared — this page's own per-feature
-   convention, not that filter's). */
 .site-status-filter-field {
     flex-basis: 100%;
     flex-direction: row;
@@ -368,14 +305,6 @@
 .site-status-filter-field .site-status-card-label {
     font-size: 0.54rem;
 }
-
-/* .site-status-filter-pill/-item's own visual rules now live in
-   components/StatusFilter/StatusFilter.css (see this page's <head> for the <link>). */
-
-/* ==================== Site Detail (merged in from the former SiteDetailPage.css) ====================
-   Rendered below the picker once a Site Code (and, if needed, Brand) is picked above — see
-   SiteStatusPage.js's own loadSiteDetail(). Top margin here (not in the original standalone page,
-   which had nothing above this content) keeps it visually separated from the picker card. */
 
 .site-detail-loading,
 .site-detail-error {
@@ -392,50 +321,25 @@
     margin-top: 1.25rem;
 }
 
-/* Outer section boundary — wraps each titled section's title (.section-header) and its existing
-   card (.section-content) into one structural group, same pattern PrimarySalesPage.css's own
-   .section-container follows (no box look — border/radius/background/padding disabled per that
-   same explicit request). Only the titled sections below "1. KPIs"-equivalent content (Daily Sales
-   Trends, Product Snapshot, Monthly History, the two Transactions tables) are wrapped — the
-   untitled profile card/KPI row above them are left as plain #siteDetailContent children, unchanged.
-   Margin-bottom (rather than a flex+gap parent like the other pages use) is kept here since
-   #siteDetailContent also holds those untitled siblings, whose own existing spacing would double up
-   under a blanket parent gap. */
 .section-container {
-    /* border: 1px solid var(--color-border); */
-    /* border-radius: 18px; */
-    /* background-color: var(--color-card-bg); */
-    /* padding: 1rem; */
+
     margin-bottom: 1.5rem;
 }
 
 .section-header {
-    /* margin: 0 0 0.6rem; */
+
 }
 
 .section-content {
     margin: 0;
 }
 
-/* .site-detail-card's own shared margin-bottom (1.25rem) is also used by the untitled profile card
-   above — zeroed here only when nested in .section-content, now that .section-container's own
-   margin-bottom does that job for the wrapped Monthly History/Transactions cards instead. */
 .section-content .site-detail-card,
 .section-content .daily-trend-card,
 .section-content .product-snapshot-card {
     margin-bottom: 0;
 }
 
-/* Sticks to the top of the scrollable .app-main once the user scrolls past it, so the shared date
-   filter (site-detail-header-filter) stays reachable without scrolling back up — per explicit
-   request. Returns to its normal in-flow position automatically once scrolled back above it (native
-   position:sticky behavior, no JS needed). background-color is opaque so page content scrolling
-   underneath doesn't show through; z-index keeps it above ordinary page content but still well
-   under the sidebar/modals (see Sidebar.css's own 1099-1101 range). top is negative, matching
-   .app-main's own padding-top (Shared/css/app.css) — sticky's own "top" offset is measured from
-   .app-main's padding edge, which sits inset by that padding, so without this the header would
-   stick with a permanent gap above it instead of touching the very top of the scroll viewport; same
-   convention SecondarySalesPage.css's own #dashboardFyOverviewFilterHeaderSectionContainer uses. */
 .site-detail-header {
     display: flex;
     align-items: center;
@@ -457,9 +361,7 @@
 }
 
 @media (max-width: 640px) {
-    /* .app-main's own top padding here is reserved clearance for the fixed hamburger toggle button
-       (Sidebar.css's #sidebarToggle), not just spacing — pulling this flush to the very top like the
-       desktop/tablet breakpoints above would tuck it underneath that button instead. */
+
     .site-detail-header {
         top: 0;
     }
@@ -484,10 +386,6 @@
     color: var(--color-text-secondary);
 }
 
-/* Shared Filter for both "2. Daily Sales Trends" and "3. Product Snapshot" — sits top-right of
-   .site-detail-header, replacing each section's own separate copy (per explicit request). Same
-   smaller-pill sizing the old .site-trend-filter-cluster used, since this now sits in a compact
-   header row rather than its own section. */
 .site-detail-header-filter {
     display: flex;
     flex-wrap: wrap;
@@ -531,10 +429,6 @@
     font-size: 0.62rem;
 }
 
-/* Same look as PrimarySalesPage.css's own .ta-overview-range-label (e.g. "01-Sep-2026 to
-   14-Sep-2026 (14 of 30 days)" — see formatRangeLabel in SiteStatusPage.js), copied here per this
-   codebase's per-page-own-copy convention. Sits right next to the shared Filter button in
-   .site-detail-header-filter, so it's shrunk to match that compact header row's own reduced scale. */
 .ta-overview-range-label {
     font-size: 0.7rem;
     font-weight: 400;
@@ -560,13 +454,6 @@
     margin-bottom: 1.25rem;
 }
 
-/* Profile card + Monthly History FY table (dashboard-fy-overview-card, moved up from its own
-   full-width section further down the page — see SITE_DETAIL_CONTENT_TEMPLATE's own comment in
-   SiteStatusPage.js) side by side, per explicit request. flex-start on both axes so the two cards
-   hug the row's left edge and their own natural width, instead of either stretching to fill —
-   .site-detail-card's own block-level 100%-width default and .dashboard-fy-overview-card's grid
-   columns would otherwise both try to claim the full row. Wraps to a stacked column below tablet
-   width (flex-wrap), same breakpoint this page's other multi-card rows already use. */
 .site-detail-top-row {
     display: flex;
     align-items: flex-start;
@@ -590,13 +477,9 @@
 .site-detail-profile-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr));
-    /* gap: 0.9rem 1.2rem; */
+
 }
 
-/* Label left, value right, hugging close together (not stretched to opposite edges) — per explicit
-   request. justify-content: flex-start + a small gap keeps the value sitting right next to its own
-   label instead of space-between pushing it all the way to the field's far edge; baseline keeps
-   their text sitting on the same line despite the label/value font-size difference. */
 .site-detail-profile-field {
     display: flex;
     flex-direction: row;
@@ -615,8 +498,6 @@
     color: var(--color-text-secondary);
 }
 
-/* Colon between key and value — per explicit request. On the label (not the value) so it's never
-   duplicated/omitted per-field in SiteStatusPage.js's own renderProfileGrid template. */
 .site-detail-profile-label::after {
     content: ":";
 }
@@ -641,10 +522,6 @@
     margin: 0 0 0.5rem;
 }
 
-/* Wraps a .site-detail-section-title together with its own "rows to show" dropdown (the two
-   Transactions sections only — Monthly History moved to its own dashboard-fy-overview-* card/header,
-   see that section's own CSS block below) — same margin-bottom the plain title rule above carries, so
-   both look identical when the row has only one child worth showing. */
 .site-detail-section-title-row {
     display: flex;
     align-items: center;
@@ -729,13 +606,6 @@
     padding: 1.2rem 0.5rem;
 }
 
-/* ==================== Monthly History (FY table) ====================
-   "Same as dashboard" per explicit request — every class name below is copied verbatim from
-   Dashboard.css's own "1. Overview" (Financial Year table) block (Dashboard.css itself is never
-   loaded on this page, so there's no collision) — width trimmed down (this table has at most Month +
-   4 columns per type vs that one's Month + 8, so 844px would leave a lot of empty card), and the
-   two-tier colspan group header row dropped in favor of tinting each Primary/Secondary th directly
-   (see monthlyFyHeaderCell in SiteStatusPage.js) since a single header row has less room for one. */
 .dashboard-fy-overview-card {
     width: 700px;
     max-width: 100%;
@@ -775,19 +645,12 @@
     color: var(--color-text-primary);
 }
 
-/* Groups Year Filter + Download together so they hug the header's right edge as one unit, instead
-   of .dashboard-fy-overview-header's own justify-content: space-between spreading all three fields
-   apart individually — verbatim copy of Dashboard.css's own rule (see that file's own header
-   comment), Dashboard.css itself never loaded on this page. */
 .dashboard-fy-overview-header-actions {
     display: flex;
     align-items: center;
     gap: 0.7rem;
     flex-wrap: wrap;
 }
-
-/* .dashboard-fy-year-filter*'s own visual rules now live in
-   components/FyYearFilter/FyYearFilter.css (see this page's <head> for the <link>). */
 
 .dashboard-fy-overview-table-wrap {
     overflow-x: auto;
@@ -801,9 +664,6 @@
     height: 0;
 }
 
-/* Excel-style cell borders (per explicit request) — a real grid line on every side of every cell,
-   not just the row-separator .site-detail-table's own border-bottom uses; reduced padding/font-size
-   vs that table too (narrower columns, per explicit request). */
 .dashboard-fy-overview-table {
     width: 100%;
     min-width: 30rem;
@@ -833,10 +693,6 @@
     background-color: var(--color-primary);
 }
 
-/* Same fixed hex values Dashboard.js's own DAILY_TREND_COMPARE_SALES_TYPES/dashboard-fy-overview-
-   group-primary/-secondary use for Primary Sales/Secondary Sales — kept as fixed hex here too, not
-   the theme-aware --color-primary/--color-info vars, so this table's tinted columns stay visually
-   identical to that page's own group colors in both light and dark mode. */
 .dashboard-fy-overview-table th.dashboard-fy-overview-group-primary {
     background-color: #16A34A;
     color: #FFFFFF;
@@ -854,29 +710,15 @@
     background-color: var(--color-card-bg);
 }
 
-/* The data background color, per explicit request — same formula Dashboard.css's own
-   .dashboard-fy-row--actual/-projection td use. Excludes the Total/current/YTD rows below, each of
-   which keeps its own distinct highlight — this selector's own 3-class specificity (:not() chain)
-   would otherwise beat their single-class .dashboard-fy-row--current/--ytd td rules and silently win,
-   which is exactly what happened before these two extra :not()s were added (their text stayed
-   correctly colored white/warning-dark, but the background never actually changed color, near
-   unreadable on --ytd's white-on-near-white). */
 .dashboard-fy-overview-table tbody tr:not(.dashboard-fy-row--total):not(.dashboard-fy-row--current):not(.dashboard-fy-row--ytd) td {
     background-color: color-mix(in srgb, var(--color-info) 6%, var(--color-card-bg));
 }
 
-/* Month column stays the plain card background on every row (including Total, via the 2-class +
-   element specificity below beating the 1-class + element rule above) — reads as one distinct label
-   column running down the table regardless of row type, same convention Dashboard.css's own
-   equivalent rule follows. */
 .dashboard-fy-overview-table td.dashboard-fy-overview-month-col {
     background-color: var(--color-card-bg);
     color: var(--color-text-primary);
 }
 
-/* "Current" month — highlighted so it reads as "where we are right now", same 10%-warning-tint +
-   left-accent-bar convention Dashboard.css's own .dashboard-fy-row--current uses (that file bumped
-   to 22% and back down to 10% per explicit request — this copy starts at the same final 10%). */
 .dashboard-fy-row--current td {
     background-color: color-mix(in srgb, var(--color-warning) 10%, var(--color-card-bg));
     font-weight: 600;
@@ -886,9 +728,6 @@
     box-shadow: inset 3px 0 0 var(--color-warning);
 }
 
-/* Month cell for the current-month row only — "See Total" sits inline right after the month label
-   (not stacked below it), same reasoning Dashboard.css's own comment gives: a stacked/2-line cell
-   would make the whole row taller than every other row (row height follows its tallest cell). */
 .dashboard-fy-overview-month-cell {
     display: inline-flex;
     align-items: baseline;
@@ -912,9 +751,6 @@
     color: var(--color-primary-hover);
 }
 
-/* Year-to-date subtotal row (Apr -> current month), revealed by "See Total" — same solid
-   --color-primary/white-bold look as the full-year Total row below, so both read as "a total", while
-   .dashboard-fy-row--current above stays visually distinct (an in-progress month, not a sum). */
 .dashboard-fy-row--ytd td {
     background-color: var(--color-primary);
     font-weight: 700;
@@ -948,9 +784,6 @@
     color: #FFFFFF;
 }
 
-/* Achi. cell's own bar/text otherwise blend into this row's solid var(--color-primary) background —
-   same white-on-dark-green override Dashboard.css's own .dashboard-fy-row--total uses for this exact
-   reason. */
 .dashboard-fy-row--total .dashboard-achi-track {
     background-color: rgba(255, 255, 255, 0.3);
 }
@@ -963,9 +796,6 @@
     color: #FFFFFF;
 }
 
-/* Achi. cell's own variance-amount span (.dashboard-achi-variance, see monthlyFyRenderAchiCell)
-   would otherwise keep its green/red color, poor contrast on this row's solid green background —
-   forced white here, same reasoning the achi bar override above gives. */
 .dashboard-fy-row--total .dashboard-achi-variance {
     color: #FFFFFF;
 }
@@ -975,7 +805,6 @@
     font-weight: 700;
 }
 
-/* Achi. column progress bar — same look/classes as Dashboard.js's own renderAchiCell. */
 .dashboard-achi-cell {
     display: flex;
     align-items: center;
@@ -1008,8 +837,6 @@
     color: var(--color-text-secondary);
 }
 
-/* Achi. cell's own variance-amount span (see monthlyFyRenderAchiCell) — same look/classes as
-   Dashboard.css's own .dashboard-achi-variance. */
 .dashboard-achi-variance {
     flex: 0 0 auto;
     font-size: 0.64rem;
@@ -1025,8 +852,6 @@
     color: var(--color-danger);
 }
 
-/* "Vs Last Year" cell's own up/down-colored badge (see monthlyFyRenderYoyVariance) — same look
-   Dashboard.css's own .dashboard-delta gives that table's identical column. */
 .dashboard-delta {
     display: inline-block;
     font-weight: 600;
@@ -1040,30 +865,17 @@
     color: var(--color-danger);
 }
 
-/* The trailing Last Year figure inside .dashboard-delta (see monthlyFyRenderYoyVariance) — kept off
-   the positive/negative trend color (that colors the variance/growth part only) since the Last Year
-   amount itself isn't "up" or "down". Same fixed muted color Dashboard.css's own
-   .dashboard-delta-lastyear uses, so it stays readable in dark mode. */
 .dashboard-delta-lastyear {
     font-weight: 500;
     color: var(--color-text-secondary);
 }
-
-/* ==================== Sales Trend + Product Snapshot ====================
-   Same visual language as Primary Sales' own "Daily Sales Trends"/"Product Snapshot" sections
-   (PrimarySalesPage.css) — copied here per this codebase's own per-page-own-copy convention (see
-   e.g. SecondarySalesPage.css's header comment), NOT centralized. Scoped down for a single fixed
-   site+brand (no brand pill/Compare toggle — there's nothing to switch between when the section is
-   already locked to one site_master row) — see SiteStatusPage.js's own header comment on
-   initSalesTrend/initProductSnapshot for what else was intentionally left out of this first pass
-   (Product Research modal, CSV download, vs-Last-Year/vs-Last-Month deltas). */
 
 .sales-date-filter {
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
     flex-wrap: wrap;
-    /* background-color: var(--color-card-bg); */
+
 }
 
 .sales-date-filter-mode-toggle {
@@ -1119,8 +931,6 @@
     background-color: var(--color-card-bg);
 }
 
-/* Border + shadow match .sales-date-filter-mode-toggle's own pill treatment, same visibility fix
-   applied to Secondary/Primary Sales pages' own copy for UI/UX parity across all three. */
 .sales-date-filter-range-type {
     display: inline-flex;
     align-items: center;
@@ -1209,10 +1019,6 @@
     flex-wrap: wrap;
 }
 
-/* Standalone ON/OFF pill for #siteTrendVsLastYearToggle — was missing entirely on this page (every
-   other page with this same "Vs Last Year" button — Primary/Secondary Sales — already had it
-   styled), so it rendered as an unstyled default browser button. Same pill language
-   .daily-trend-chart-type-btn already uses on this page, just standalone (not a 2-option group). */
 .daily-trend-compare-toggle {
     display: inline-flex;
     align-items: center;
@@ -1344,12 +1150,6 @@
     margin: 1.5rem 0 0.5rem;
 }
 
-/* Single-column now (the Bar Graph panel that used to sit beside the Product Ranking panel here was
-   removed — per explicit request, matching Primary Sales' own Product Snapshot section, which never
-   had one). No card surface of its own any more either — per explicit request, undoes
-   Shared/css/card.css's shared background/border/radius for this one class (that shared rule still
-   applies elsewhere it's used) so .product-snapshot-panel below is the only visible "card", instead
-   of a card nested inside another card. */
 .product-snapshot-card {
     background-color: transparent;
     border: none;
@@ -1373,9 +1173,7 @@
     background-color: var(--color-card-bg);
     border: 1px solid var(--color-border);
     border-radius: 18px;
-    /* Without this, the table/panel-controls' own square-cornered content (they fill the panel's
-       full width, right up to its edge) pokes past the panel's rounded bottom corners instead of
-       following them — clips every child to this box's own rounded shape. */
+
     overflow: hidden;
 }
 
@@ -1388,7 +1186,7 @@
     padding: 0.6rem 0.7rem;
     background-color: var(--color-card-bg);
     border-bottom: 1px solid var(--color-border);
-    /* background-color: rgba(27, 77, 62, 0.1); */
+
     border-radius: 18px 18px 0 0;
 }
 
@@ -1516,18 +1314,12 @@
     padding: 1.2rem 0.5rem;
 }
 
-/* Groups the Filter toggle with the "Product Research" button on the Product Ranking panel's own
-   header (panel-header's justify-content: space-between keeps this whole group pinned to its right
-   edge) — same convention PrimarySalesPage.css's own .product-snapshot-panel-actions uses. */
 .product-snapshot-panel-actions {
     display: flex;
     align-items: center;
     gap: 0.4rem;
 }
 
-/* Opens the Product Research modal below (SiteStatusPage.js's initProductSnapshot) — the real
-   Category -> Sub-category -> Product tree, in a popup, same look/placement as Primary Sales' own
-   equivalent button. */
 .product-snapshot-research-btn {
     display: inline-flex;
     align-items: center;
@@ -1547,8 +1339,6 @@
     border-color: var(--color-primary-hover);
 }
 
-/* vs LM/vs LY delta cells (renderDelta in SiteStatusPage.js) — plain colored text, no pill background,
-   same convention PrimarySalesPage.css's own .product-snapshot-delta uses. */
 .product-snapshot-delta {
     display: inline-block;
     font-weight: 600;
@@ -1563,8 +1353,6 @@
     color: var(--color-danger);
 }
 
-/* Product Research tree's own expand/collapse chevron + name cell — the flat Product Ranking table
-   above has no nesting, so these only apply inside the tree (#siteProductResearchTableWrap). */
 .product-snapshot-name-cell {
     display: flex;
     align-items: center;
@@ -1596,24 +1384,11 @@
     color: var(--color-text-primary);
 }
 
-/* Base look for the download icon button + its popup comes from the shared
-   components/ExcelDownloadButton/ExcelDownloadButton.css (see its own <link> in this page's
-   <head>) — this page keeps only the one rule that genuinely differs from some other pages:
-   only :hover styles the button here (Primary/Secondary/TeamPerformance also style it while its
-   popup is open via [aria-expanded="true"]). */
 .product-snapshot-download-btn:hover {
     color: var(--color-primary);
     border-color: var(--color-primary);
 }
 
-
-/* ==================== Product Research modal ====================
-   Opened by the button above — the real Category -> Sub-category -> Product tree (renderTable/
-   flattenTree in SiteStatusPage.js), same self-contained-copy convention every other modal on this
-   page uses (reuses .site-status-geo-map-modal-header/-title/-close directly rather than duplicating
-   them again). Fixed height (not just a max-height cap), same reasoning Primary Sales' own version
-   documents: roughly 5 visible data rows' worth, with the body's own scroll (scrollbar hidden via
-   .scroll-hidden, added alongside this class in the markup) reaching any further rows. */
 .site-status-product-research-modal-backdrop {
     display: none;
     position: fixed;
@@ -1655,8 +1430,6 @@
     overflow-y: auto;
 }
 
-/* Smaller text than Product Ranking's own table — this is a popup, so it should read as a compact
-   reference rather than a full page section. */
 #siteProductResearchTableWrap .product-snapshot-table {
     font-size: 0.62rem;
 }
@@ -1693,10 +1466,6 @@
     background-color: var(--color-primary);
 }
 
-/* Icon + label pair every <th> on this page uses (thWithIcon in SiteStatusPage.js) — column-specific
-   icon (thIconClass) picked by keyword match against the header's own text. Styled on these inner
-   spans rather than the <th> itself so opacity only dims the text/icon, not the header's own solid
-   --color-primary background underneath it. */
 .site-status-th-icon,
 .site-status-th-label {
     color: #FFFFFF;
@@ -1727,16 +1496,6 @@
     color: var(--color-text-secondary);
 }
 
-/* ==================== Geo Map toggle card + popup ====================
-   "Geo Map" card right after the Site Code/Brand picker (SiteStatusPage.html) — an on/off switch that
-   opens a full popup modal containing the same India political map the Dashboard page used to show in
-   its own "4. Geo Map" section (moved here in full per explicit request, see GeoMap.js's own header
-   comment — nothing geo-map-related is left on Dashboard). Clicking the button opens the popup
-   (SiteStatusPage.js's wireGeoMapModal); the map itself, once loaded on first open, stays built in the
-   DOM for the rest of the page session rather than being torn down/refetched on every reopen.
-   Not added to Shared/css/modal.css's own grouped backdrop/panel/header/close rules — kept as this
-   page's own self-contained copy, matching this codebase's established per-page-own-copy convention
-   for shared-look chrome (see e.g. Dashboard.css's own header comment on the same point). */
 .site-status-geo-map-toggle-card {
     display: flex;
     align-items: center;
@@ -1761,11 +1520,6 @@
     outline: none;
 }
 
-/* Popup shell — same fixed/inset:0/flex-centered backdrop and rounded/shadowed panel shape every
-   other modal in this app uses (Shared/css/modal.css), duplicated locally per this section's own
-   header comment. display:none by default (not the `hidden` attribute — an unconditional `display`
-   here would otherwise fight the [hidden] UA rule, since author CSS always wins that tie); JS toggles
-   the .is-open class instead of the attribute. */
 .site-status-geo-map-modal-backdrop {
     display: none;
     position: fixed;
@@ -1821,11 +1575,6 @@
     color: var(--color-danger);
 }
 
-/* Geo Map popup's own map card (GeoMap.js's initFilterMap) — sits inside .site-status-geo-map-modal,
-   opened by the "Geo Map" toggle card after the Site Code picker (see this page's own header comment
-   and SiteStatusPage.js's wireGeoMapModal). State / District filter bar on top, map filling the rest
-   — each dropdown change re-fits the projection to the chosen scope. Also fixed, no zoom/pan (removed
-   per explicit request). */
 .site-status-geo-map-card {
     box-shadow: var(--shadow-card);
     border-radius: 0 0 14px 14px;
@@ -1867,8 +1616,6 @@
     cursor: not-allowed;
 }
 
-/* Steps back City -> District -> State -> All India (GeoMap.js's goBack) — disabled once already at
-   All India, since there's nowhere further back to go. */
 .geo-map-back-btn {
     flex: 0 0 auto;
     padding: 0.3rem 0.55rem;
@@ -1897,18 +1644,12 @@
     position: relative;
 }
 
-/* Fixed map — no zoom/pan (removed per explicit request), so no grab/grabbing cursor either. */
 .dashboard-geo-map-svg {
     display: block;
     width: 100%;
     height: 100%;
 }
 
-/* Card 02 only: small always-visible state stat card (GeoMap.js's renderStateStatPanels) — the
-   current scope's raw map totals ("Map" row) and real site_master coverage ("Sites" row). Same
-   card look as .geo-map-site-popup below (rounded, shadowed, card-bg) but a small fixed-position
-   card rather than that one's full inset:0 cover — this one has no close button and stays up the
-   whole time, that one only appears on a has-site district click. */
 .geo-map-stat-card {
     position: absolute;
     left: 0.6rem;
@@ -1944,9 +1685,6 @@
     color: var(--color-text-primary);
 }
 
-/* Color-key legend (GeoMap.js's createLegend) — bottom-right on both cards, explains the has-site/
-   no-site/neighboring-country fills used on the map. Same thin/quiet card treatment as the other
-   corner overlays, static (no update on zoom/selection) so it's just built once per render. */
 .geo-map-legend {
     position: absolute;
     right: 0.6rem;
@@ -2007,9 +1745,6 @@
     color: var(--color-text-secondary);
 }
 
-/* Nepal/Bangladesh/Sri Lanka (GeoMap.js's renderNeighborLayer) — context only, deliberately more
-   muted than India's own state fill/border so the actual data area (India) still reads as primary.
-   No hover/click state (pointer-events: none — not a site_master-connected layer). */
 .geo-map-neighbor-fill {
     fill: var(--color-text-secondary);
     fill-opacity: 0.12;
@@ -2036,9 +1771,6 @@
     pointer-events: none;
 }
 
-/* Every state shares this one flat fill color by default (sits at the bottom of the stack); states
-   with a real site_master site get the distinct .has-site color below instead (same "has-site" idea
-   as the district fill further down — GeoMap.js's isStateCovered/storeCountByState). */
 .geo-map-state-fill {
     fill: var(--color-text-secondary);
     fill-opacity: 0.12;
@@ -2050,8 +1782,6 @@
     fill-opacity: 0.32;
 }
 
-/* Card 02's "All India" overview only (GeoMap.js's renderFilteredMap/onStateClick) — clicking a
-   state's fill drills the dropdowns straight into it, same as picking it from the State select. */
 .geo-map-state-fill.clickable {
     cursor: pointer;
 }
@@ -2060,7 +1790,6 @@
     fill-opacity: 0.5;
 }
 
-/* State borders, redrawn on top of the district layer so they stay a crisp, always-visible divider. */
 .geo-map-state-boundary {
     fill: none;
     stroke: var(--color-text-primary);
@@ -2070,8 +1799,6 @@
     opacity: 0.65;
 }
 
-/* Every district shares this one flat fill color (distinct from the state fill), plus its own thin
-   border — both hidden until DISTRICT_LABEL_MIN_K (GeoMap.js), then faded in together. */
 .geo-map-district-boundary {
     fill: var(--color-info);
     fill-opacity: 0.22;
@@ -2088,9 +1815,6 @@
     opacity: 1;
 }
 
-/* Districts (and cities, below) that have a real site_master site — connected via GeoMap.js's own
-   City/State match against site_master (see its + DashboardGeoMapService's header comments). Every
-   other district/city with no site keeps its plain default color above, unchanged. */
 .geo-map-district-boundary.has-site {
     fill: var(--color-primary);
     fill-opacity: 0.4;
@@ -2100,8 +1824,6 @@
     fill: var(--color-primary);
 }
 
-/* Clicking the colored (has-site) part of a district opens the site-list popup below — scoped to
-   .is-visible since the district layer is always "is-visible" here. */
 .geo-map-district-layer.is-visible .geo-map-district-boundary.has-site {
     pointer-events: auto;
     cursor: pointer;
@@ -2111,10 +1833,6 @@
     fill-opacity: 0.6;
 }
 
-/* Site-list popup opened by that click — anchored inside the map-wrap (position: relative). Small
-   floating rounded/shadowed card centered over the map (same look as .geo-map-stat-card) rather than
-   the old full inset:0 cover, capped to the map's own height with an internal scroll
-   (.geo-map-site-popup-body below) for districts with many sites. */
 .geo-map-site-popup {
     position: absolute;
     top: 50%;
@@ -2152,8 +1870,6 @@
     white-space: nowrap;
 }
 
-/* Site count (GeoMap.js's setCount) — filled in once the async site fetch resolves, blank until
-   then so it never shows a stale/wrong number while "Loading sites…" is up. */
 .geo-map-site-popup-count {
     flex: 0 0 auto;
     font-size: 0.64rem;
@@ -2284,12 +2000,6 @@
     opacity: 1;
 }
 
-/* ==================== Compare modal ====================
-   Opened by the "Compare" button below the Geo Map one (SiteStatusPage.js's wireCompareModal) — same
-   backdrop/panel shape as .site-status-geo-map-modal-backdrop/-modal above (own copy, same reasoning:
-   this page keeps its own self-contained popup chrome rather than sharing Shared/css/modal.css's
-   grouped rules), just wider to fit a data table comfortably. Reuses that other modal's own
-   header/title/close-button classes directly (SiteStatusPage.html) rather than duplicating them. */
 .site-status-compare-modal-backdrop {
     display: none;
     position: fixed;
@@ -2402,9 +2112,6 @@
     background-color: var(--color-primary-hover);
 }
 
-/* Searchable checklist (Selected Stores tab) — every real site_master row, filtered client-side by
-   .site-status-compare-search's own input. Capped height so a long store list scrolls inside this box
-   instead of pushing the result table below it off-screen. */
 .site-status-compare-picker-list {
     max-height: 9rem;
     overflow-y: auto;
@@ -2451,9 +2158,6 @@
     white-space: nowrap;
 }
 
-/* Comparison result tables — reuse .product-snapshot-table's own already-styled sticky colored header
-   (SiteStatusPage.css's own product-snapshot section) rather than a new table look; this wrap just
-   controls scroll/height in this modal's own context. */
 .site-status-compare-table-wrap {
     flex: 1 1 auto;
     min-height: 0;
@@ -2483,8 +2187,6 @@
     text-align: center;
 }
 
-/* Total row (both tables' own trailing summary, and the highest-Sales state) — bold + tinted so it
-   reads as a summary line, not just another data row. */
 .site-status-compare-total-row td {
     font-weight: 700;
     background-color: var(--color-background);

@@ -1,13 +1,3 @@
-/* Primary Sales page styles. Per explicit request, all the section-specific CSS that used to
-   live in separate components/* stylesheets (BrandHeader, SalesDateFilter, TargetVsAchievement,
-   DailyTrendGraph, ProductSnapshot, RegionSummary) is inlined below instead —
-   this page is the only place any of it was ever used. Each block below is unchanged from its
-   original file, just concatenated; class names are already fully namespaced per section so
-   there's no collision risk. Sidebar.css stays a separate shared stylesheet, still linked in
-   PrimarySalesPage.html, since every other page uses it too. */
-
-/* ==================== Brand Header (shared by every section's brand pill) ==================== */
-/* Styles for the brand filter pill (All / ABH / Kylie) shown at the top of every page. */
 .brand-header {
     position: Static;
     top: 0;
@@ -50,16 +40,6 @@
     color: #fff;
 }
 
-/* .brand-header-empty: shown instead of All/brand buttons when Site_Master currently has no Brand
-   data at all — see renderBrandPill in PrimarySalesPage.js. .brand-header-loading: the pill's
-   initial static-HTML placeholder, shown only until loadBrandPillOptions()'s fetch resolves and
-   renderBrandPill replaces it with the real buttons (or this same empty state) — prevents briefly
-   showing a hardcoded "ABH"/"Kylie" fallback that doesn't match the real Brand data on a slow
-   network. Both paired with .brand-header-item in the markup so they pick up whichever font-size/
-   padding that class resolves to in each context (this page has several: the base rule above,
-   .dashboard-fy-overview-filter-row's smaller 0.58rem, .daily-trend-brand-header's own 0.58rem,
-   etc.) instead of hardcoding a size here that could drift out of sync with those. Not a button: no hover/active
-   state, not clickable. */
 .brand-header-empty,
 .brand-header-loading {
     font-style: italic;
@@ -73,16 +53,6 @@
     color: var(--color-text-secondary);
 }
 
-/* ==================== Sales Date Filter (shared by Overview + Daily Sales Trends) ==================== */
-/* Styles for the Primary Sales page's date filter (Month / Range). Only pages that need it link
-   this file, so the .brand-header-filter-bar "card bar" look below doesn't touch BrandHeader.css or
-   any other page. Applied to the page-level brand header (#brandHeader) and reused wherever a
-   section needs its own independent brand+date filter bar (e.g. Daily Sales Trends'
-   #dailyTrendBrandHeader) — same visual treatment, same .sales-date-filter-* markup, different
-   idPrefix passed to initSalesDateFilter so the two instances' dynamically-rendered inputs don't
-   collide on id. */
-/* Base surface (background/border/radius) is set in Shared/css/card.css, which lists this
-   selector alongside every other card/panel-style block app-wide. */
 .brand-header-filter-bar.brand-header {
     flex-wrap: wrap;
     justify-content: space-between;
@@ -150,15 +120,6 @@
     flex-wrap: wrap;
 }
 
-/* initSalesDateFilter (PrimarySalesPage.js) empties this div's innerHTML rather than hiding it
-   when the filter is closed, so without this it still occupies a flex slot of its parent even at
-   0 visible width — harmless where it's nested inside its own sub-container (e.g. the Overview
-   Insights card's .ta-insights-filter-panel), but Daily Sales Trends' #dailyTrendDateFilterBody is
-   a direct sibling of the Filter button in .daily-trend-brand-header (a space-between flex row —
-   see .brand-header-filter-bar.brand-header), where an extra zero-width item still shifts the
-   space-between distribution and pulls the Filter button away from the row's right edge. Removing
-   it from flow entirely while genuinely empty keeps that row's layout identical to before the
-   filter was ever opened. */
 .sales-date-filter-body:empty {
     display: none;
 }
@@ -173,9 +134,6 @@
     background-color: var(--color-card-bg);
 }
 
-/* Border + shadow now match .sales-date-filter-mode-toggle's own pill treatment above, same
-   visibility fix applied to SecondarySalesPage.css's own copy for UI/UX parity across both pages
-   (this one used to be just a flat background-color fill with no border/shadow). */
 .sales-date-filter-range-type {
     display: inline-flex;
     align-items: center;
@@ -239,12 +197,6 @@
     }
 }
 
-/* ==================== 1. Overview (Target vs Achievement) ==================== */
-/* Styles for the Primary Sales page's "Target vs Achievement" overview: a fixed current-month
-   snapshot — a status banner + period line, then 4 KPI cards (Monthly Target, MTD Sales, MTD vs
-   Last Year, Month Projection), each with a colored top accent, a headline value, a "compared to"
-   subtext, and a footer strip of 2-3 delta stats. Modeled on the QRPL DSR portal's "Top-Line
-   Performance" cards. */
 .target-achievement-section {
     display: flex;
     flex-direction: column;
@@ -289,26 +241,19 @@
     justify-content: space-between;
 }
 
-/* Pairs the "1. Overview" title+info-button with the Overview/Insights view toggle on the right —
-   carries the same top/bottom spacing .target-achievement-subtitle normally provides on its own
-   (zeroed out below since it's now just a flex item inside this row, not spacing anything itself). */
 .ta-overview-header-row {
     display: flex;
     align-items: center;
     justify-content: space-between;
     flex-wrap: wrap;
     gap: 0.5rem;
-    /* margin: 0rem 0 0rem; */
+
 }
 
 .ta-overview-header-row .target-achievement-subtitle {
     margin: 0;
 }
 
-/* Keeps the range label + Above/Below Target badge (see that span's own HTML comment) together as
-   one right-aligned group — without this wrapper, the badge would become a 3rd direct child of
-   .ta-overview-header-row's own justify-content: space-between and get pushed to the far right
-   with the range label stranded in the middle, instead of sitting right behind it. */
 .ta-overview-header-right {
     display: flex;
     align-items: center;
@@ -316,10 +261,6 @@
     flex-wrap: wrap;
 }
 
-/* Right side of the Overview header row — the selected Insights card date range, in light/muted
-   text (see formatRangeLabel in PrimarySalesPage.js): e.g. "01-Aug-2026 to 18-Aug-2026 (18 of 31
-   days)" for the current month, or "01-Jan-2026 to 31-Jan-2026 (31 days)" for a fully historical
-   month/range. */
 .ta-overview-range-label {
     font-size: 0.7rem;
     font-weight: 400;
@@ -333,9 +274,6 @@
     box-shadow: var(--shadow-card);
 }
 
-/* Shrunk just in the Filter Header section (sits next to "Filter Header" in its own
-   .section-header now, see PrimarySalesPage.html) — smaller to match that header's own reduced
-   scale instead of the bigger size it had inline with "1. Overview"'s own title. */
 #dashboardFyOverviewFilterHeaderSectionContainer .ta-overview-range-label {
     font-size: 0.58rem;
     padding: 0.2rem 0.45rem;
@@ -348,31 +286,10 @@
     margin-bottom: 2rem;
 }
 
-/* Outer section boundary — wraps each numbered section's title (.section-header) and its existing
-   card (.section-content) into one structural group, per explicit request, so the title reads as
-   part of the section instead of floating separately above it. Box look (border/radius/background/
-   padding) disabled per explicit request — the group is purely structural for now, no visible
-   boundary. Inter-section spacing instead comes from .target-achievement-section's own
-   display:flex + gap (see that rule above) now that .section-container no longer carries its own
-   margin. */
 .section-container {
-    /* border: 1px solid var(--color-border); */
-    /* border-radius: 18px; */
-    /* background-color: var(--color-card-bg); */
-    /* padding: 1rem; */
-    /* margin: 0 0 1.5rem; */
+
 }
 
-/* Sticks to the top of the scrollable .app-main once the user scrolls past it, so the Filter
-   Header's Brand/Channel/Date controls stay reachable without scrolling back up — per explicit
-   request. Returns to its normal in-flow position automatically once scrolled back above it (native
-   position:sticky behavior, no JS needed). background-color is opaque so page content scrolling
-   underneath doesn't show through; z-index keeps it above ordinary page content but still well
-   under the sidebar/modals (see Sidebar.css's own 1099-1101 range). top is negative, matching
-   .app-main's own padding-top (Shared/css/app.css) — sticky's own "top" offset is measured from
-   .app-main's padding edge, which sits inset by that padding, so without this the header would
-   stick with a permanent gap above it instead of touching the very top of the scroll viewport; see
-   the matching breakpoint below for .app-main's own responsive padding. */
 #dashboardFyOverviewFilterHeaderSectionContainer {
     position: sticky;
     top: -1.5rem;
@@ -387,24 +304,19 @@
 }
 
 @media (max-width: 640px) {
-    /* .app-main's own top padding here is reserved clearance for the fixed hamburger toggle button
-       (Sidebar.css's #sidebarToggle), not just spacing — pulling this flush to the very top like the
-       desktop/tablet breakpoints above would tuck it underneath that button instead. */
+
     #dashboardFyOverviewFilterHeaderSectionContainer {
         top: 0;
     }
 }
 
 .section-header {
-    /* margin: 0 0 0.6rem; */
+
 }
 
 .section-content {
     margin: 0;
-    /* Padding OUTSIDE each section's own card (i.e. here, not on the card itself) — same convention
-       Dashboard.css's own #dailyTrendSectionContainer/#dashboardSiteReportSectionContainer
-       .section-content rules use. Scoped to .section-content only (not .section-header) so each
-       section's title stays flush/unpadded. */
+
     padding: 0.65rem 0.75rem;
 }
 
@@ -417,46 +329,26 @@
     margin-bottom: 0;
 }
 
-/* Overview split: the Insights recap table (.ta-overview-insights) on the left, the 3 small KPI
-   cards (.ta-overview-kpis — MTD Achievement/Channel Contribution/Projected MTD, see those rules
-   below) on the right — per explicit request, swapped from this row's original left/right order. */
 .ta-overview-split {
     display: flex;
     align-items: flex-start;
     gap: 0.9rem;
 }
 
-/* Fixed width — deliberately NOT content-based, so the card's own layout stays stable regardless of
-   its table row widths. (The Filter toggle + From/To month inputs this comment used to size against
-   have since moved out to the Filter Header section's own .ta-overview-date-filter-right — see
-   PrimarySalesPage.html/.css — kept here anyway for general stability.) */
 .ta-overview-insights {
     flex: 0 0 38rem;
     width: 38rem;
 }
 
-/* No card surface of its own per explicit request — a plain transparent wrapper, kept only for its
-   padding/flex layout. The visible 18px-rounded card is now .ta-insights-table-wrap below (its own
-   header strip, .ta-insights-header, was removed once its only content — the Brand pill — moved out
-   to the Filter Header section per a later explicit request; see that section's own "Brand" field
-   in PrimarySalesPage.html and .ta-insights-table-wrap's own comment below for the border-radius
-   follow-up). */
 .ta-insights-card {
     background-color: transparent;
     border: none;
     box-shadow: none;
-    /* padding: 0.65rem 0.75rem; */
+
     display: flex;
     flex-direction: column;
 }
 
-/* The actual filter controls (a from/to Month range) plus the Clear button, now living next to the
-   Filter toggle in the Filter Header section's own .ta-overview-date-filter-right (moved there per
-   explicit request, see PrimarySalesPage.html) — Page.initInsightsDateFilter() only fills
-   #salesDateFilterBody and un-hides the clear button once the user opens the Filter toggle, so this
-   is empty (zero visible width) until then. nowrap throughout (overriding .sales-date-filter-body's
-   base flex-wrap: wrap too) keeps the two month inputs and the Clear button on one line instead of
-   wrapping. */
 .ta-insights-filter-panel {
     display: flex;
     align-items: center;
@@ -483,11 +375,6 @@
     padding: 0.1rem;
 }
 
-/* The section's whole visible card now (used to be just the bottom half, paired with a
-   .ta-insights-header strip above it that held the Brand pill — removed once that pill moved out to
-   the Filter Header section per explicit request, so this wrap gets full 18px corners on every
-   side instead of just the bottom two). overflow: hidden clips the table's own square corners to
-   this wrap's rounded corners. */
 .ta-insights-table-wrap {
     overflow: hidden;
     border: 1px solid var(--color-border);
@@ -500,15 +387,10 @@
     font-size: 0.66rem;
 }
 
-/* Data rows get an info tint per explicit request, matching the tint just applied to Product
-   Snapshot's own tables for visual consistency across the page. */
 .ta-insights-table tbody tr {
     background-color: color-mix(in srgb, var(--color-info) 6%, var(--color-card-bg));
 }
 
-/* Excel-style cell grid per explicit request — every th/td gets its own full border instead of
-   just a bottom rule between rows; border-collapse above merges adjacent cells' borders into one
-   shared line, same as a real spreadsheet. */
 .ta-insights-table th,
 .ta-insights-table td {
     padding: 0.3rem 0.55rem;
@@ -526,19 +408,11 @@
     text-align: left;
     font-weight: 600;
     color: var(--color-text-primary);
-    /* Row labels (e.g. "Required Sales Per Day") wrap instead of forcing the fixed-width card to
-       scroll horizontally — the 3 numeric columns beside them stay nowrap since their values
-       (money/percent) are always short. */
+
     white-space: normal;
     max-width: 5rem;
 }
 
-/* Headers wrap (esp. "Current Month (Aug 2026 · as of 14 Aug)", by far the longest cell) so their
-   text never forces the table — and therefore the card, which now shrink-wraps to it — wider than
-   the short money/percent values actually need. */
-/* Header row background per explicit request — same dark-green surface the app sidebar uses
-   (var(--color-sidebar-bg), already theme-aware: #043927 light / #0A2418 dark), so text switches
-   to the sidebar's own light color for contrast instead of the default secondary-text gray. */
 .ta-insights-table thead th {
     font-size: 0.58rem;
     font-weight: 600;
@@ -551,12 +425,6 @@
     max-width: 5rem;
 }
 
-/* FIXED: .ta-insights-table th:first-child (below) is MORE specific than the thead th rule above
-   (:first-child counts as a class for specificity, so th:first-child beats thead+th's two type
-   selectors) and was winning regardless of source order — leaving the "Metric" header's text at
-   var(--color-text-primary) (a dark color) on top of the new dark sidebar-green background above,
-   i.e. effectively invisible. This selector out-specifies both to force the same light header text
-   color for just that one cell. */
 .ta-insights-table thead th:first-child {
     color: rgba(255, 255, 255, 0.85);
 }
@@ -564,25 +432,14 @@
 .ta-insights-table td.positive { color: var(--color-success); }
 .ta-insights-table td.negative { color: var(--color-danger); }
 
-/* Value/Vs Last Month/Vs Last Year columns (every numeric column besides the row label) read bold. */
 .ta-insights-table tbody td:not(:first-child) {
     font-weight: 600;
 }
 
-/* Hover-only detail card for the Insights table's Value/Vs LM/Vs LY cells — no icon/trigger button,
-   the cell itself is the hover target (see .ta-tip-cell below and its mouseenter/mouseleave wiring
-   in PrimarySalesPage.js). Positioned as position: fixed and shown/hidden via JS rather than a pure
-   CSS :hover + ::after, so it renders above .ta-insights-table-wrap's overflow-x: hidden (which,
-   per the CSS overflow spec, makes the wrap's effective overflow-y "auto" too — an absolutely
-   positioned ::after inside it would get silently clipped for rows near the wrap's edges). */
 .ta-tip-cell {
     cursor: help;
 }
 
-/* Light, translucent frosted-glass background (fixed rgba, not var(--color-card-bg)) — a semi-
-   transparent light tint regardless of theme, with a blur so whatever's behind the card (table
-   cells) softly shows through instead of a flat opaque panel. Shrunk overall (max-width, padding,
-   line-height, per-line font sizes all a notch smaller than before) for a shorter, more compact card. */
 .ta-tip-popup {
     position: fixed;
     max-width: 9.5rem;
@@ -602,8 +459,6 @@
     pointer-events: none;
 }
 
-/* Small "code chip" treatment (tinted background, primary-colored text) so the formula reads as a
-   distinct label rather than blending into the description/calculation lines beneath it. */
 .ta-tip-popup-formula {
     display: inline-block;
     font-size: 0.58rem;
@@ -621,11 +476,6 @@
     margin-top: 0.15rem;
 }
 
-/* Colored via .positive/.negative (set from data-calc-sign, see the hover handler in
-   PrimarySalesPage.js) — same green/red growth-function convention as the visible table's own
-   td.positive/td.negative, so the real-numbers calculation reads as an at-a-glance up/down result
-   instead of plain, uncolored text. Rows with no signed delta to show (Value cells, Required Sales
-   Per Day's special-case notes) simply get neither class and stay the default text color. */
 .ta-tip-popup-calc {
     font-size: 0.56rem;
     font-weight: 600;
@@ -638,30 +488,13 @@
 .ta-tip-popup-calc.positive { color: var(--color-success); }
 .ta-tip-popup-calc.negative { color: var(--color-danger); }
 
-/* Started as three small KPI cards reintroducing the row .ta-overview-insights's own comment says
-   "used to sit alongside" the Insights card before it was removed — per later explicit request,
-   brought back on the right of the Insights card (originally the left — swapped per later explicit
-   request too). Down to just MTD Achievement (a gauge) now: Channel Contribution (MTD) moved next to
-   "4. Channel / Full Report" for a while, then was removed entirely per explicit request, and
-   Projected MTD was removed outright once its Above/Below Target badge moved into the section header
-   instead (see #taOverviewProjVsTargetBadge in PrimarySalesPage.js's loadInsightsCard, and
-   .ta-kpi-projected-badge's own comment below). Per later explicit request, this row no longer
-   stretches to fill whatever width .ta-overview-insights's own fixed 38rem leaves (flex: 0 0 auto,
-   not 1 1 auto) and its card is pinned to a small fixed width (see the .ta-overview-kpis .ta-kpi-card
-   override below) rather than growing — so with just the one card left, it now sits small and fixed
-   at the top-right of the split row instead of stretching wide, align-items: flex-start so it hugs
-   its own (short) height rather than stretching to match the much taller Insights table beside it. */
 .ta-overview-kpis {
     display: flex;
     flex: 0 0 auto;
     gap: 0.75rem;
     align-items: flex-start;
     padding: 12px;
-    /* Per explicit request: pushed flush to the right edge of .ta-overview-split — without this,
-       .ta-overview-split has no justify-content set, so this row (flex: 0 0 auto, hugging its own
-       10rem content width, see .ta-overview-kpis .ta-kpi-card) just sits directly after
-       .ta-overview-insights with whatever leftover row width goes unused past it, rather than at
-       the far right. */
+
     margin-left: auto;
 }
 
@@ -677,22 +510,12 @@
     min-width: 9rem;
 }
 
-/* Pins MTD Achievement to a small, fixed width instead of the base .ta-kpi-card's flex: 1 1 0 (which
-   made sense when 2-3 cards shared this row and needed to split it evenly — with just one card left
-   here, flex: 1 1 0 would instead stretch it across the row's ENTIRE flex: 0 0 auto width, i.e.
-   however wide its own content forces the row to be, defeating the "small" part of this override). */
 .ta-overview-kpis .ta-kpi-card {
     flex: 0 0 10rem;
     min-width: 0;
     padding: 0.5rem 0.55rem;
 }
 
-/* Per explicit request: smaller text throughout this specific (now much narrower) card — the base
-   .ta-kpi-card-header/.ta-kpi-card-footer sizes were tuned for the wider 3-card row this card used
-   to share with Channel Contribution/Projected MTD; at today's fixed 10rem width they were crowding
-   the card, not clipped exactly, but bigger than the space really allows. The gauge's own text sizes
-   are fixed separately in JS (see renderMtdAchievement's detail/title fontSize) since ECharts canvas
-   text isn't reachable from CSS at all. */
 .ta-overview-kpis .ta-kpi-card-header {
     font-size: 0.6rem;
 }
@@ -710,13 +533,6 @@
     letter-spacing: 0.02em;
 }
 
-/* MTD Achievement — the gauge itself (ECharts, see PrimarySalesPage.js's renderMtdAchievement) sits
-   in a fixed-height wrap so the card's overall height stays predictable regardless of the chart
-   library's own sizing, then a plain-text "MTD Sales / Month Target" footer below it. Shrunk from an
-   earlier 6.5rem to 5rem per later explicit request (the card itself went from stretching the row to
-   a fixed 10rem wide, see .ta-overview-kpis .ta-kpi-card) — ECharts reads this wrap's box at
-   chart.init() time (see kpiGaugeChart in PrimarySalesPage.js), so the smaller CSS size here is what
-   actually shrinks the rendered gauge, not a JS-side change. */
 .ta-kpi-gauge-wrap {
     flex: 1;
     display: flex;
@@ -730,8 +546,6 @@
     height: 5rem;
 }
 
-/* "You are ₹X short of your target of ₹Y" / "ahead of" — sits between the gauge and the plain
-   "Sales / Target" footer below it, see renderMtdAchievement in PrimarySalesPage.js. */
 .ta-kpi-gauge-remaining {
     text-align: center;
     font-size: 0.62rem;
@@ -756,11 +570,6 @@
     font-weight: 700;
 }
 
-/* Above/Below Target badge — originally the Projected MTD KPI card's own badge (that card was
-   removed per later explicit request once this same Projection Vs Target figure got surfaced next
-   to the section header's date range instead, see #taOverviewProjVsTargetBadge in loadInsightsCard),
-   this class lives on solely for that badge now. Same positive/negative coloring convention as every
-   other delta pill on this page (.product-snapshot-delta) rather than a new one-off pair. */
 .ta-kpi-projected-badge {
     padding: 0.15rem 0.55rem;
     border-radius: 999px;
@@ -783,26 +592,12 @@
         flex-direction: column;
     }
 
-    /* The Insights card's shrink-to-fit width (above) is only meaningful in row layout — let it go
-       full-width once stacked, to avoid a cramped narrow column on small screens. */
     .ta-overview-insights {
         flex: 1 1 auto;
         width: auto;
         min-width: 0;
     }
 
-    /* The KPI row wraps/goes full-width rather than staying forced into a squeezed fixed size once
-       the section itself stacks (same breakpoint as .ta-overview-split above, since both go
-       full-width together) — margin-left: auto is a row-layout-only trick (see the base rule's own
-       comment) and would otherwise misalign this row once .ta-overview-split switches to column.
-       justify-content: center — per explicit request — centers the MTD Achievement card (this row's
-       only child now) in the full-width row instead of it sitting flush left by flex's own default.
-       width: 100% is load-bearing here, not decorative: .ta-overview-split's own align-items:
-       flex-start (set for the desktop ROW layout, where it governs vertical alignment) becomes the
-       CROSS-axis rule once flex-direction flips to column above — in a column flex container that
-       means "shrink to content width, left-aligned" instead of "stretch full width", so without this
-       explicit width .ta-overview-kpis never actually spans the row and justify-content: center has
-       no extra space to center within. */
     .ta-overview-kpis {
         flex: 1 1 auto;
         width: 100%;
@@ -811,28 +606,12 @@
         margin-left: 0;
     }
 
-    /* flex-grow: 0 (not 1) — .ta-kpi-card is only the MTD Achievement gauge card now (the other two
-       cards that used to share this row are gone, see .ta-overview-kpis's own header comment), so
-       with grow:1 this single child would stretch to fill the whole row width, making
-       justify-content: center above a no-op (nothing left to center within). Staying capped at its
-       12rem basis (shrinking only if the viewport is narrower than that) is what actually lets it
-       sit centered instead of stretched edge-to-edge. */
     .ta-kpi-card,
     .ta-overview-kpis .ta-kpi-card {
         flex: 0 1 12rem;
     }
 }
 
-/* ==================== 2. Daily Sales Trends ==================== */
-/* Styles for the Primary Sales "2. Daily Sales Trends" section (part of Target vs Achievement): a
-   title row (title + Daily/Monthly mode badge), its own brand+date filter bar (.brand-header-filter-bar,
-   shared look with the page-level brand header — see SalesDateFilter.css), a period line, a 3-up
-   stat row (This Year / Last Year / Growth totals), then a This-Year-vs-Last-Year ECharts line
-   chart. Independent of the page's shared SalesDateFilter — has its own Month/Range picker — a date
-   range spanning exactly one calendar month renders a day-by-day trend, 2+ months renders a
-   month-by-month trend. Reuses .brand-header-pill/.brand-header-item and the ta-card color language
-   from TargetVsAchievement.css. */
-/* Base surface (background/border/radius) comes from Shared/css/card.css. */
 .daily-trend-card {
     padding: 0.5rem;
     box-shadow: var(--shadow-card);
@@ -858,9 +637,6 @@
     flex: 1 1 auto;
 }
 
-/* Right-hand cluster of the header: Compare toggle, then the existing Graph/Bar Graph toggle
-   immediately to its right — .daily-trend-header's justify-content:space-between is what pushes
-   this whole group to the far right, so neither child needs its own margin-left:auto anymore. */
 .daily-trend-header-actions {
     display: flex;
     align-items: center;
@@ -868,9 +644,6 @@
     flex-wrap: wrap;
 }
 
-/* Standalone ON/OFF pill (not a 2-option toggle like Graph/Bar Graph) — toggles multi-brand
-   comparison mode. Active state reuses the same primary-color language as every other active
-   toggle/pill on this page. */
 .daily-trend-compare-toggle {
     display: inline-flex;
     align-items: center;
@@ -901,9 +674,6 @@
     color: #fff;
 }
 
-/* While comparing, every real brand is shown at once, so the single-brand pill has nothing
-   meaningful left to filter — dimmed and inert rather than hidden, so its own state (which brand
-   was active before Compare was turned on) stays visible and it's obviously not gone for good. */
 .daily-trend-brand-header.compare-active .brand-header-pill {
     opacity: 0.45;
     pointer-events: none;
@@ -1022,11 +792,6 @@
 .daily-trend-stat-value.positive { color: var(--color-success); }
 .daily-trend-stat-value.negative { color: var(--color-danger); }
 
-/* Daily Sales Trends' own brand+date filter bar is more compact than the page-level one (which
-   keeps the full .brand-header-filter-bar sizing from SalesDateFilter.css) — smaller padding,
-   margin, and text throughout. Scoped via .daily-trend-brand-header (already on the div, see
-   PrimarySalesPage.html) with 2-class selectors so this doesn't touch the shared base rules the
-   page-level filter still uses. */
 .daily-trend-brand-header.brand-header-filter-bar {
     padding: 0.25rem 0.5rem;
     margin-bottom: 0.5rem;
@@ -1034,37 +799,16 @@
     column-gap: 0.75rem;
 }
 
-/* Groups the Filter toggle + its options body + Clear button (see the HTML comment on this div)
-   into one unit, tightly spaced, instead of leaving them as 3 separate items of
-   #dailyTrendBrandHeader's own space-between (which spread them across the whole row with large,
-   uneven gaps between each — the "filter option gap" this replaces). Being a single flex item of
-   #dailyTrendBrandHeader also means the header's existing space-between now does exactly two
-   things: Brand pill flush left, this whole cluster flush right — matching the Overview Insights
-   card's Brand Select / Filter layout above it. Plain flex-wrap (no forced break) is what lets the
-   toggle, options, and Clear all share one line whenever there's room (the common case once
-   tightly spaced) and only lets the options + Clear spill onto their own line, right-aligned under
-   the toggle, once the row is genuinely too narrow — see the <=1024px block further down for where
-   that reliably kicks in on purpose instead of just whenever it happens to run out of room. */
 .daily-trend-filter-cluster {
     display: flex;
     flex-wrap: wrap;
     justify-content: flex-end;
     align-items: center;
     gap: 0.4rem;
-    /* Redundant with #dailyTrendBrandHeader's own space-between while this cluster shares row 1
-       with the Brand pill, but load-bearing once it wraps alone onto its own row (narrow tablet/
-       mobile, closed-filter case — see the <=1024px block's :has() rule below): space-between has
-       nothing to distribute with only one item per line, which would otherwise leave "Filter"
-       stranded at the row's left edge instead of matching the Brand pill's right-aligned "Filter"
-       position from every wider layout. */
+
     margin-left: auto;
 }
 
-/* On the narrowest phones, .sales-date-filter-body itself (the range-type toggle + date inputs)
-   is what wraps onto its own line under the Filter toggle — cluster's flex-end above only governs
-   body's position AS A WHOLE on that line, not its own children's alignment, so without this,
-   body's own default flex-start left-aligns "By Date/By Month/By Year" and the date inputs against
-   the card's left edge instead of staying right-aligned like everything else in the cluster. */
 .daily-trend-brand-header .sales-date-filter-body {
     justify-content: flex-end;
 }
@@ -1103,20 +847,12 @@
     padding: 0.12rem;
 }
 
-/* Always exactly the card's width, no horizontal scrolling — a By Date/By Month/By Year selection
-   with more x-axis points than comfortably fit just gets denser labels; ECharts' own axisLabel
-   interval (see initDailyTrendGraph's renderChart()) thins them out automatically to avoid overlap,
-   re-evaluated on every chart.resize() (window resize, sidebar collapse/expand). */
 .daily-trend-chart-scroll {
     width: 100%;
     overflow-x: hidden;
     overflow-y: hidden;
 }
 
-/* position: relative gives the tooltip ECharts renders inside this element (appendToBody: false,
-   confine: true — see the chart.setOption tooltip config in PrimarySalesPage.js) a containing block
-   scoped to the chart itself, so its absolute positioning — and confine's edge clamping — resolve
-   against this box, not some further-up positioned ancestor. */
 .daily-trend-chart {
     width: 100%;
     height: 200px;
@@ -1133,18 +869,8 @@
     }
 }
 
-/* ==================== 3. Product Snapshot ==================== */
-/* Styles for the Primary Sales "Product Snapshot" section: category/brand-filterable Product
-   Ranking table, per the DSR reference — see ProductSnapshot.js. */
-/* Fixed width, same treatment as the Overview section's .ta-overview-insights — the card hugs its one
-   panel (.product-snapshot-row--split, now a flat 100% column, see below) instead of stretching
-   full-width with dead space to the right of a narrower inner column. */
-/* Per explicit request: no card surface of its own (was redundant with .product-snapshot-panel's
-   own card look sitting right inside it) — overrides Shared/css/card.css's shared background/
-   border for just this selector, kept as a plain transparent wrapper around the real visible card
-   (.product-snapshot-panel). */
 .product-snapshot-card {
-    /* padding: 0.7rem; */
+
     box-shadow: none;
     width: 65%;
     background-color: transparent;
@@ -1156,10 +882,6 @@
     color: var(--color-text-secondary);
 }
 
-/* Real per-brand Qty header badge (renderQtyHeaderBadge, PrimarySalesPage.js) — box border,
-   background color, rounded corners per explicit request, sitting in .product-snapshot-panel-actions
-   alongside the Filter toggle and Product Research button. Empty until the first product-level fetch
-   resolves — :empty hides it so no bare box flashes on load. */
 .product-snapshot-qty-badge {
     display: inline-flex;
     align-items: center;
@@ -1198,19 +920,11 @@
 .product-snapshot-qty-badge .positive { color: var(--color-success); }
 .product-snapshot-qty-badge .negative { color: var(--color-danger); }
 
-/* Shown instead of per-brand Qty when Product_Master has no Brand data at all — same empty-state
-   convention as .brand-header-empty, see renderQtyHeaderBadge in PrimarySalesPage.js. Not
-   interactive: no hover/active state. */
 .product-snapshot-qty-badge-empty {
     font-style: italic;
     opacity: 0.7;
 }
 
-/* Sits in .product-snapshot-panel-actions alongside the Filter toggle and Qty badge — that
-   container's own placement (panel-header's justify-content: space-between) keeps the whole group
-   pinned to the panel header's right edge, so this button needs no positioning of its own. Opens the
-   Product Research modal below (see #productResearchBackdrop / initProductSnapshot in
-   PrimarySalesPage.js) — the Category -> Sub-category -> Product tree, in a popup. */
 .product-snapshot-research-btn {
     display: inline-flex;
     align-items: center;
@@ -1230,10 +944,6 @@
     border-color: var(--color-primary-hover);
 }
 
-/* Product Research modal — holds a real multi-column data table (the Category -> Sub-category ->
-   Product tree, via renderTable()/flattenTree() in PrimarySalesPage.js). Shared modal chrome
-   (backdrop centering, panel shell, header, close-button base) comes from Shared/css/modal.css —
-   only what's unique to this modal stays here. */
 .product-research-modal-backdrop {
     z-index: 100;
     padding: 1.5rem;
@@ -1242,19 +952,11 @@
 
 .product-research-modal {
     max-width: 42rem;
-    /* Fixed height (not just a max-height cap) so the popup doesn't grow/shrink with however many
-       rows the current tree has, or whichever rows the user has expanded/collapsed — 85vh stays as
-       a safety cap for short viewports. Reduced per explicit request to roughly 5 visible data
-       rows' worth of height (sticky header + ~5 rows) — .product-research-modal-body's own
-       fixed-height + hidden-but-functional scrollbar (below) is what makes any further rows
-       reachable without growing this box. */
+
     height: 14rem;
     box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25);
 }
 
-/* Groups the download button with the close (×) button on the header's right side, per explicit
-   request — .region-summary-download-btn gives the download button the same compact square icon
-   look already used for every other section-header download button on this page. */
 .product-research-modal-header-actions {
     display: flex;
     align-items: center;
@@ -1265,19 +967,14 @@
     font-size: 1.25rem;
 }
 
-/* Scrollbar-hiding (still fully scrollable) comes from the shared .scroll-hidden class — see
-   app.css — added alongside this class in the markup. */
 .product-research-modal-body {
     padding: 0.75rem 1rem 1rem;
-    /* flex:1 + min-height:0 lets this fill the modal's now-fixed height and be the thing that
-       scrolls, rather than the fixed-height modal itself overflowing. */
+
     flex: 1;
     min-height: 0;
     overflow-y: auto;
 }
 
-/* Smaller text than Product Ranking's own table — this is a popup, so it should read as a compact
-   reference rather than a full page section. */
 #productResearchTableWrap .product-snapshot-table {
     font-size: 0.62rem;
 }
@@ -1306,29 +1003,20 @@
     margin-top: 0.7rem;
 }
 
-/* Product Ranking is the row's only panel (the Qty Leader strip that used to sit to its right was
-   removed per explicit request — that data now lives in the header badge instead, see
-   .product-snapshot-qty-badge) — a flat 100% column filling its parent card. */
 .product-snapshot-row--split {
     grid-template-columns: 100%;
 }
 
 .product-snapshot-panel {
-    /* Grid items default to min-width:auto, which lets their content (e.g. the ranking table's
-       nowrap cells) force the column wider than its fr share and overflow the page. min-width:0
-       lets each panel shrink to its column and scroll internally (.product-snapshot-table-wrap)
-       instead, so the row always fits the viewport. */
+
     min-width: 0;
     background-color: var(--color-card-bg);
     border: 1px solid var(--color-border);
     border-radius: 18px;
-    /* Clips the header/table's own square corners to this panel's now-larger 18px rounding — this
-       is now the section's only visible card (see .product-snapshot-card above). */
+
     overflow: hidden;
 }
 
-/* Grid rows stretch every item to the row's height by default (align-items: stretch); align-self:
-   start makes the panel hug its own content height instead of stretching to fill the row/track. */
 .product-snapshot-panel-01 {
     align-self: start;
 }
@@ -1341,8 +1029,7 @@
     gap: 0.6rem;
     padding: 0.6rem 0.7rem;
     border-bottom: 1px solid var(--color-border);
-    /* White per explicit request — var(--color-card-bg) rather than a literal #fff so it stays
-       correct (a dark surface, not blown-out white) in dark mode. */
+
     background-color: var(--color-card-bg);
     border-radius: 18px 18px 0 0;
 }
@@ -1353,22 +1040,12 @@
     color: var(--color-primary);
 }
 
-/* Groups the Product Ranking title with its own loading spinner (see .section-loading-spinner
-   below) as one flex child, so adding the spinner doesn't turn .product-snapshot-panel-header's
-   justify-content: space-between into a 3-way split — it still only ever sees two children (this
-   group, and .product-snapshot-panel-actions). */
 .product-snapshot-panel-title-group {
     display: inline-flex;
     align-items: center;
     gap: 0.35rem;
 }
 
-/* Small inline "data is loading" indicator for a card/section header — hidden by default, shown via
-   the nearest ancestor's own .is-loading state class. Reused by the Product Ranking panel header
-   (initProductSnapshot's refresh(), toggled on #productSnapshotCard) and the Filter Header's own
-   title (Page wiring's withFilterLoading, toggled on
-   #dashboardFyOverviewFilterHeaderSectionContainer whenever a Brand/Channel/Date change is still
-   being applied across every section it drives). */
 .section-loading-spinner {
     display: none;
     font-size: 0.72rem;
@@ -1417,9 +1094,6 @@
     transform: rotate(180deg);
 }
 
-/* Slides open below the panel header (pushes the table down) when Filter is clicked — an inline
-   strip rather than a floating popup. Primary-tinted left border matches the colored panel
-   header/table-header theme used across Product Snapshot. */
 .product-snapshot-panel-controls {
     display: flex;
     align-items: center;
@@ -1470,9 +1144,7 @@
     font-size: 0.68rem;
     font-weight: 600;
     color: var(--color-text-primary);
-    /* Same tint as .product-snapshot-level-toggle right next to it (rgba(27, 77, 62, 0.08),
-       --color-primary at 8% opacity), per explicit request — was plain var(--color-background)
-       before, blending into the filter flyout's own background instead of reading as a control. */
+
     background-color: rgba(27, 77, 62, 0.08);
     border: 1px solid var(--color-primary);
     border-radius: 6px;
@@ -1491,19 +1163,12 @@
     overflow: auto;
 }
 
-/* Product Ranking panel (panel-01): capped to ~5 visible data rows (header + 5 * row height),
-   the rest reachable by scrolling. Scrollbars are hidden on both axes (still scrollable via
-   wheel/touch/drag) per the requested "no visible scrollbar" look. */
-/* Scrollbar-hiding (still fully scrollable) comes from the shared .scroll-hidden class — see
-   app.css — added alongside this id's markup class list. */
 #productSnapshotPanelBodyA {
     max-height: 12.6rem;
     overflow-x: auto;
     overflow-y: auto;
 }
 
-/* Name column is capped and truncated with an ellipsis instead of pushing Sales/Contrib/vs LY/
-   vs LM out of view or forcing a horizontal scroll. */
 #productSnapshotPanelBodyA .product-snapshot-col-name {
     max-width: 8rem;
 }
@@ -1517,8 +1182,6 @@
     vertical-align: bottom;
 }
 
-/* Smaller text than the generic .product-snapshot-table base (shared with "4. Reports", which must
-   stay at its own size) — scoped to just Product Ranking's own table. */
 #productSnapshotPanelBodyA .product-snapshot-table {
     font-size: 0.7rem;
 }
@@ -1549,17 +1212,10 @@
     font-weight: 400;
     letter-spacing: 0.03em;
     color: #FFFFFF;
-    /* Solid (non-transparent) color, not rgba — an alpha background would let scrolled-under rows
-       show through the sticky header. Stays opaque whether the table is scrolled or not. */
+
     background-color: var(--color-primary);
 }
 
-/* Icon-then-text header cells (productSnapshotHeaderCell in PrimarySalesPage.js) — per explicit
-   request, same look Secondary Sales' Site Master Report/Reports column headers use
-   (site-master-header-cell/secondary-overview-header-icon* in SecondarySalesPage.css/.js). Product
-   Ranking/Product Research build their <th> markup with productSnapshotHeaderCell; "4. Reports"
-   below reuses these same three classes directly via its own reportsHeaderCell, rather than
-   introducing Secondary's differently-named equivalents. */
 .product-snapshot-header-cell {
     display: flex;
     align-items: center;
@@ -1578,33 +1234,25 @@
     font-size: 0.64rem;
 }
 
-/* Per explicit request: one common, consistent background for every body row (Product Ranking's
-   table + Product Research's tree, which both share this base rule) instead of the previous
-   even/odd zebra stripe. */
 .product-snapshot-table tbody tr {
     background-color: var(--color-card-bg);
 }
 
-/* Row hover removed per explicit request — covers both Product Ranking's table
-   (#productSnapshotPanelBodyA) and Product Research's tree (#productResearchTableWrap), which share
-   this same base rule. */
-
 .product-snapshot-delta {
     display: inline-block;
-    /* padding: 0.1rem 0.4rem; */
-    /* border-radius: 999px; */
+
     font-weight: 600;
     font-size: 0.72rem;
 }
 
 .product-snapshot-delta.positive {
     color: var(--color-success);
-    /* background-color: rgba(22, 128, 60, 0.1); */
+
 }
 
 .product-snapshot-delta.negative {
     color: var(--color-danger);
-    /* background-color: rgba(220, 38, 38, 0.1); */
+
 }
 
 .product-snapshot-table th:first-child,
@@ -1613,9 +1261,6 @@
     width: 2.2rem;
 }
 
-/* Scoped to Product Snapshot's own two tables (Product Ranking's #productSnapshotPanelBodyA, and
-   the Product Research popup's #productResearchTableWrap) rather than the bare .product-snapshot-table
-   class, which other tables on this page also use and must stay right-aligned by default. */
 #productSnapshotPanelBodyA .product-snapshot-table th:nth-child(2),
 #productSnapshotPanelBodyA .product-snapshot-table td.product-snapshot-col-name,
 #productResearchTableWrap .product-snapshot-table th:nth-child(1),
@@ -1623,41 +1268,26 @@
     text-align: left;
 }
 
-/* The Name column's header-cell icon+label (see productSnapshotHeaderCell in PrimarySalesPage.js)
-   is a flex row, so its own justify-content — not the th's text-align above — controls where it
-   actually sits; without this override it would default to .product-snapshot-header-cell's centered
-   look above and visually fight the left-aligned Name data underneath it. */
 #productSnapshotPanelBodyA .product-snapshot-table th:nth-child(2) .product-snapshot-header-cell,
 #productResearchTableWrap .product-snapshot-table th:nth-child(1) .product-snapshot-header-cell {
     justify-content: flex-start;
 }
 
-/* The Category -> Sub-category -> Product tree (Product Research popup) has no index/icon column,
-   so Name is th:first-child there — override the centered/narrow index-column styling above for
-   just that table. */
 #productResearchTableWrap .product-snapshot-table th:first-child {
     text-align: left;
     width: auto;
 }
 
-/* Every value column (Sales/Qty/vs LY/vs LM/Contrib) reads bold — Index and Name stay their own
-   normal weight (Name already gets its own bold treatment for Total/level-0 rows). Scoped to Product
-   Snapshot's own two tables, not the bare .product-snapshot-table class "4. Reports" also uses. */
 #productSnapshotPanelBodyA .product-snapshot-table td:not(.product-snapshot-col-index):not(.product-snapshot-col-name),
 #productResearchTableWrap .product-snapshot-table td:not(.product-snapshot-col-index):not(.product-snapshot-col-name) {
     font-weight: 600;
 }
 
-/* Data rows get an info tint per explicit request, overriding the base .product-snapshot-table
-   rule's flat var(--color-card-bg) — scoped to Product Snapshot's own two tables only, not
-   "4. Reports" (which has its own per-tab tint colors, including its own separate info tint for
-   the Sub-Channel tab). */
 #productSnapshotPanelBodyA .product-snapshot-table tbody tr,
 #productResearchTableWrap .product-snapshot-table tbody tr {
     background-color: color-mix(in srgb, var(--color-info) 6%, var(--color-card-bg));
 }
 
-/* Name column data reads bold — scoped to Product Snapshot's own two tables only. */
 #productSnapshotPanelBodyA .product-snapshot-table td.product-snapshot-col-name,
 #productResearchTableWrap .product-snapshot-table td.product-snapshot-col-name {
     font-weight: 600;
@@ -1700,18 +1330,12 @@
     color: var(--color-text-primary);
 }
 
-/* Filter + download controls shared by every product-snapshot-panel's header (Product Ranking,
-   and formerly "Batches Nearing Expiry" before that moved to the Inventory page). */
 .product-snapshot-panel-actions {
     display: flex;
     align-items: center;
     gap: 0.4rem;
 }
 
-/* Base look for the download icon button + its popup comes from the shared
-   components/ExcelDownloadButton/ExcelDownloadButton.css (see its own <link> in this page's
-   <head>) — this page keeps only the one rule that genuinely differs from some other pages:
-   styling the button as "active" while its popup is open, not just on :hover. */
 .product-snapshot-download-btn:hover,
 .product-snapshot-download-btn[aria-expanded="true"] {
     color: var(--color-primary);
@@ -1726,12 +1350,6 @@
     overflow: hidden;
 }
 
-/* Shared "No data available" empty state — used by "4. Reports" (all 4 tabs) whenever their own
-   backend query comes back with nothing (including when the database itself is unreachable — every
-   fetch in this page already falls back to an empty rows array on a failed/erroring request, so this
-   same state also covers "database not connected" without needing a separate error UI). Works both
-   as a lone block (brand hierarchy's own wrap, which isn't a <table>) and inside a <td> (the
-   flat-tab tables' own empty row). */
 .reports-empty-state {
     display: flex;
     flex-direction: column;
@@ -1761,19 +1379,10 @@
     color: var(--color-text-secondary);
 }
 
-/* Overrides the generic .product-snapshot-table-wrap { overflow: auto } (see that class's own rule)
-   for this section specifically — capped to ~10 visible data rows PLUS the sticky header and sticky
-   Total row always staying on screen, the rest reachable by scrolling with the scrollbar itself
-   hidden. overflow-x stays auto (not visible) so a column too wide for the card's 65% width (Mnt/MTD
-   Sales/Vs LY are all money/percent figures that can run wide) stays reachable via horizontal scroll
-   instead of being silently clipped by .app-main's own overflow-x: hidden. */
 #reportsSectionTableWrap {
     overflow-x: auto;
     overflow-y: auto;
-    /* Caps visible height to exactly the header row + 7 data rows, per explicit request — anything
-       beyond that scrolls (scrollbar hidden via scrollbar-width/-ms-overflow-style below +
-       ::-webkit-scrollbar). Calibrated from this table's own live-measured row heights (identical
-       across all 4 tabs): header 30.08px + 7 * 35.54px data row ≈ 279px = 17.45rem. */
+
     max-height: 17.45rem;
     scrollbar-width: none;
     -ms-overflow-style: none;
@@ -1785,8 +1394,6 @@
     height: 0;
 }
 
-/* Shared by "4. Reports" above (its own tab toggle's header) and "5. Site_Master Primary_Sale
-   Report" (#primarySiteReportCard's own header) — kept shared, not redefined there. */
 .reports-section-header {
     display: flex;
     align-items: center;
@@ -1796,18 +1403,10 @@
     margin-bottom: 0.6rem;
 }
 
-/* Top/left/right padding only, scoped to "4. Reports" own header alone (#reportsSectionCard) — NOT
-   the shared .reports-section-header rule above. Compensates for .reports-section-card's own padding
-   being 0, so this header's content doesn't sit flush against the card's top/side edges while the
-   table below it still runs edge-to-edge (no bottom padding — margin-bottom above already spaces it
-   from the table). */
 #reportsSectionCard .reports-section-header {
     padding: 0.7rem 0.7rem 0;
 }
 
-/* Compacted down to the same scale as the page-level .brand-header-pill/-item look used elsewhere —
-   this is "4. Reports" own All Report/Sub-Channel/Channel/Partner tab toggle, not a Brand filter (the
-   section has none of its own — see PrimarySalesPage.js's own initReportsSection comment). */
 .reports-section-header .brand-header-pill {
     padding: 0.12rem;
     gap: 0.15rem;
@@ -1820,9 +1419,6 @@
     font-weight: 600;
 }
 
-/* Node-count strip (Brand/Channel/Sub-Channel/Partner, or a single tab's own count — see
-   renderReportsCounts/renderSingleReportsCount in PrimarySalesPage.js) — pushed to the header's
-   right edge, opposite the tab toggle. */
 .reports-section-counts {
     display: flex;
     align-items: center;
@@ -1839,27 +1435,15 @@
     margin-right: 0.2rem;
 }
 
-/* Center-align every tab's table cells — scoped to Reports only; the shared .product-snapshot-table
-   th/td rule (used by Product Snapshot/Product Research too) stays right-aligned everywhere else. */
 #reportsSectionTableWrap .product-snapshot-table th,
 #reportsSectionTableWrap .product-snapshot-table td {
     text-align: center;
 }
 
-/* Row data text size — scoped to every data row AND the bottom Total row (both are plain <td>s in
-   this table, so one rule covers both) — the shared base .product-snapshot-table rule otherwise
-   leaves this at 0.78rem. */
 #reportsSectionTableWrap .product-snapshot-table td {
     font-size: 0.68rem;
 }
 
-/* Sub-Channel/Channel/Partner tabs (flat, non-tree tables) — per explicit request, every data row
-   gets one solid tint instead of the base .product-snapshot-table rule's even/odd zebra stripe,
-   Total row excluded (keeps its own solid --color-primary background below). Same tint family
-   .brand-hierarchy-table's own data-level rule uses further below (Channel=success,
-   Sub-Channel=info, Partner=warning), just applied to a flat single-level table instead of a tree —
-   see FLAT_REPORT_TABLE_CLASS in PrimarySalesPage.js for how each table gets its own class. Mirrors
-   SecondarySalesPage.css's own copy for UI/UX parity across both pages. */
 #reportsSectionTableWrap .report-flat-table--subchannel tbody tr:not(.channel-report-total-row) {
     background-color: color-mix(in srgb, var(--color-info) 6%, var(--color-card-bg));
 }
@@ -1872,12 +1456,6 @@
     background-color: color-mix(in srgb, var(--color-warning) 6%, var(--color-card-bg));
 }
 
-/* Bottom grand-total row — same solid --color-primary background/white text the header row above it
-   uses (not the previous neutral gray tint), heavier top border + bold cells, pinned to the bottom of
-   this table's own scroll area (position: sticky, same trick the header uses to pin to the top — see
-   .top-projection-grid-total-row td for the identical pattern elsewhere on this page). Sticky has to
-   go on each td, not the tr, for reliable cross-browser table behavior. Needs its own solid background
-   (not transparent) so rows scrolling underneath don't show through while it's pinned. */
 #reportsSectionTableWrap tr.channel-report-total-row {
     background-color: var(--color-primary);
 }
@@ -1896,15 +1474,10 @@
     background-color: var(--color-primary);
 }
 
-/* Vs LM/Vs LY's own .product-snapshot-delta already sets an explicit font-weight (600) — bumped here
-   so the Total row's own delta text visibly bolds too, same convention Dashboard's own
-   .dashboard-total-row .dashboard-delta uses (color/positive-negative meaning left untouched). */
 #reportsSectionTableWrap tr.channel-report-total-row .product-snapshot-delta {
     font-weight: 700;
 }
 
-/* Contrast fixes so the calculator icon / Achi. bar stay visible now that the Total row's own
-   background matches the header's solid --color-primary instead of a light neutral tint. */
 #reportsSectionTableWrap tr.channel-report-total-row .channel-report-row-icon {
     color: #FFFFFF;
 }
@@ -1921,11 +1494,6 @@
     color: #FFFFFF;
 }
 
-/* The "Total" label itself: .product-snapshot-table tbody tr[data-level="0"] .product-snapshot-
-   name-text (elsewhere on this page) sets its own explicit dark color, which otherwise wins over the
-   plain white the Total row's td sets — this row also carries data-level="0" (see renderReportsTable
-   in PrimarySalesPage.js), so without this override "Total" renders unreadably dark-on-dark against
-   the row's own --color-primary background. */
 #reportsSectionTableWrap tr.channel-report-total-row .product-snapshot-name-text {
     color: #FFFFFF;
 }
@@ -1934,18 +1502,10 @@
     color: var(--color-primary);
 }
 
-/* A flat tab's own regular-row icon (bi-signpost-split-fill is NOT used here — flat tabs reuse each
-   row's own dimension icon via BRAND_TREE_LEVEL_ICONS, see renderReportsTable) — a flat single-level
-   table, so every non-Total row gets one consistent icon/color rather than a per-level scheme.
-   Specificity deliberately matches/exceeds the Total-row rule above (id + tr + 2 class/attribute
-   selectors) so this wins over it despite both rows sharing data-level="0". */
 #reportsSectionTableWrap tr[data-level="0"] .channel-report-row-icon[data-level="channel"] {
     color: var(--color-info);
 }
 
-/* One icon per "All Report" tree level (Brand/Channel/Sub Channel/Partner — see
-   BRAND_TREE_LEVEL_ICONS in PrimarySalesPage.js) so the hierarchy reads at a glance without relying
-   on indentation alone. Total row keeps its own .channel-report-row-icon calculator instead. */
 #reportsSectionTableWrap .brand-tree-row-icon {
     font-size: 0.75rem;
 }
@@ -1966,9 +1526,6 @@
     color: var(--color-warning);
 }
 
-/* Icon + tiny level caption ("Brand"/"Channel"/"Sub-Channel"/"Partner"), stacked so the row still
-   reads as one compact unit rather than pushing the name column wider. Total row is unaffected — it
-   keeps the plain calculator icon with no wrapper/label (see levelIcon in renderBrandHierarchyTable). */
 #reportsSectionTableWrap .brand-tree-row-icon-wrap {
     display: flex;
     flex-direction: column;
@@ -1984,13 +1541,6 @@
     white-space: nowrap;
 }
 
-/* Row background per "All Report" tree level, same 4 accent colors as the row icons above, blended
-   at low strength into the theme's own card background via color-mix so it stays readable and
-   theme-correct (light/dark) without hardcoding a second hex per theme. Scoped to
-   .brand-hierarchy-table only — the flat single-level tabs share this table wrapper and their own
-   data-level="0" rows are NOT part of this hierarchy, so they must stay unaffected. The bottom
-   Total row (also data-level="0") keeps its own solid color-mix gray via .channel-report-total-row td,
-   which paints over this tr-level background regardless of selector order. */
 #reportsSectionTableWrap .brand-hierarchy-table tbody tr[data-level="0"] {
     background-color: color-mix(in srgb, var(--color-primary) 6%, var(--color-card-bg));
 }
@@ -2007,14 +1557,6 @@
     background-color: color-mix(in srgb, var(--color-warning) 6%, var(--color-card-bg));
 }
 
-/* Achi. column progress bar (every Reports tab — .channel-report-achi-cell/-track/-fill/-pct, built
-   in renderReportsAchiCell). 4 fixed categorical slots, one per Brand in first-seen order (see
-   assignBrandColorSlots) — a Sub_Channel/Partner row shares its Brand's color rather than being
-   colored by its own level. Rows with no single owning Brand (the bottom Total row; every row in the
-   brand-less flat tabs) get no data-brand-slot and fall back to --achi-fill-neutral. Light-mode
-   values were CVD-safe-validated with the dataviz skill's validate_palette.js (light vs #FFFFFF);
-   the dark-mode set below was manually dimmed per explicit request (2026-08-25, same dimming as
-   --color-primary/success/etc. in variables.css) and has NOT been re-run through that validator. */
 :root {
     --achi-fill-neutral: var(--color-text-secondary);
     --achi-brand-1: #2a78d6;
@@ -2082,63 +1624,26 @@
         width: 100%;
     }
 
-    /* 60% only makes sense with a wide viewport to spare — below tablet width it just squeezes the
-       Product Ranking table into a needlessly narrow strip, so it goes full-width here same as every
-       other section on this page. */
     .product-snapshot-card {
         width: 100%;
     }
 }
 
-/* Same flattening, per later explicit request, for "3. Product Snapshot"'s own ranking table — every
-   Vs LY/Vs LM/growth delta there goes flat too, same reasoning as above. Scoped to #productSnapshotCard
-   only, so Product Research's own modal (a visually separate popup, not this card) is unaffected. */
 #productSnapshotCard .product-snapshot-delta {
     background-color: transparent;
     border-radius: 0;
 }
 
-/* ==================== Responsive (tablet/mobile) ==================== */
-/* Consolidated overrides for every section above, on top of the few breakpoints already inlined
-   next to their own rules (ta-overview-split, daily-trend-stats, product-snapshot-row--split). Two
-   breakpoints app-wide, matching Sidebar.css/app.css: <=1024px tablet (sidebar becomes a compact
-   icon rail), <=640px mobile (sidebar becomes an off-canvas drawer). Every data table on this page
-   already has a horizontal-scroll wrapper (.product-snapshot-table-wrap and friends) so narrow
-   columns scroll instead of breaking the layout — no table-specific breakpoint needed for those. */
 @media (max-width: 1024px) {
     .brand-header {
         padding-bottom: 1rem;
     }
 
-    /* Brand Select + Filter control group — Daily Sales Trends. Stays on one row at tablet width
-       (plenty of room — .ta-overview-insights is only forced full-width below 900px, and
-       .brand-header-filter-bar already wraps/space-betweens on its own), so this is purely a
-       touch-target bump: the desktop sizing above (padding: 0.12-0.14rem, aimed at a mouse pointer)
-       is too small to comfortably tap, so give both the brand pill's buttons and the Filter toggle
-       more vertical padding here. The <=640px block below layers a further, phone-specific
-       adjustment on top (smaller horizontal padding/font to keep the row compact at that width) —
-       this tablet rule is what mobile inherits before that override applies. */
     .daily-trend-brand-header .brand-header-item,
     .daily-trend-brand-header .sales-date-filter-mode-btn {
         padding: 0.42rem 0.7rem;
     }
 
-    /* Daily Sales Trends' Filter: per explicit request, opening it should push a genuine new row
-       into the card's normal flow (like an accordion) rather than float a popup/dropdown over the
-       chart. .daily-trend-filter-cluster (Filter toggle + options + Clear, see the HTML comment on
-       that div and its base rule above) is forced to the full header width here — since it's a
-       single flex item of #dailyTrendBrandHeader (already flex-wrap: wrap, see .brand-header-
-       filter-bar.brand-header above), claiming the whole line by itself is what pushes it onto its
-       own row below the Brand pill instead of possibly sharing row 1 when there'd otherwise be room
-       (the case on a wider tablet) — the cluster's own flex-wrap + justify-content: flex-end then
-       keeps everything inside it right-aligned on that row (or its own wrapped sub-row, once the
-       options are open and too wide to fit next to the toggle even at full header width).
-       Scoped to :has(...not(:empty)) so this full-width/new-row behavior only kicks in once the
-       filter is actually opened (idPrefixBody gets filled — see initSalesDateFilter/renderBody) —
-       while closed, the cluster is just the small "Filter" button and stays content-sized so it
-       shares row 1 with the Brand pill (space-between pins it to the right edge) all the way down
-       to whatever width they truly stop fitting together, matching the Brand pill's own tablet/
-       mobile behavior instead of forcing a second row a full breakpoint early. */
     .daily-trend-filter-cluster:has(.sales-date-filter-body:not(:empty)) {
         width: 100%;
     }
@@ -2149,8 +1654,7 @@
 }
 
 @media (max-width: 640px) {
-    /* Page-level and section-local brand+date filter bars: stack the brand pill above the date
-       filter instead of squeezing both onto one row. */
+
     .brand-header {
         justify-content: flex-start;
     }
@@ -2172,9 +1676,6 @@
         font-size: 0.72rem;
     }
 
-    /* KPI card footers: a 3-column footer (Vs Target/Vs Last Year/Vs Last Month etc.) is tight at
-       full desktop card width already — on a full-width single mobile card it needs an even
-       smaller gap to avoid the last column crowding/overflowing. */
     .ta-card-footer {
         gap: 0.6rem;
     }
@@ -2199,12 +1700,6 @@
         padding: 0.65rem 0.8rem;
     }
 
-    /* The Filter Header's Filter toggle + (once opened) From/To month inputs and Clear button
-       (.ta-insights-filter-panel, moved into .ta-overview-date-filter-right — see PrimarySalesPage.
-       html/.css) are nowrap by design on desktop so the filter never splits mid-row on a normal
-       screen — on a phone-width viewport that same nowrap would force the row wider than the screen
-       instead. Allow wrapping here only, so the filter panel drops to its own line when it doesn't
-       fit. */
     .ta-insights-filter-panel,
     .ta-insights-filter-panel .sales-date-filter-body {
         flex-wrap: wrap;
@@ -2216,30 +1711,12 @@
         max-width: 100%;
     }
 
-    /* Once opened, the From/To inputs + Clear button can still be wider than a narrow phone even
-       after wrapping onto their own line (see .ta-insights-filter-panel above) — cap each month/date
-       input so two of them plus the separator and Clear button are guaranteed to fit inside the
-       card's width instead of pushing it into horizontal scroll. */
     .ta-insights-filter-panel .sales-date-filter-input {
         flex: 1 1 auto;
         min-width: 0;
         max-width: 7.2rem;
     }
 
-    /* Daily Sales Trends' Brand pill (its own top-level flex item of #dailyTrendBrandHeader) and
-       Filter toggle (nested inside .daily-trend-filter-cluster, see the <=1024px block above, which
-       is already forced full-width + flex-end there) — the only thing left to fix at phone width is
-       two generic mobile rules above that both target this section's elements by their shared
-       (non-scoped) class: .brand-header-pill { width: 100% } would otherwise make the Brand pill
-       alone claim the whole row's width and squeeze the Filter cluster out, and .sales-date-filter
-       { width: 100%; justify-content: center } does the exact same thing the other way around —
-       #dailyTrendDateFilter still wraps only the Filter button, but that generic rule stretches IT
-       to fill whatever's left of its row and then centers the button inside that leftover space,
-       which is what was pulling Filter away from the row's right edge (confirmed live:
-       #dailyTrendDateFilter measured ~246px wide for a ~39px button). Undo both here so each side
-       shrinks to fit its own content and space-between (on #dailyTrendBrandHeader) /
-       justify-content: flex-end (on .daily-trend-filter-cluster) do the actual left/right
-       positioning. */
     .daily-trend-brand-header .brand-header-pill {
         width: auto;
         flex: 0 1 auto;
@@ -2258,9 +1735,6 @@
         font-size: 0.62rem;
     }
 
-    /* Keeps the From/To inputs on the wrapped-to-its-own-row filter body (see the <=1024px block
-       above) narrow enough that a By Date/By Month/By Year selection's two inputs, separator, and
-       the Clear button all comfortably fit a phone's width without forcing horizontal scroll. */
     .daily-trend-brand-header .sales-date-filter-input {
         flex: 1 1 auto;
         min-width: 0;
@@ -2274,27 +1748,16 @@
         gap: 0.3rem;
     }
 
-    /* Section title rows (e.g. Product Snapshot) — defensive wrap on a very narrow phone. */
     .product-snapshot-section-title {
         flex-wrap: wrap;
         row-gap: 0.4rem;
     }
 
-    /* Absolutely-positioned download popups (Product Ranking's, Product Research's) are a fixed
-       11.5rem wide, anchored to their button's right edge — safe on any phone in portrait, but this
-       caps them from ever being clipped off the left edge of a viewport narrower than that, e.g. a
-       folded/small device or the browser's dev-tools-open width. */
     .product-snapshot-download-popup {
         max-width: calc(100vw - 2rem);
     }
 }
 
-/* Very narrow phones (e.g. a folded device, or a small phone in a browser with visible chrome) —
-   Brand Select + [Filter] stay on one row at every width (per explicit request, replacing an
-   earlier stacked fallback here) instead of dropping to two full-width rows. Shrinks the brand
-   pill's own padding/gap and the button padding/font a little further than the <=640px sizing so
-   the row keeps fitting as it narrows, and lets the brand pill's flex-shrink actually bite (min-
-   width: 0 up in the <=640px block already allows it) rather than overflowing. */
 @media (max-width: 400px) {
     .daily-trend-brand-header .brand-header-pill {
         padding: 0.1rem;
@@ -2308,10 +1771,6 @@
     }
 }
 
-/* "Filter Header" section — own copy of Dashboard.css's identical block (each page owns its own
-   copy, same convention Daily Sales Trends already follows), sitting above "1. Overview" via
-   #dashboardFyOverviewFilterHeaderSectionContainer in PrimarySalesPage.html. Not yet wired to any
-   JS — background/border/radius come from the shared list in Shared/css/card.css. */
 .dashboard-fy-overview-filter-header-card {
     box-shadow: var(--shadow-card);
 }
@@ -2330,9 +1789,6 @@
     color: var(--color-text-secondary);
 }
 
-/* Sales Type / Brand / Channel filter row — reuses .brand-header-pill/.brand-header-item (the same
-   pill toggle look the Daily Sales Trends section's own Sales Type/Brand pills use) at a smaller
-   size. */
 .dashboard-fy-overview-filter-row {
     display: flex;
     flex-wrap: wrap;
@@ -2341,15 +1797,6 @@
     padding: 10px;
 }
 
-/* Date Filter (Filter toggle + From/To Month range + Clear) — moved here from "1. Overview"'s own
-   Insights card header per explicit request. margin-left: auto pushes it to the row's right edge
-   while Brand/Channel stay grouped on the left, same "auto margin splits a flex row into a left
-   group + a right item" trick the Filter Header's own (now-removed) Year Filter field used.
-   .ta-insights-filter-panel's own rules (further up this file) aren't ancestor-scoped, so its
-   From/To inputs/Clear button already keep their existing compact 0.58rem look unchanged here —
-   only the Filter toggle button itself needs its own copy of that same small-pill treatment below,
-   since its previous rules were scoped to .ta-insights-brand-row specifically (where it used to
-   live). */
 .dashboard-fy-overview-filter-row .ta-overview-date-filter-right {
     display: flex;
     align-items: center;
@@ -2391,11 +1838,6 @@
     white-space: nowrap;
 }
 
-/* Status filter field — same frontend as Dashboard's own copy (byte-for-byte, this codebase's own
-   established convention of each page keeping its own copy of shared-look styles rather than
-   importing another page's CSS). .site-status-filter-pill/-item's own visual rules already come from
-   the shared components/StatusFilter/StatusFilter.css (linked in this page's <head>), same as
-   Dashboard — only the field/label wrapper classes need a local copy. */
 .site-status-card-field {
     display: flex;
     flex-direction: column;
@@ -2420,8 +1862,6 @@
     font-size: 0.52rem;
 }
 
-/* Filter button + dropdown list, same funnel-icon-button-opens-a-panel convention the app's other
-   Filter buttons use. */
 .dashboard-fy-year-filter {
     position: relative;
 }
@@ -2496,8 +1936,7 @@
 }
 
 @media (max-width: 640px) {
-    /* This field's own margin-left: auto has nothing to push against once the row wraps here — go
-       full-width instead so it doesn't sit stranded at an arbitrary indent. */
+
     .dashboard-fy-overview-filter-row .ta-overview-date-filter-right {
         width: 100%;
         margin-left: 0;

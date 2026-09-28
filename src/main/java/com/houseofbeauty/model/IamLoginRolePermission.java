@@ -7,8 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-// JPA mapping for IAM_Login_Role_Permissions — the Roles<->Permissions junction: what every
-// user holding a given role can do.
+
 @Entity
 @Table(name = "IAM_Login_Role_Permissions")
 @Data

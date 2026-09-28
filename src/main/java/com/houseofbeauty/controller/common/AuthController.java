@@ -23,12 +23,6 @@ import org.springframework.http.HttpStatus;
 
 import java.util.Map;
 
-// Backs LoginPage.js (login/send-otp) and Sidebar.js's logout handler. A successful /login both
-// returns the user + their roles for the frontend to cache in sessionStorage (LoginPage.js) AND
-// establishes a server-side HttpSession (AuthenticatedUser stored under
-// AuthenticatedUser.SESSION_ATTRIBUTE) — AuthenticationFilter checks that same session attribute
-// on every other /api/* request, which is what actually stops a direct API call from bypassing the
-// frontend's own login page.
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
@@ -48,9 +42,6 @@ public class AuthController {
                 request.mode(),
                 servletRequest.getRemoteAddr());
 
-        // A fresh session per login — invalidate whatever (if anything) was already attached to
-        // this browser first, so logging in again always starts a clean session rather than
-        // reusing/extending a stale one.
         HttpSession existing = servletRequest.getSession(false);
         if (existing != null) {
             existing.invalidate();
@@ -89,11 +80,6 @@ public class AuthController {
         return Map.of("loggedOut", true);
     }
 
-    // Not called by any page yet — exists so the seeded IAM_Login_Permissions/Role_Permissions
-    // data (AuthBootstrapSeeder) can be verified end to end: log in as admin/manager/viewer and
-    // hit this to see each account's real, resolved permission set. AuthenticationFilter already
-    // guarantees a session exists here (this path isn't in its PUBLIC_PATHS), so the attribute
-    // lookup below can't be null in practice — the 401 fallback is defensive, not a normal path.
     @GetMapping("/me")
     public MeResponse me(HttpServletRequest servletRequest) {
         HttpSession session = servletRequest.getSession(false);

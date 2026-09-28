@@ -10,10 +10,7 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 
-// JPA mapping for Product_Master — the article/SKU master data. Primary key is Article_Code.
-// No SN or Uploaded_At column — both were live-only additions dropped by the 2026-08-12 table
-// recreate (see database/01_schema.sql). Currently unused (data access for this table goes through
-// raw JdbcTemplate SQL, not this entity).
+
 @Entity
 @Table(name = "Product_Master")
 @Data

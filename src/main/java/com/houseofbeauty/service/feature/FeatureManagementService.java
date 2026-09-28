@@ -18,34 +18,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-// Backs the "Features" system — the 10 shared UI widgets under static/components/. Two grant layers
-// compose to decide whether a given user actually sees one:
-//
-//  1. Per-ROLE grants (IAM_Role_Feature_Grants, new) — a role only shows a Feature to its holders if
-//     it has an explicit grant row for it. Edited from the same Edit Role popup as Page/Section
-//     permissions (RolesPage.js's SECTION_FEATURE_KEYS tree), via replaceRoleFeatures below.
-//  2. Per-USER denials (IAM_Feature_User_Denials, pre-existing) — the final override: even if every
-//     role a user holds grants a Feature, an explicit denial row here still turns it off for that
-//     one user. Nothing currently WRITES a denial (the per-user Features popup field and the Super
-//     Admin "Feature Bulk Management" matrix that used to write these were both removed per explicit
-//     request) — any denial rows already in the table from before that removal still apply, this
-//     just has no UI left to create new ones.
-//
-// A user's effective granted set is therefore: granted by AT LEAST ONE of their roles, AND not
-// personally denied. This used to be a wholly independent, per-user-only system with no Role
-// involvement at all (a Feature was granted to everyone by default, denials were the only lever) —
-// that default-open behavior is preserved for every pre-existing role/user by FeatureBootstrapSeeder
-// seeding every existing role with every catalog Feature the first time IAM_Role_Feature_Grants is
-// empty; a role created afterward starts with none granted, same as a brand-new role's Page/Section
-// permissions start unchecked.
 @Service
 public class FeatureManagementService {
 
-    // getGrantedFeatureKeys(userId) backs GET /api/features/me, called by every page's
-    // Shared/js/feature-guard.js — same "recomputed from scratch on every single request" cost
-    // AuthService's permissionsCache header comment describes, just for the Feature side. Cached
-    // per-user with the same short, bounded-staleness TTL; replaceRoleFeatures/deleteRoleFeatures
-    // below evict on the writes that actually change grants so an admin's edit is immediate.
     private static final long GRANTED_FEATURE_KEYS_CACHE_TTL_MILLIS = 30_000;
     private final TtlCache<Long, List<String>> grantedFeatureKeysCache = new TtlCache<>(GRANTED_FEATURE_KEYS_CACHE_TTL_MILLIS);
 
@@ -85,7 +60,6 @@ public class FeatureManagementService {
         return granted;
     }
 
-    // Cached — see grantedFeatureKeysCache's own header comment.
     public List<String> getGrantedFeatureKeys(Long userId) {
         return grantedFeatureKeysCache.get(userId, this::computeGrantedFeatureKeys);
     }
@@ -102,8 +76,6 @@ public class FeatureManagementService {
                 .collect(Collectors.toList());
     }
 
-    // Called by RoleManagementService (a role's own Feature grants changed — every holder is
-    // affected) and by UserManagementService for a single user's own role/denial changes.
     public void invalidateAllGrantedFeatureKeysCache() {
         grantedFeatureKeysCache.evictAll();
     }
@@ -112,18 +84,12 @@ public class FeatureManagementService {
         grantedFeatureKeysCache.evict(userId);
     }
 
-    // The Feature IDs one role directly grants — populates the Edit Role popup's Feature checkboxes
-    // (RoleManagementService includes this in RoleSummaryResponse).
     public List<Integer> getGrantedFeatureIdsForRole(Integer roleId) {
         return roleFeatureGrantRepository.findByIdRoleId(roleId).stream()
                 .map(grant -> grant.getId().getFeatureId())
                 .collect(Collectors.toList());
     }
 
-    // Full-replace of one role's Feature grants — called by RoleManagementService.createRole/
-    // updateRole alongside assignPermissions, same delete-then-reinsert convention. A null
-    // featureIds means "grant nothing" (a brand-new role's Feature checkboxes start unchecked, same
-    // as its Page/Section permissions).
     @Transactional
     public void replaceRoleFeatures(Integer roleId, List<Integer> featureIds) {
         roleFeatureGrantRepository.deleteByIdRoleId(roleId);
@@ -134,10 +100,6 @@ public class FeatureManagementService {
         invalidateAllGrantedFeatureKeysCache();
     }
 
-    // Called by RoleManagementService.deleteRole before the role row itself is removed — mirrors
-    // rolePermissionRepository.deleteByIdRoleId's own precedent (the FK's ON DELETE CASCADE would
-    // also clean this up, but explicit deletion keeps the ordering obvious and doesn't rely on the
-    // cascade alone, same reasoning already applied to every other Role_ID-keyed junction table).
     @Transactional
     public void deleteRoleFeatures(Integer roleId) {
         roleFeatureGrantRepository.deleteByIdRoleId(roleId);

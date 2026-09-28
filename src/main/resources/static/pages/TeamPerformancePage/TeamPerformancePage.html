@@ -1,5 +1,3 @@
-<!-- Team Performance page: new nav entry after Site Details in the sidebar (Sidebar.html). Empty
-     shell for now, no real sections/data yet — see TeamPerformancePage.js. -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -32,23 +30,12 @@
         </button>
 
         <main class="app-main">
-            <!-- "Filter Header" section — Status toggle pill on the left, Date Filter pushed to the
-                 row's right edge (see .team-performance-header-right in TeamPerformancePage.css).
-                 Same frontend convention Dashboard's/SiteStatusPage's own "Filter Header" sections
-                 use, copied here per this codebase's per-page-own-copy convention (not centralized).
-                 The FY Year Filter dropdown that used to sit here was removed per explicit request —
-                 "Team Report" below now defaults to the real current calendar MONTH (not FY, see
-                 currentMonthDateRange in TeamPerformancePage.js) whenever the Date Filter itself isn't
-                 active, per explicit request. -->
+
             <div class="section-container" id="teamPerformanceFilterHeaderSectionContainer" data-permission="page:team-insights.filter-header" hidden>
                 <div class="section-header">
                     <div class="team-performance-header-row">
                         <p class="team-performance-subtitle">Filter Header</p>
-                        <!-- Moved here from its old spot next to the Filter button, per explicit
-                             request — same #teamPerformanceRangeLabel updateTeamPerformanceRangeLabel()
-                             (TeamPerformancePage.js) fills in on every Date Filter change, just
-                             relocated to sit next to "Filter Header" on the right, same convention
-                             PrimarySalesPage.html's own #taOverviewRangeLabel already uses. -->
+
                         <span class="ta-overview-range-label" id="teamPerformanceRangeLabel"></span>
                     </div>
                 </div>
@@ -56,39 +43,14 @@
                 <div class="section-content">
                     <div class="dashboard-fy-overview-filter-header-card">
                         <div class="dashboard-fy-overview-filter-row">
-                            <!-- Primary/Secondary Sales pill — same "Sales Type" field Dashboard's own
-                                 Filter Header uses (index.html#dashboardFyOverviewSalesTypeToggle),
-                                 moved here from inside the Team Report card's own header per explicit
-                                 request (was #teamPerformanceReportCard's own reports-section-header)
-                                 — same id/wiring, just relocated, so initTeamReportSection's own
-                                 document.getElementById("teamPerformanceSalesTypeToggle") +
-                                 initSalesTypeFilter call (TeamPerformancePage.js) keep working
-                                 unchanged. Real options fetched from
-                                 GET /api/team-performance/sales-types (site_master.Sales_Type) —
-                                 rendered dynamically by initTeamReportSection, Secondary Sales staying
-                                 the default selection whenever the real options include it; this
-                                 placeholder is only ever shown while that fetch is still in flight.
-                                 Unlike Dashboard's own version (All/Primary/Secondary, scoping multiple
-                                 sections at once), this only ever drives Team Report below — no "All"
-                                 option, same as before the move. -->
+
                             <div class="dashboard-fy-overview-field">
                                 <span class="dashboard-fy-overview-label">Sales Type</span>
                                 <div class="brand-header-pill team-performance-sales-type-pill" id="teamPerformanceSalesTypeToggle" data-feature="feature:sales-type-filter">
                                     <span class="brand-header-item brand-header-empty">Loading…</span>
                                 </div>
                             </div>
-                            <!-- Status toggle pill — real options fetched from
-                                 GET /api/team-performance/statuses, same shared
-                                 components/StatusFilter/StatusFilter.js widget Site Insight's own
-                                 Status field (SiteStatusPage.html) uses, on the LEFT side of this row
-                                 (.team-performance-header-right below still hugs the right edge via
-                                 its own margin-left: auto). Wired into every section on this page —
-                                 Team Report, Person Sitemaster Report, and Person Details/Daily Sales
-                                 when a person is open — see this page's own initStatusFilter call in
-                                 TeamPerformancePage.js. Rendered dynamically by loadStatusPillOptions/
-                                 renderStatusPill (TeamPerformancePage.js) — Active stays the default
-                                 selection whenever the real options include it; this placeholder is
-                                 only ever shown while that fetch is still in flight. -->
+
                             <div class="site-status-card-field site-status-filter-field">
                                 <span class="site-status-card-label">Status</span>
                                 <div class="site-status-filter-pill" id="teamPerformanceStatusFilterToggle" data-feature="feature:status-filter">
@@ -113,12 +75,6 @@
                 </div>
             </div>
 
-            <!-- "Team Report" — exact frontend architecture mirror of Primary Sales' own "4. Reports"
-                 (PrimarySalesPage.html/.js), per explicit request: an "All Report" hierarchy tree
-                 (RM -> AM -> CM -> SM, expand/collapse per row) plus three flat single-level tabs
-                 (AM/CM/SM — RM excluded from the flat tabs since it's already the tree's own root,
-                 same reasoning Primary's Brand tab is excluded there). Driven by the Filter Header's
-                 Date Filter above (see TeamPerformancePage.js's own initTeamReportSection). -->
             <div class="section-container" id="teamPerformanceReportSectionContainer" data-permission="page:team-insights.team-report" hidden>
                 <div class="section-header">
                     <p class="team-performance-subtitle">Team Report</p>
@@ -134,16 +90,7 @@
                                 <button type="button" class="position-header-item" data-tab="cm">CM</button>
                                 <button type="button" class="position-header-item" data-tab="sm">SM</button>
                             </div>
-                            <!-- Primary/Secondary sales-type pill — moved up into the "Filter Header"
-                                 section's own row per explicit request (same id, see that markup's own
-                                 comment); still scopes every tab's data to just that one sales type (a
-                                 site's own Sales_Type on site_master, same real classification
-                                 Primary/SecondarySalesReportsService use) via initTeamReportSection's
-                                 own salesTypeToggle wiring in TeamPerformancePage.js, unchanged. -->
-                            <!-- Shown only while any tab's data is being (re)fetched — see
-                                 initTeamReportSection's beginLoading/endLoading in TeamPerformancePage.js,
-                                 which toggle #teamPerformanceReportCard.is-loading (an ancestor of this
-                                 header). -->
+
                             <span class="section-loading-spinner" id="teamPerformanceReportSpinner" aria-hidden="true"></span>
                             <div class="reports-section-counts" id="teamPerformanceReportCounts"></div>
                             <div class="product-snapshot-download-wrap">
@@ -169,19 +116,6 @@
                 </div>
             </div>
 
-            <!-- "Person Details" — shown only once a name is clicked anywhere in "Team Report"'s tables
-                 above (see attachPersonClickHandler/openPersonDetails in TeamPerformancePage.js).
-                 Left: an FY card, exact same Month x Primary/Secondary Target/Sales/Achi./Vs Last Year
-                 table design as Dashboard's own "1. Overview" (index.html#dashboardFyOverviewCard),
-                 scoped to just this person's own assigned sites. Defaults to the real current FY, with
-                 its own FY Filter dropdown (#teamPersonFyYearFilter, right side of the card's own
-                 header) to view a different one — scoped to just this card, independent of the page's
-                 own Filter Header Date Filter above (see initTeamPersonFyYearFilter in
-                 TeamPerformancePage.js). Right: a Person card — persona identity (name/role) plus their
-                 assigned site count (the site-code chip list itself was removed per explicit
-                 request — see loadSites in TeamPerformancePage.js, which still fetches the same
-                 /person/sites data for the count + the FY card's own Primary/Secondary column
-                 visibility, just no longer renders it as a chip list). -->
             <div class="section-container" id="teamPerformancePersonSectionContainer" hidden>
                 <div class="section-header">
                     <p class="team-performance-subtitle">Person Details</p>
@@ -197,12 +131,7 @@
                                 </div>
                                 <div class="dashboard-fy-overview-header-actions">
                                     <span class="section-loading-spinner" id="teamPerformancePersonFySpinner" aria-hidden="true"></span>
-                                    <!-- FY Filter — scoped to just this card (per explicit request), same
-                                         funnel-button-opens-a-dropdown-menu control Dashboard's own "1.
-                                         Overview" card uses (index.html#dashboardFyYearFilter) — see
-                                         initTeamPersonFyYearFilter in TeamPerformancePage.js. Independent of
-                                         the page's own Filter Header Date Filter above: this only changes
-                                         which FY this one card shows. -->
+
                                     <div class="dashboard-fy-year-filter" id="teamPersonFyYearFilter" data-feature="feature:fy-year-filter">
                                         <button type="button" class="dashboard-fy-year-filter-btn" id="teamPersonFyYearFilterBtn" aria-expanded="false">
                                             <i class="bi bi-funnel"></i>
@@ -211,10 +140,7 @@
                                         </button>
                                         <div class="dashboard-fy-year-filter-menu" id="teamPersonFyYearFilterMenu" hidden></div>
                                     </div>
-                                    <!-- Same plain click-to-download convention Dashboard.js's own "3.
-                                         Partner Wise" table uses (no range popup) — exports whichever
-                                         FY this card's own Filter currently has selected. See
-                                         downloadTeamPersonFyCsv in TeamPerformancePage.js. -->
+
                                     <button type="button" class="product-snapshot-download-btn" id="teamPerformancePersonFyDownloadBtn" title="Download CSV" data-feature="feature:excel-download">
                                         <i class="bi bi-download"></i>
                                     </button>
@@ -257,17 +183,6 @@
                 </div>
             </div>
 
-            <!-- Daily Sales graph — full frontend parity with Primary Sales page's own "2. Daily
-                 Sales Trends" (PrimarySalesPage.html/.js's #dailyTrendCard), per explicit request:
-                 Vs Last Year toggle, Compare toggle (there: brand vs brand; here: Primary vs
-                 Secondary Sales, this page's own real per-person dimension), Graph/Bar Graph toggle,
-                 dark rich tooltip, Bar Graph per-bar growth labels — see initTeamPersonDailyTrend in
-                 TeamPerformancePage.js. Scoped to whichever person "Person Details" above is
-                 currently showing (see TeamPersonService#getPersonTrendRange). Shown/hidden together
-                 with "Person Details" — see openPersonDetails in TeamPerformancePage.js. Always shows
-                 that FY's own 12 months (Apr-Mar), driven entirely by "Person Details"' own scoped FY
-                 Filter (#teamPersonFyYearFilter) — not this page's own Filter Header Date Filter
-                 above, per explicit request (see setFyKey's own wiring in initPersonDetailsSection). -->
             <div class="section-container" id="teamPerformanceDailyTrendSectionContainer" hidden>
                 <div class="section-header">
                     <p class="team-performance-subtitle">Daily Sales</p>
@@ -281,29 +196,15 @@
                                 <span class="daily-trend-mode-badge" id="teamPerformanceDailyTrendModeBadge">—</span>
                             </div>
                             <div class="daily-trend-header-actions">
-                                <!-- Same Target toggle Dashboard.js's own "2. Daily Sales Trends"
-                                     section has (#dailyTrendTargetToggle in index.html) — starts
-                                     active/on since the Target line used to always be drawn
-                                     unconditionally here too; this only adds the ability to hide it,
-                                     not a new default-off behavior. Only affects the single combined
-                                     Sales line (state.compare off) — Compare mode has no Target line
-                                     to toggle at all, see renderChart's own comment on why. -->
+
                                 <button type="button" class="daily-trend-compare-toggle active" id="teamPerformanceDailyTrendTargetToggle" aria-pressed="true" title="Overlay Sales Target for the same period">
                                     <i class="bi bi-bullseye"></i> Target
                                 </button>
-                                <!-- Overlays last year's same-period Sales as a dotted line — same
-                                     PrimarySalesPage.html's own #dailyTrendVsLastYearToggle, off by
-                                     default. Works alongside both Bar Graph mode and Compare mode. -->
+
                                 <button type="button" class="daily-trend-compare-toggle" id="teamPerformanceDailyTrendVsLastYearToggle" aria-pressed="false" title="Overlay last year's Sales for the same period">
                                     <i class="bi bi-calendar2-week"></i> Vs Last Year
                                 </button>
-                                <!-- Splits the single combined Sales line into Primary Sales vs
-                                     Secondary Sales side by side — same idea as
-                                     PrimarySalesPage.html's own Compare (there: brand vs brand), just
-                                     by sales type here since that's this page's own real dimension
-                                     (a person has no Brand of their own). No extra fetch needed —
-                                     /person/trend-range already returns primary/secondary/total in
-                                     one response, see TeamPersonService#getPersonTrendRange. -->
+
                                 <button type="button" class="daily-trend-compare-toggle" id="teamPerformanceDailyTrendCompareToggle" aria-pressed="false" title="Compare Primary vs Secondary Sales side by side">
                                     <i class="bi bi-bar-chart-steps"></i> Compare
                                 </button>
@@ -321,21 +222,6 @@
                 </div>
             </div>
 
-            <!-- "Person Sitemaster Report" — renamed from the page-wide "Site Master Report" section,
-                 per explicit request: now scoped to just whichever RM/AM/CM/SM person "Person
-                 Details" above is currently showing (an RM sees every site under their whole
-                 subtree, an SM sees just their own — same real site_master column filter
-                 TeamSiteRepository.loadSiteRows already uses for the rest of this drill-down), same
-                 shape/leaderboard convention as Primary Sales page's own "5. Site_Master
-                 Primary_Sale Report" (PrimarySalesPage.html/.js's #primarySiteReportCard) —
-                 Rank/Site_Code/Brand/Store_Name/City/State/Region/Target/Sales/Achi/Vs LY, ranked by
-                 real Sales descending, one final grand-total row. Lists every one of that person's
-                 own active sites regardless of Sales_Type (Primary AND Secondary). Shown/hidden
-                 together with "Person Details" — see openPersonDetails/initTeamSiteReport's own
-                 setPerson in TeamPerformancePage.js. Still driven by the Filter Header's own Date
-                 Filter above for its own Target/Sales period, independent of "Person Details"' own
-                 scoped FY Filter. Shifted here (after "Daily Sales") per explicit request, was
-                 previously placed right after "Person Details" instead. -->
             <div class="section-container" id="teamPerformanceSiteReportSectionContainer" hidden>
                 <div class="section-header">
                     <div class="team-performance-header-row">

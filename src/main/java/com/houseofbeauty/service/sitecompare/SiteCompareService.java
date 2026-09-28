@@ -17,22 +17,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
-// Backs the Site Status page's own "Compare" modal (SiteStatusPage.html/.js) — its three tabs (States,
-// Sites in a State, Selected Stores) all reduce to the same all-time Sales-vs-Target metrics
-// DashboardSiteReportService already computes per (Site_Code, Brand) row for the Dashboard's own
-// Site_Master Full Report, just without that report's own date-range filtering (this page's KPI cards
-// are all-time totals, same convention SiteDetailService's own "Total" card uses — no period picker
-// here to keep the modal simple) and grouped differently per tab.
-//
-// Primary Sales attributes via (Bill_to, Brand) same composite FK site_master's own
-// FK_PrimarySales_Billto_SiteMaster uses; Secondary Sales/Target attribute directly by (Site_Code,
-// Brand). Primary_Sales_Target has no real per-site grain — its real key is (Brand, Channel, Partner,
-// Month) — so it's combo-matched per site same as everywhere else in this codebase that touches that
-// table (see DashboardSiteReportService's own header comment for the full explanation). compareStates
-// dedupes that combo PER STATE so two sites in the same state sharing a Partner don't double-count
-// their shared target — but a Partner whose sites span multiple states legitimately has that combo's
-// whole target counted once in each of those states, since the table has no per-state grain to split
-// it by; this is the same approximation the rest of this codebase already accepts for this table.
 @Service
 public class SiteCompareService {
 
@@ -65,10 +49,6 @@ public class SiteCompareService {
         return normalizeComboKey(brand) + "|" + normalizeComboKey(channel) + "|" + normalizeComboKey(partner);
     }
 
-    // status ("all"/"active"/"inactive"/"upcoming", the Site Insight page's own Status toggle pill —
-    // see OperationalStatusFilter) scopes every Compare tab the same way it scopes the Site Code
-    // picker/Geo Map, so a comparison never includes a site the rest of the page's current filter has
-    // hidden.
     private List<SiteInfo> loadAllSites(String status) {
         List<SiteInfo> rows = new ArrayList<>();
         String sql = "SELECT Site_Code, Brand, Store_Name, City, State, Channel, Partner FROM site_master " +
@@ -86,8 +66,6 @@ public class SiteCompareService {
         return rows;
     }
 
-    // Real (Bill_to, Brand)-keyed Primary_Sales all-time sum — same grouping
-    // DashboardSiteReportService#primarySalesBySite uses, just with no date filter.
     private Map<String, BigDecimal> primarySalesAllTime() {
         Map<String, BigDecimal> result = new HashMap<>();
         for (Map<String, Object> row : jdbcTemplate.queryForList(
@@ -151,8 +129,6 @@ public class SiteCompareService {
                 : null;
     }
 
-    // One row per real State — siteCount, combined all-time Sales, and the Primary-Target-combo-dedup
-    // (per state, see class header) all-time Target/Achievement %. Sorted by Sales descending.
     public List<Map<String, Object>> compareStates(String status) {
         List<SiteInfo> sites = loadAllSites(status);
         AllTimeData data = loadAllTimeData();
@@ -196,11 +172,6 @@ public class SiteCompareService {
                 String.class);
     }
 
-    // Every real site_master row (Site_Code, Brand, Store_Name, City, State) — feeds the Compare
-    // modal's own "Selected Stores" tab searchable picker, same one-shot-fetch-then-filter-client-side
-    // convention GeoMap.js's own bundled data uses. Scoped by the same Status toggle as every other
-    // Compare tab (see loadAllSites above) — the picker list itself only ever offers sites the rest
-    // of the page's current filter would show.
     public List<Map<String, Object>> getAllStoresForPicker(String status) {
         String sql = "SELECT Site_Code, Brand, Store_Name, City, State FROM site_master WHERE 1=1" +
                 OperationalStatusFilter.whereClause(status) + " ORDER BY Store_Name, Brand";
@@ -212,10 +183,6 @@ public class SiteCompareService {
         return compareSites(sites);
     }
 
-    // No status param here, unlike every other tab above — these are exact (Site_Code, Brand) picks
-    // the user already made from the Status-filtered picker list (getAllStoresForPicker), so
-    // re-applying the toggle here would only risk silently dropping a pick if the toggle changed
-    // between picking and comparing.
     public List<Map<String, Object>> compareSelectedStores(List<SitePairDto> pairs) {
         Set<String> wanted = new HashSet<>();
         for (SitePairDto p : pairs) {
@@ -225,10 +192,6 @@ public class SiteCompareService {
         return compareSites(sites);
     }
 
-    // Shared by the "Sites in a State" and "Selected Stores" tabs — one row per (Site_Code, Brand),
-    // sorted by Sales descending, plus a trailing Total row (rank/siteCode null) whose own Target
-    // dedupes shared Primary combos across just these rows, same seenCombos convention
-    // DashboardSiteReportService's own grand-total row uses.
     private List<Map<String, Object>> compareSites(List<SiteInfo> sites) {
         AllTimeData data = loadAllTimeData();
 

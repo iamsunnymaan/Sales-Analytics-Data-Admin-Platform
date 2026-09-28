@@ -12,12 +12,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
-// JPA mapping for IAM_Login_Refresh_Tokens — reserved for a future JWT refresh-token flow;
-// AuthService doesn't issue tokens yet (login currently just returns the user/roles and the
-// frontend caches that in sessionStorage). Not necessarily empty in practice though: this database
-// is shared with at least one other application (see IamLoginRefreshTokenRepository's own header
-// comment, and IAM_Login_Download_Audit's migration for the same pattern), so real rows can show
-// up here from that sibling app's own usage even though house_of_beauty never writes one itself.
+
 @Entity
 @Table(name = "IAM_Login_Refresh_Tokens")
 @Data

@@ -1,4 +1,3 @@
-// One clickable "chip" per table name; clicking (or Enter/Space) selects it and marks it active.
 function buildChip(tableName, grid, onSelect) {
     const chip = document.createElement("span");
     chip.className = "table-chip";
@@ -35,13 +34,7 @@ function renderStatus(grid, text, isError) {
     grid.replaceChildren(status);
 }
 
-// Renders the table picker's right-hand info panel (#tableInfoPanel, inside the same
-// .table-list-columns wrapper as #tableListGrid — see this component's own CSS) — a quick-reference
-// summary (icon+name, last committed-import date, and whether this table's own import rules apply
-// the normal duplicate check or always insert every row as new, see TableImportRules#alwaysInsertNew)
-// for whichever table is currently selected in the chip grid. Shared by DataUploadPage.js and
-// ExplorerPage.js — both wire their own initTableList's onSelect to also call the returned show().
-// Backed by GET /api/database/tables/{tableKey}/summary.
+
 export function initTableInfoPanel() {
     const panel = document.getElementById("tableInfoPanel");
     if (!panel) {
@@ -66,14 +59,12 @@ export function initTableInfoPanel() {
         return wrap;
     }
 
-    // Server sends null when the table has no committed-upload history in the last-day retention
-    // window (see TableSummaryResponse's own doc) — not necessarily that the table itself is empty.
+
     function formatLastUpdated(iso) {
         return iso ? new Date(iso).toLocaleString() : "No import yet";
     }
 
-    // Row 01: icon + table name, with the last committed-import date/time directly underneath as one
-    // compact block. Row 02: the duplicate-check badge.
+
     function buildContent(tableName, summary) {
         const wrap = document.createDocumentFragment();
 
@@ -92,10 +83,7 @@ export function initTableInfoPanel() {
         return wrap;
     }
 
-    // Bumped on every call so a slow response for a table the user has since clicked past never
-    // overwrites the panel with stale info — the same "ignore anything but the latest request"
-    // pattern initFileImport's own operationToken uses (DataUploadPage.js), just for this one
-    // fire-and-forget fetch.
+
     let requestToken = 0;
 
     async function show(tableName) {
@@ -123,9 +111,7 @@ export function initTableInfoPanel() {
     return { show };
 }
 
-// Loads the visible table list from GET /api/database/tables and renders it as chips.
-// `options.initialTable`, when it matches one of the loaded tables, is auto-selected (clicked)
-// once the chips render — lets a sidebar link like "?table=primary_sales" land pre-selected.
+
 export async function initTableList(onSelect, options = {}) {
     const { initialTable } = options;
     const grid = document.getElementById("tableListGrid");

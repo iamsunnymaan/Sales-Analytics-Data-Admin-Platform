@@ -1,9 +1,3 @@
-<!-- Identity — real CRUD against IAM_Login_Users (UsersController: /api/identity/users). The
-     standalone Users page was folded into this one rather than kept as its own nav item. Role
-     management (New/Edit/Delete Role, the Role and Details table, the Permission/Feature picker)
-     moved to the IAM page per explicit request — this page still reads RolesController's read-only
-     /api/identity/roles/details (loadRoles in RolesPage.js), purely to populate the New/Edit User
-     popup's own Roles checkbox list. See RolesPage.js. -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -79,11 +73,6 @@
 
     <div class="quick-access-panel" id="quickAccessPanel"></div>
 
-    <!-- New User / Edit Profile popup — same modal, toggled between "create" and "edit" mode by
-         RolesPage.js (openUserModal). Create mode shows Username + Password (both required, the
-         account doesn't exist yet); edit mode swaps those for New Password (optional — leave blank
-         to keep the current password, fill it in to replace it, this is also how a password reset
-         happens now instead of a separate action/endpoint). -->
     <div class="users-modal-backdrop" id="usersModalBackdrop" hidden>
         <div class="users-modal" role="dialog" aria-modal="true" aria-labelledby="usersModalTitle">
             <div class="users-modal-header">

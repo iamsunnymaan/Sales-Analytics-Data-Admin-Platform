@@ -1,14 +1,3 @@
-// Explorer page: connection status badge + table picker + data grid, wired up below.
-//
-// Per explicit request, the section logic that used to live in separate components/* modules
-// (DatabaseInfo, TableData) is inlined below instead — this page is the only place either was
-// ever used, and neither declares anything at module top level besides its own single init
-// function, so there's no naming-collision risk in concatenating them directly (unlike
-// PrimarySalesPage.js, where several sections' internal helpers shared names and needed their
-// own block scopes).
-//
-// TableList stays a separate shared component — DataUploadPage.js uses it too, so inlining it
-// here would just recreate the duplication that was already removed elsewhere in the app.
 import { initSidebar } from "/components/Sidebar/Sidebar.js";
 import { initQuickAccessPanel } from "/components/QuickAccessPanel/QuickAccessPanel.js";
 import { initTableList, initTableInfoPanel } from "/components/TableList/TableList.js";
@@ -17,8 +6,7 @@ import { initSearchBar } from "/components/SearchBar/SearchBar.js";
 import { applyPagePermissions } from "/Shared/js/permission-guard.js";
 import { applyFeatureGating } from "/Shared/js/feature-guard.js";
 
-// Fills in the connection status badge (dot + Connected/Disconnected) from
-// GET /api/database/connection. Falls back to disconnected on any fetch failure.
+
 async function initDatabaseInfo() {
     const statusEl = document.getElementById("dbConnectionStatus");
 
@@ -46,12 +34,7 @@ async function initDatabaseInfo() {
     }
 }
 
-// Primary_Sales/Secondary_Sales default to the real CURRENT calendar month's own Sales_Date rows
-// (see loadTable's own comment) and repurpose the plain search bar into a month picker (see
-// parseMonthQuery/monthRange below) instead of a free-text search — every other table keeps the
-// generic "no filter by default, search across every column" behavior unchanged. Matched
-// case-insensitively against state.tableName, same convention TableAccessService's own
-// isVisibleTable already uses.
+
 const MONTH_FILTERED_TABLES = new Set(["primary_sales", "secondary_sales"]);
 const MONTH_FILTER_DATE_COLUMN = "Sales_Date";
 
@@ -59,8 +42,7 @@ function isMonthFilteredTable(tableName) {
     return !!tableName && MONTH_FILTERED_TABLES.has(tableName.toLowerCase());
 }
 
-// [firstOfMonth, lastOfMonth] as YYYY-MM-DD strings — same shape buildWhereClause's dateFrom/dateTo
-// params expect.
+
 function monthRange(year, month) {
     const pad = (n) => String(n).padStart(2, "0");
     const from = `${year}-${pad(month)}-01`;
@@ -77,8 +59,7 @@ function currentMonthRange() {
 const MONTH_NAMES = ["january", "february", "march", "april", "may", "june", "july", "august",
     "september", "october", "november", "december"];
 
-// Matches a month name/abbreviation (3+ letters, e.g. "Sep", "sept", "September") against
-// MONTH_NAMES by prefix — returns its 1-based month number, or -1 when nothing matches.
+
 function matchMonthName(token) {
     const lower = token.toLowerCase();
     if (lower.length < 3) {
@@ -88,9 +69,7 @@ function matchMonthName(token) {
     return index === -1 ? -1 : index + 1;
 }
 
-// Parses a handful of common "which month" spellings the Search Bar accepts on Primary_Sales/
-// Secondary_Sales — "2026-09", "2026/09", "09-2026", "09/2026", "September 2026", "Sep 2026" (case
-// -insensitive) — into a { from, to } range, or null when the text doesn't look like a month at all.
+
 function parseMonthQuery(text) {
     const trimmed = text.trim();
     if (!trimmed) {
@@ -128,8 +107,7 @@ function parseMonthQuery(text) {
     return null;
 }
 
-// The Explorer data grid: paged/searched/sorted rows for a selected table, plus inline row
-// edit/delete (via TableDataController's PK-or-full-row-match endpoints) and CSV/XLSX export.
+
 function initTableData(options = {}) {
     const { onChange } = options;
     const section = document.getElementById("tableDataSection");
@@ -182,14 +160,7 @@ function initTableData(options = {}) {
     };
 
     let messageTimeout = null;
-    // FIXED 2026-08-25: load() had no request-sequencing guard at all, unlike every other paged/
-    // filtered fetch on this page's sibling pages — rapidly clicking Next/Prev (or Search, or a
-    // header sort) fired a new overlapping fetch on every click with nothing to stop it, and
-    // whichever response happened to land LAST simply overwrote the grid, regardless of whether it
-    // was actually the most recently REQUESTED page. On a 194k-row current-month table this was very
-    // reproducible: 5 rapid Next clicks visibly advanced only 1 page and briefly froze the tab.
-    // requestSeq/isLoading below are exactly the same "only the newest request's response applies"
-    // pattern PrimarySalesPage.js's various load()s already use.
+
     let requestSeq = 0;
     let isLoading = false;
 
@@ -213,11 +184,7 @@ function initTableData(options = {}) {
         return btn;
     }
 
-    // Mirrors TableDataController#formatExportValue exactly (DD-MM-YYYY, or DD-MM-YYYY HH:mm:ss
-    // when the time-of-day isn't midnight) — string digit rearrangement only, deliberately not a JS
-    // Date object, so there's no UTC-vs-local timezone shift risk on a date-only value (the
-    // well-known "new Date('2025-06-10') can render as the 9th in a negative-offset timezone" trap;
-    // see toIsoDate's own comment in PrimarySalesPage.js for the same concern elsewhere in this app).
+
     function formatDateValue(value) {
         const str = String(value);
         const match = str.match(/^(\d{4})-(\d{2})-(\d{2})(?:T(\d{2}):(\d{2}):(\d{2}))?/);
@@ -230,11 +197,7 @@ function initTableData(options = {}) {
         return hasTime ? `${datePart} ${hour}:${minute}:${second}` : datePart;
     }
 
-    // `col` is optional (omit for a value with no known column, e.g. none of today's call sites
-    // actually do this, but keeps the function safe to reuse) — when given and it's one of
-    // state.dateColumns, the value renders in the SAME DD-MM-YYYY format the CSV/XLSX export uses,
-    // instead of the raw ISO string Jackson serializes it as (see formatDateValue above) — per
-    // explicit request, the grid and the export must show identical text for the same value.
+
     function formatValue(value, col) {
         if (value === null || value === undefined) {
             return "—";
@@ -258,13 +221,7 @@ function initTableData(options = {}) {
         body.appendChild(tr);
     }
 
-    // FIXED 2026-08-25: used to pagination.replaceChildren() the WHOLE pagination bar away (Prev/
-    // Next buttons, row-count label, page label — all of it) on every single load(), including a
-    // plain page change. Disabling the existing buttons in place instead — row-count/page label stay
-    // visible, buttons visibly grey out rather than vanish-and-reappear — is both clearer feedback
-    // and (paired with load()'s own requestId guard) removes the brief window where a button could
-    // disappear out from under a fast double-click and land the next click on whatever now sits at
-    // that same screen position instead.
+
     function setLoading() {
         emptyRow("Loading…");
         pagination.querySelectorAll("button").forEach((btn) => {
@@ -278,7 +235,7 @@ function initTableData(options = {}) {
         pagination.replaceChildren();
     }
 
-    // Plain column header labels (sorting UI removed from the Table Data section).
+
     function buildHeader(columns, sortableColumns, hasActionsColumn) {
         head.replaceChildren();
         const tr = document.createElement("tr");
@@ -306,8 +263,7 @@ function initTableData(options = {}) {
         head.appendChild(tr);
     }
 
-    // One data row. In edit mode each row gets its own inline edit/save/cancel/delete controls,
-    // scoped via closures over cellRefs rather than a shared/global "currently editing row" state.
+
     function buildRow(columns, primaryKeyColumns, computedColumns, row, editable) {
         const tr = document.createElement("tr");
         const cellRefs = {};
@@ -373,8 +329,7 @@ function initTableData(options = {}) {
             renderViewActions();
         }
 
-        // Sends both `keys` (used when the table has a PK) and `originalRow` (used for the
-        // full-row-match fallback when it doesn't) — the backend picks whichever applies.
+
         async function saveEdit() {
             const keys = {};
             primaryKeyColumns.forEach((col) => {
@@ -471,7 +426,7 @@ function initTableData(options = {}) {
         body.replaceChildren(...rows.map((row) => buildRow(columns, primaryKeyColumns, computedColumns, row, editable)));
     }
 
-    // Row-count label plus Prev/Next controls; page numbers aren't clickable directly, only stepped.
+
     function buildPagination(totalRows) {
         pagination.replaceChildren();
 
@@ -516,12 +471,7 @@ function initTableData(options = {}) {
         pagination.append(info, controls);
     }
 
-    // Enables the download panel's "Date range" row option only when the loaded table has at least
-    // one date/datetime column (per data.dateColumns from the server — see
-    // TableDataController.dateColumns) — it's unclickable on tables with no date/month column since
-    // there'd be nothing to filter on, and says so inline (not just via a hover tooltip, which is
-    // undiscoverable on touch). Populates the column picker, shown only when the table has more than
-    // one date column; when it has exactly one, names that column inline instead of showing nothing.
+
     function updateDownloadDateOptionUi() {
         const hasDateColumns = state.dateColumns.length > 0;
         downloadScopeDate.disabled = !hasDateColumns;
@@ -563,8 +513,7 @@ function initTableData(options = {}) {
         menuEditBtn.classList.toggle("menu-panel-item-active", state.editMode);
     }
 
-    // Re-renders the grid from the last fetched page without hitting the network — used when
-    // toggling edit mode, which doesn't change what data is shown, only how it's rendered.
+
     function renderCurrentData() {
         const data = state.lastData;
         if (!data) {
@@ -597,16 +546,7 @@ function initTableData(options = {}) {
         updateEditToggleUi();
     }
 
-    // Fetches the current page/sort/search combo from the server and re-renders.
-    //
-    // FIXED 2026-08-25: this had NO request-sequencing guard at all — unlike every other paged/
-    // filtered fetch elsewhere on this page's sibling pages — so firing a second load() (Next/Prev,
-    // a header sort, typing a search term) before an earlier one had resolved left both requests in
-    // flight with nothing to stop the earlier one's response from landing AFTER the later one's and
-    // silently overwriting the grid with the wrong page's data. requestId/requestSeq below are the
-    // same "only the newest request's response applies" pattern PrimarySalesPage.js's various load()s
-    // already use — a response whose requestId no longer matches requestSeq (a newer load() has since
-    // started) is discarded outright, success or failure alike.
+
     async function load() {
         if (!state.tableName) {
             return;
@@ -666,7 +606,7 @@ function initTableData(options = {}) {
         }
     }
 
-    // Switches the grid to a newly selected table, resetting all paging/sort/search/edit state.
+
     function loadTable(tableName) {
         state.tableName = tableName;
         state.page = 0;
@@ -676,12 +616,7 @@ function initTableData(options = {}) {
         state.editMode = false;
         state.lastData = null;
         state.dateColumns = [];
-        // Primary_Sales/Secondary_Sales default to the real current calendar month's own Sales_Date
-        // rows — per explicit request (2026-09-11 restore, with a real escape hatch this time: the
-        // search bar below re-parses as a month query for these two tables, see parseMonthQuery, so
-        // a user can always reach a different month instead of being stuck the way the old,
-        // un-escapable Primary_Sales-only lock left them — see this function's own git history for
-        // that bug). Every other table keeps the plain "no filter" default.
+
         if (isMonthFilteredTable(tableName)) {
             const { from, to } = currentMonthRange();
             state.dateColumn = MONTH_FILTER_DATE_COLUMN;
@@ -725,11 +660,7 @@ function initTableData(options = {}) {
         inputId: "tableDataSearch",
         debounceMs: 300,
         onQuery: (term) => {
-            // Primary_Sales/Secondary_Sales repurpose this box into a month picker instead of a
-            // free-text search — per explicit request, it's how a user reaches a month other than
-            // the current-month default loadTable sets. Blank reverts to that default; a value that
-            // doesn't parse as a month is rejected (data stays as-is) rather than silently falling
-            // through to a meaningless substring search against Sales_Date's own DB-formatted text.
+
             if (isMonthFilteredTable(state.tableName)) {
                 state.search = "";
                 if (!term) {
@@ -772,7 +703,7 @@ function initTableData(options = {}) {
         }
     });
 
-    // Toggles which of the "Rows" scope's extra inputs (row range vs. date range) are shown.
+
     document.querySelectorAll('input[name="downloadScope"]').forEach((radio) => {
         radio.addEventListener("change", () => {
             const scope = document.querySelector('input[name="downloadScope"]:checked').value;
@@ -782,8 +713,7 @@ function initTableData(options = {}) {
         });
     });
 
-    // Keeps From/To mutually constrained as native <input type="date"> doesn't do this on its own —
-    // without it, picking an out-of-order range was only caught after clicking Download.
+
     downloadDateFrom.addEventListener("change", () => {
         downloadDateTo.min = downloadDateFrom.value || "";
         downloadDateError.hidden = true;
@@ -808,9 +738,7 @@ function initTableData(options = {}) {
         }
         const format = document.querySelector('input[name="downloadFormat"]:checked').value;
         const scope = document.querySelector('input[name="downloadScope"]:checked').value;
-        // The export endpoint's `mode` only knows "all"/"range" — "date" reuses "all" and layers the
-        // dateColumn/dateFrom/dateTo filter on top (backend applies it as an additional WHERE clause
-        // regardless of mode, see TableDataController.buildWhereClause).
+
         const backendMode = scope === "date" ? "all" : scope;
 
         const params = new URLSearchParams({ format, mode: backendMode });
@@ -885,8 +813,7 @@ function initTableData(options = {}) {
         load();
     });
 
-    // Applies (or clears, when column/from/to are all null) a date-range filter on top of the
-    // current search/sort — used by the Primary Sales page's Month/Year/Range date filter.
+
     function setDateFilter(column, from, to) {
         state.dateColumn = column || null;
         state.dateFrom = from || null;
@@ -898,33 +825,16 @@ function initTableData(options = {}) {
     return { loadTable, setDateFilter };
 }
 
-// ==================== Page wiring ====================
+
 initSidebar();
 initQuickAccessPanel();
-// Reveals Tables/Table Data's own data-permission elements (Sections — see AuthBootstrapSeeder's
-// own header comment on why there's no finer Feature-level breakdown) once the session's real
-// permission set resolves — see this file's HTML for the hard-coded `hidden` on each. Both stay
-// UI-only gates here: the underlying /api/database/tables endpoints are shared with Data Upload's
-// own Available Tables section (see TableList.js), so they're deliberately left without a
-// page:explorer-specific backend check of their own — the truly Explorer-only /export endpoint
-// carries @RequirePermission("page:explorer.table-data") instead (TableDataController), same key
-// as viewing the grid it exports from (the old, separate "page:explorer.export" Section was folded
-// in per explicit request — its own download button is now gated purely by the
-// feature:excel-download Feature, not its own Section).
-// applyFeatureGating sequenced after applyPagePermissions resolves (not fired in parallel) — see
-// Dashboard.js's own comment on why: several data-feature elements here (search bar, download
-// button, menu items) live inside the data-permission-gated Table Data section, and permission-
-// gating's unconditional `hidden` assignment must never resolve after (and silently undo) a
-// feature-based hide on one of them.
+
 applyPagePermissions().then(() => applyFeatureGating());
 initDatabaseInfo();
 
 const tableData = initTableData();
 const tableInfoPanel = initTableInfoPanel();
-// Per explicit request: the grid isn't left empty ("Select a table above to view its data.") on a
-// plain page load any more — site_master shows by default, same as every other table remains
-// selectable via its own chip in the list above. An explicit `?table=` link (e.g. a sidebar link
-// into a specific table) still overrides this default, same as before.
+
 const initialTable = new URLSearchParams(window.location.search).get("table") || "site_master";
 initTableList((tableName) => {
     tableData.loadTable(tableName);

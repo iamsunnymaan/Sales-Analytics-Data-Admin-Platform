@@ -10,11 +10,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-// JPA mapping for IAM_Feature_Catalog — the seeded, flat registry of Feature keys (e.g.
-// "feature:brand-filter"), one per shared UI widget under static/components/. Wholly independent
-// of IAM_Login_Permission's Page->Section tree — this catalog has no hierarchy, no parent column,
-// and is never consulted by PermissionInterceptor/AuthService. See FeatureManagementService's own
-// header comment for how a user's granted Features are actually resolved.
+
 @Entity
 @Table(name = "IAM_Feature_Catalog")
 @Data

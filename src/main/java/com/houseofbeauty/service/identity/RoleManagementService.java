@@ -26,10 +26,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-// Backs the Identity > Roles page (RolesController: /api/identity/roles/details,
-// /api/identity/roles, /api/identity/permissions) — the "New Role"/"Edit Role"/"Delete" actions on
-// RolesPage.js. Deliberately separate from UserManagementService, which owns the simple
-// GET /api/identity/roles list used by the Users page's role checkboxes.
 @Service
 public class RoleManagementService {
 
@@ -56,10 +52,7 @@ public class RoleManagementService {
 
     public List<PermissionOptionResponse> listPermissions() {
         return permissionRepository.findAll().stream()
-                // Permission_ID order == PERMISSION_TREE's declared order (AuthBootstrapSeeder
-                // inserts page, then its sections, before moving to the next page) — parent always
-                // precedes its children, which is what lets RolesPage.js build the tree with a
-                // single pass instead of needing a second sort.
+
                 .sorted(Comparator.comparing(IamLoginPermission::getPermissionId))
                 .map(permission -> new PermissionOptionResponse(permission.getPermissionId(),
                         permission.getPermissionKey(), permission.getLabel(), permission.getDescription(),
@@ -152,8 +145,6 @@ public class RoleManagementService {
                     "The '" + role.getRoleName() + "' role can only be managed from the Super Admin page.");
         }
 
-        // Order matters: FK children first, then the role row itself — same pattern as
-        // UserManagementService.deleteUser.
         rolePermissionRepository.deleteByIdRoleId(roleId);
         featureManagementService.deleteRoleFeatures(roleId);
         userRoleRepository.deleteByIdRoleId(roleId);
@@ -162,8 +153,6 @@ public class RoleManagementService {
         authService.invalidateAllPermissionsCache();
     }
 
-    // Blocks a non-superadmin caller from checking any page:superadmin.* box in the permission
-    // picker — granting that tier of access is reserved for the Super Admin page itself.
     private void rejectSuperAdminPermissions(List<Integer> permissionIds) {
         if (permissionIds == null || permissionIds.isEmpty()) {
             return;
@@ -177,11 +166,6 @@ public class RoleManagementService {
         }
     }
 
-    // Saves exactly the submitted permission set, no more and no less — Page and Section grants are
-    // fully independent of each other (a Page's sidebar visibility depends only on its own
-    // permission, not on how many of its Sections are also granted), so this deliberately does not
-    // auto-include or require any ancestor or descendant permission beyond what was actually
-    // checked in the picker.
     private void assignPermissions(Integer roleId, List<Integer> permissionIds) {
         if (permissionIds == null) {
             return;
@@ -205,8 +189,6 @@ public class RoleManagementService {
                 .collect(Collectors.toList());
     }
 
-    // permissionIds/featureIds may be null (CreateRoleRequest/UpdateRoleRequest allow omitting
-    // either) — treated the same as empty everywhere below.
     private RoleSummaryResponse toSummary(IamLoginRole role, List<Integer> permissionIds, List<Integer> featureIds) {
         List<Integer> ids = permissionIds == null ? List.of() : permissionIds;
         Map<Integer, String> permissionLabelsById = permissionRepository.findAllById(ids).stream()

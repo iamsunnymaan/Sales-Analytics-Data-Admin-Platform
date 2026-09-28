@@ -105,9 +105,8 @@ src/main/java/com/houseofbeauty/
 └── util/          small cross-cutting helpers (e.g. SqlDialect)
 
 src/main/resources/static/   frontend (plain HTML/CSS/JS, one folder per page/component)
-database/                    schema DDL, migrations, ER diagram
+database/                    schema DDL, ER diagram
 doc/                         architecture, testing, and performance-testing notes
-Data/                        sample import templates (Product/Site Master, Primary/Secondary Sales)
 ```
 
 See `doc/ARCHITECTURE.md` for the upload/import pipeline and key services, and

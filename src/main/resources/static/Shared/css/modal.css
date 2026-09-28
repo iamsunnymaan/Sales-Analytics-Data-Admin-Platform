@@ -1,8 +1,3 @@
-/* Shared modal chrome — backdrop, panel shell, header, and the small "×" close-button style used
-   by every fixed-position popup modal app-wide. Each modal keeps its own selector for whatever
-   varies per instance (z-index, backdrop padding/opacity, panel max-width/box-shadow, close-button
-   font-size) — this file only centralizes what was byte- or near-identical across all of them. */
-
 .product-research-modal-backdrop,
 .top-projection-modal-backdrop,
 .import-preview-overlay,

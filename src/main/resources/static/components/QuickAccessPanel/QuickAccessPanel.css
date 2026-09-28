@@ -1,11 +1,3 @@
-/* Fixed vertical strip pinned to the right edge, near the top of the viewport (below the page
-   header) — a lightweight "quick tools" drawer (Notes, plus Projection Form on Primary Sales; see
-   QuickAccessPanel.js). The arrow tab and the icon
-   strip are two children of the SAME flex row, both sliding via one transform on the shared
-   .quick-access-panel wrapper — closed state pushes the whole row right by exactly the icon
-   strip's own width, so the strip lands fully off-screen while the tab (to its left) lands flush
-   with the screen edge, still clickable to reopen. This is what keeps the arrow "attached" to the
-   strip in both states instead of it being a separately positioned element. */
 .quick-access-panel {
     position: fixed;
     top: 5.5rem;
@@ -47,7 +39,6 @@
     transition: transform 0.25s ease;
 }
 
-/* Closed: chevron points left ("pull me out"). Open: flips to point right ("push me back"). */
 .quick-access-panel.open .quick-access-tab i {
     transform: rotate(180deg);
 }
@@ -89,22 +80,12 @@
     color: #FFFFFF;
 }
 
-/* ==================== Top Projection popup ==================== */
-/* Moved to a direct child of <body> at runtime (see QuickAccessPanel.js) — not nested under
-   .quick-access-panel, so its own `transform` can't hijack this modal's `position: fixed`
-   containing block. Per explicit request, rebuilt from a small one-row-at-a-time form into a wider
-   grid popup: Brand toggle, a scrollable table (one row per real Channel×Partner combo, only
-   Projection Value editable), a live Total row, then Submit at the bottom. */
-/* Shared modal chrome (backdrop centering, panel shell, header base, close-button base) comes
-   from Shared/css/modal.css — only what's unique to this modal stays here. */
 .top-projection-modal-backdrop {
     z-index: 1000;
     padding: 1rem;
     background-color: rgba(23, 34, 30, 0.45);
 }
 
-/* Wider than the old single-entry form's 27rem — needs real room for a 7-column table
-   (ID/Brand/Channel/Partner/Month/Projection Value/Submitted At) instead of one field at a time. */
 .top-projection-modal.top-projection-modal--grid {
     max-width: 42rem;
     width: 100%;
@@ -129,8 +110,6 @@
     color: var(--color-text-primary);
 }
 
-/* The popup's only date-ish display — a month/year label, never a raw date (see
-   TopProjectionGridResponse.currentMonthLabel), and never editable. */
 .top-projection-modal-month {
     font-size: 0.64rem;
     font-weight: 600;
@@ -155,18 +134,6 @@
     overflow-y: auto;
 }
 
-/* Row 1 — Brand toggle (All + real Site_Master brands). This component's own pill styling, not a
-   page's .brand-header-pill/-item — the Quick Access Panel loads on every page, some of which never
-   load a page CSS that defines that class, so this modal has to be fully self-contained. Compact
-   size (per explicit request) — shorter pill, smaller text than this app's other toggles.
-   REDESIGNED per follow-up "improve the brand/channel filter" request: was a bare color-only active
-   state with no hover feedback and a fixed 2rem item width left over from when Brand only ever
-   showed short "ABH"/"Kylie" labels — now that it shows real full brand names (see
-   brandNameToCode/loadBrandOptions in QuickAccessPanel.js), that width badly clipped/wrapped longer
-   names. Auto-width items (matching what the Channel toggle already used), a real hover fill (not
-   just a text-color change), and a bolder active state (heavier weight + a soft lifted shadow, same
-   "lifts off the track" convention this session's other toggle redesigns use, e.g.
-   PrimarySalesPage.css's .ta-insights-brand-row) replace the old flat look. */
 .top-projection-brand-toggle {
     display: flex;
     gap: 0.2rem;
@@ -205,11 +172,6 @@
     color: var(--color-text-primary);
 }
 
-/* Sale Type pill's buttons are always `disabled` (see #topProjectionSaleTypeToggle in
-   QuickAccessPanel.html) — no pointer cursor, and every non-active option fades out so it visibly
-   reads as locked rather than an interactive toggle the user might expect to click. The active one
-   (always "Primary Sales") keeps the same full-strength look .active already gives every other
-   toggle item, disabled or not. */
 .top-projection-brand-toggle-item:disabled {
     cursor: default;
 }
@@ -218,10 +180,6 @@
     opacity: 0.45;
 }
 
-/* Shown instead of the All/real-value buttons when the toggle's own data source has nothing at all
-   (or its fetch fails, e.g. database unreachable) — reused by all 3 toggles' own empty state
-   (loadBrandOptions/loadChannelOptions/loadSaleTypeOptions in QuickAccessPanel.js), same wording as
-   .brand-header-empty in PrimarySalesPage.css. Not a button: no hover/active state, not clickable. */
 .top-projection-brand-toggle-empty {
     width: auto;
     font-style: italic;
@@ -230,8 +188,6 @@
     pointer-events: none;
 }
 
-/* Brand toggle + Channel toggle sit side by side in one compact row (per explicit request) rather
-   than stacked — wraps to a second line only if the viewport is too narrow to fit both. */
 .top-projection-filters-row {
     display: flex;
     align-items: center;
@@ -239,8 +195,6 @@
     gap: 0.9rem;
 }
 
-/* Wraps each toggle (Brand, Channel) with its own left-side label — e.g. "Brand" / "Channel" — so
-   it's clear at a glance which filter each pill controls. */
 .top-projection-filter-row {
     display: flex;
     align-items: center;
@@ -254,12 +208,6 @@
     color: var(--color-text-secondary);
 }
 
-/* Row 2 — the grid itself. overflow-x so 7 columns don't squeeze unreadable on a narrow viewport;
-   vertical scrolling happens one level up, on .top-projection-modal-body (max-height: 70vh above),
-   so the sticky <thead> below still pins correctly against that scroll, not this wrap's own. */
-/* Per explicit request: only ~5 data rows show at once, the rest scroll (scrollbar hidden via
-   the .scroll-hidden class on this element in the HTML) — capped height covers the sticky header
-   + 5 body rows (each tall enough for the Projection Value <input>) + the sticky Total row. */
 .top-projection-grid-wrap {
     border: 1px solid var(--color-border);
     border-radius: 8px;
@@ -298,9 +246,6 @@
     background-color: var(--color-background);
 }
 
-/* Per explicit request: switching the Brand toggle cross-fades the table body instead of the old
-   abrupt swap (see setGridLoadingState/loadGrid in QuickAccessPanel.js) — opacity only, no layout
-   shift, so the sticky header/Total row and the 5-row scroll window stay put while it fades. */
 #topProjectionGridBody {
     transition: opacity 0.18s ease;
 }
@@ -315,9 +260,6 @@
     padding: 1rem 0.5rem !important;
 }
 
-/* The one editable cell — every other column is plain text (see renderRows in
-   QuickAccessPanel.js). Deliberately compact (not the full-width look .top-projection-input had in
-   the old single-field form) since it now sits inside a table cell alongside 6 other columns. */
 .top-projection-grid-value-input {
     box-sizing: border-box;
     width: 6.5rem;
@@ -334,11 +276,6 @@
     border-color: var(--color-primary);
 }
 
-/* Per explicit request: right after a save, a row that had no id before (its first-ever
-   submission) or whose Projection Value actually changed gets a brief highlight + a small New/
-   Updated tag next to its input (see computeChangeInfo/renderRows in QuickAccessPanel.js) — cleared
-   by the "Update Again" button below, not on any timer, so it stays visible until the user
-   dismisses it. */
 .top-projection-grid-row--new {
     background-color: rgba(22, 128, 60, 0.08);
 }
@@ -369,13 +306,6 @@
     background-color: rgba(217, 130, 43, 0.15);
 }
 
-/* Row 3 — the live Total (see recomputeTotal in QuickAccessPanel.js), a <tfoot> row so it always
-   pins to the bottom of the table regardless of how many <tbody> rows scroll above it. */
-/* Per explicit request: pinned to the bottom of the grid's own scroll area (the same
-   position: sticky trick .top-projection-grid-table th already uses to pin the header to the top),
-   so the running Total stays visible while scrolling through up to 48 rows instead of scrolling out
-   of view along with the last <tbody> row. Needs its own solid background (not transparent) so rows
-   scrolling underneath don't show through while it's pinned. */
 .top-projection-grid-total-row td {
     position: sticky;
     bottom: 0;
@@ -407,11 +337,6 @@
     margin: 0;
 }
 
-/* Row 4 (bottom) — Submit only, saving every row in the grid at once (see the submit handler in
-   QuickAccessPanel.js). No "View Projection Table"/confirm views here — those made sense for a
-   one-row-at-a-time form's own recap, not a bulk grid save; success shows inline via
-   .top-projection-status above instead (stays up, no dismiss control, until the next Submit/brand
-   switch/reopen naturally refreshes it). */
 .top-projection-modal-actions {
     display: flex;
     align-items: stretch;
@@ -445,11 +370,6 @@
     cursor: not-allowed;
 }
 
-/* ==================== Notes popup ==================== */
-/* Moved to a direct child of <body> at runtime (see QuickAccessPanel.js) — same reason as the
-   Projection Form popup above. Shared modal chrome (backdrop centering, panel shell,
-   header base, close-button base) comes from Shared/css/modal.css — only what's unique to this
-   popup lives here. */
 .notes-modal-backdrop {
     z-index: 1000;
     padding: 1rem;
@@ -515,7 +435,6 @@
     background-color: var(--color-primary-hover);
 }
 
-/* Overrides Shared/css/modal.css's plain transparent close-button base — loads after it. */
 .notes-modal-close {
     background-color: var(--color-background);
     border: 1px solid var(--color-border);
@@ -534,7 +453,6 @@
     box-sizing: border-box;
 }
 
-/* ---- List view ---- */
 .notes-list {
     list-style: none;
     margin: 0;
@@ -643,7 +561,6 @@
     color: var(--color-warning, #d9822b);
 }
 
-/* ---- Editor view ---- */
 .notes-editor-view {
     display: flex;
     flex-direction: column;
@@ -676,9 +593,6 @@
     resize: vertical;
 }
 
-/* Right-aligned directly under the textarea, tinted red once the 50-word cap is actually hit (see
-   enforceWordLimit in QuickAccessPanel.js, which toggles --limit) so it reads as a real limit
-   rather than just a passive counter. */
 .notes-editor-word-count {
     display: block;
     margin-top: -0.35rem;
@@ -699,8 +613,6 @@
     border-color: var(--color-primary);
 }
 
-/* Due date and Reminder side by side in one row — each keeps its own icon/label, and the Reminder
-   field its own accent-border treatment below. */
 .notes-editor-fields {
     display: flex;
     flex-direction: row;
@@ -731,10 +643,6 @@
     color: var(--color-primary);
 }
 
-/* Kept deliberately compact — the browser's own calendar/clock picker POPUP (opened by clicking
-   the field) is native OS/browser UI that CSS cannot resize or restyle at all, but it does scale
-   itself down somewhat to match a smaller input, so shrinking the field's own padding/font here is
-   the only lever available for making the whole control read as "shorter/smaller". */
 .notes-editor-input {
     width: 100%;
     box-sizing: border-box;
@@ -746,19 +654,11 @@
     background-color: var(--color-background);
 }
 
-/* Visually distinct from the plain Due date field next to it — an accent left border marks it as
-   the field that actually triggers an alert, not just an informational badge. Kept close to Due
-   date's own sizing (rather than noticeably bigger) now that they sit side by side in one row. */
 .notes-editor-input--reminder {
     font-weight: 600;
     border-left: 2px solid var(--color-primary);
 }
 
-/* The native calendar/clock picker glyph — subtly dimmed until hovered so it reads as an
-   interactive control rather than decoration, in both the Due date and Reminder fields. */
-/* Shrinks the little calendar/clock glyph itself, not just its opacity — the actual dropdown
-   calendar that opens on click is native browser UI with no author-stylable size/appearance, so
-   this glyph is the only part of the picker CSS can actually resize. */
 .notes-editor-input::-webkit-calendar-picker-indicator {
     cursor: pointer;
     opacity: 0.65;
@@ -780,11 +680,6 @@
     color: var(--color-text-secondary);
 }
 
-/* The explicit "submit" action (per request) — full-width and in the app's primary color so it
-   reads as the main call-to-action in the editor, same treatment .top-projection-submit-btn
-   already gets elsewhere in this popup family. Autosave (scheduleSave) still runs in the
-   background regardless, so this is a confidence/confirmation action on top of that, not the
-   only thing standing between a keystroke and it being saved. */
 .notes-save-btn {
     display: flex;
     align-items: center;
@@ -806,9 +701,6 @@
     background-color: var(--color-primary-hover);
 }
 
-/* flex-wrap so the row never clips/overflows at any width — Pin + Enable Alerts + Delete are all
-   always-visible now (see updateNotifyBtnState in QuickAccessPanel.js), so this has to hold up on
-   the narrowest phone widths too, not just desktop. */
 .notes-editor-footer {
     display: flex;
     align-items: center;
@@ -839,8 +731,6 @@
     color: var(--color-primary);
 }
 
-/* "Alerts On" (already granted) or "Alerts Unsupported" (no Notification API on this
-   browser/device) — inert either way, since there's nothing left to click toward in both cases. */
 .notes-editor-notify-btn:disabled {
     cursor: default;
     opacity: 0.7;
@@ -868,10 +758,6 @@
     color: #fff;
 }
 
-/* ---- Reminder toast ---- */
-/* Fixed to the viewport corner, independent of the Notes popup's own open/closed state and of
-   .quick-access-panel's own transform (see checkReminders/showReminderToast in
-   QuickAccessPanel.js) — a reminder needs to surface no matter what's currently on screen. */
 .notes-reminder-toast {
     position: fixed;
     bottom: 1.2rem;
@@ -918,15 +804,8 @@
     color: var(--color-danger);
 }
 
-/* ---- Notes popup — responsive ---- */
-/* Same two breakpoints as the rest of the app (app.css's .app-main, ExplorerPage.css's own
-   @media blocks): <=1024px tablet, <=640px mobile. Desktop/laptop (the default rules above) need
-   no override — the compact 21rem popup already comfortably fits a laptop or tablet viewport on
-   its own. */
 @media (max-width: 1024px) {
-    /* Guards against a tablet held narrower than 21rem (e.g. a narrow split-screen window) —
-       clamps to the viewport instead of overflowing it, without changing anything on a normal
-       full-width tablet/laptop view. */
+
     .notes-modal {
         max-width: min(21rem, calc(100vw - 2rem));
     }
@@ -937,15 +816,10 @@
         max-width: calc(100vw - 2rem);
     }
 
-    /* The list itself gets less vertical room on a phone-height viewport (and the on-screen
-       keyboard eats even more of it once a field is focused), so it scrolls sooner rather than
-       pushing the Save button off-screen. */
     .notes-list {
         max-height: 13rem;
     }
 
-    /* Due date and Reminder stack full-width instead of squeezing side by side — a datetime-local
-       picker needs more room to stay legible at phone width than half the popup provides. */
     .notes-editor-fields {
         flex-direction: column;
     }
@@ -954,8 +828,6 @@
         min-height: 4rem;
     }
 
-    /* Slightly larger tap targets than the desktop/laptop sizes above, which were sized for a
-       mouse pointer, not a fingertip. */
     .notes-new-btn,
     .notes-modal-close {
         width: 1.7rem;

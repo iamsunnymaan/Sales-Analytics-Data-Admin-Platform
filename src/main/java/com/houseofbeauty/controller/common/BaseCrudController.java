@@ -13,8 +13,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.util.List;
 
-// Generic REST CRUD (list/get/create/update/delete) over any JpaRepository — the master-data
-// controllers below just supply the entity type and repository, no repeated boilerplate.
 public abstract class BaseCrudController<T, ID> {
 
     protected final JpaRepository<T, ID> repository;

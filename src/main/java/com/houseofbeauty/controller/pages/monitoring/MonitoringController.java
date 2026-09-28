@@ -15,13 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-// Backs the Monitoring page's table sections + its "Usage Overview" graph (MonitoringPage.js).
-// Every endpoint here narrows the class-level "page:monitoring" check to its own Section-level key
-// (permissions are Page->Section only, no further Feature breakdown — see AuthBootstrapSeeder's
-// own header comment), so each section can be granted/withheld independently. GET /sessions (backed
-// "Sessions (Refresh Tokens)") was removed per explicit request — it only ever reflected another
-// application's own use of this shared database, house_of_beauty itself never issues one (see
-// IamLoginRefreshTokenRepository's own header comment) — don't re-add it unasked.
 @RestController
 @RequestMapping("/api/monitoring")
 @RequirePermission("page:monitoring")
@@ -69,8 +62,6 @@ public class MonitoringController {
         return monitoringService.getOtps();
     }
 
-    // Backs "Usage Overview" — sourced from the same login-attempt data as the "Attempts" (login)
-    // section, so gated behind that same Section key rather than one of its own.
     @GetMapping("/usage-stats")
     @RequirePermission("page:monitoring.login-attempts")
     public UsageStatsResponse getUsageStats() {

@@ -10,10 +10,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-// JPA mapping for IAM_Login_Roles — the small, stable set of roles (e.g. 'ADMIN', 'MANAGER',
-// 'VIEWER') a user is assigned via IamLoginUserRole. Permissions attach to a role via
-// IamLoginRolePermission, not directly to a user (except the per-user override in
-// IamLoginUserPermission).
+
 @Entity
 @Table(name = "IAM_Login_Roles")
 @Data

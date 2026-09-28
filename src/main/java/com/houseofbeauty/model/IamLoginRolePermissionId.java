@@ -8,8 +8,7 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 
-// Composite key (Role_ID, Permission_ID) for IAM_Login_Role_Permissions — see
-// IamLoginRolePermission.
+
 @Embeddable
 @Data
 @NoArgsConstructor

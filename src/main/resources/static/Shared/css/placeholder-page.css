@@ -1,6 +1,3 @@
-/* Shared "coming soon" layout for pages that exist in the sidebar but have no real content/backend
-   yet (currently the Identity section — Users/Groups/Roles/Permissions). Swap this out page-by-page
-   once each one gets a real implementation; no page-specific CSS needed until then. */
 .placeholder-page {
     display: flex;
     flex-direction: column;

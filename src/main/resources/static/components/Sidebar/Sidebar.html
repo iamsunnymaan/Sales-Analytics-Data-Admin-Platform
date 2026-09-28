@@ -1,7 +1,3 @@
-<!-- Single source of truth for the sidebar markup. Fetched at runtime by Sidebar.js's
-     initSidebar() and injected into each page's empty <nav id="appSidebar"></nav> placeholder
-     (see any pages/*/*.html) — pages never duplicate this HTML themselves. Add/remove/rename a
-     nav link only here. -->
 <div class="sidebar-brand px-3 py-3">
     <span class="sidebar-brand-mark">
         <i class="bi bi-hexagon-fill me-2"></i>
@@ -61,12 +57,6 @@
         </a>
     </li>
 
-    <!-- SUPERADMIN-only — page:superadmin is deliberately excluded from ADMIN's own auto-granted
-         permission set (see AuthBootstrapSeeder.topUpAdminPermissions' own comment), so this link
-         only ever reveals for the SUPERADMIN role. "Database Config" (SuperAdminPage,
-         page:superadmin) was removed from here per explicit request — the page itself, its
-         permission, and its PageAccessInterceptor mapping all stay (it's just unlinked from nav
-         now); don't re-add this link unasked. -->
     <li class="nav-item sidebar-section-title">Super Admin</li>
     <li class="nav-item">
         <a class="nav-link" href="/pages/IAMPage/IAMPage.html" data-page="iam" data-permission="page:iam" title="IAM">

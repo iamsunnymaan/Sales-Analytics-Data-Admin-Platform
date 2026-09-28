@@ -1,24 +1,3 @@
-// Secondary Sales page: "1. Overview" is a REAL backend-wired cross-tab (see SecondarySalesPage.html's
-// own header comment) — GET /api/secondary-sales/overview (SecondarySalesOverviewService) drives
-// renderSecondaryOverviewTable/loadOverview below: real Site_Master Brand columns x real Site_Master
-// Channel sub-columns, "Total" synthesized on the frontend only, re-fetched on every #overviewDateFilter
-// change.
-// "2. Daily Sales Trends" is a REAL backend-wired section — a single-series amount chart (y-axis =
-// ₹ sales, x-axis = day/month/year) backed by GET /api/secondary-sales/trend-range
-// (SecondarySalesDailyTrendService), which reads ONLY Secondary_Sales + Secondary_Sales_Target. Its
-// own brand pill + date filter bar was removed per explicit request (2026-09-11) — always shows
-// "All Brands" over the backend's own default range now.
-// Exact mirror of PrimarySalesPage.js's own "2. Daily Sales Trends" section
-// (initSalesDateFilter/initDailyTrendGraph below), just pointed at a different apiBase — see that
-// file's own header comments on each function for the full rationale (x-axis granularity mapping,
-// Compare mode, tooltip/label formatting, etc.), not repeated here.
-// "3. Reports" is also REAL — its own independent brand pill (no date-Filter UI, always current
-// month-to-date) drives the same All Report/Channel tab pair Primary Sales' own "4. Reports"
-// section has, backed by GET /api/secondary-sales/reports/brand-hierarchy + /reports/channels
-// (SecondarySalesReportsService), which reads ONLY Secondary_Sales + Secondary_Sales_Target — NO
-// Proj./Proj vs Tgt column pair (that needs a Projection table, out of scope here; see
-// reportsColumns/REPORTS_TABLE_COLGROUP below for the resulting 6-column layout vs Primary's 8).
-// Every other section on this page is still a placeholder.
 import { initSidebar } from "/components/Sidebar/Sidebar.js";
 import { initQuickAccessPanel } from "/components/QuickAccessPanel/QuickAccessPanel.js";
 import { buildCsvLine, downloadCsv, initDownloadPopup } from "/components/ExcelDownloadButton/ExcelDownloadButton.js";
@@ -32,42 +11,24 @@ import { applyFeatureGating } from "/Shared/js/feature-guard.js";
 
 initSidebar();
 initQuickAccessPanel();
-// Reveals this page's Section/Feature-gated elements (Overview, Daily Sales Trends, Product
-// Snapshot, Reports, Site_Master Report and their own view/export features — see this file's
-// data-permission attributes) once the session's real permission set resolves; every one of them
-// ships `hidden` in the static HTML itself, so there's no flash of content this session doesn't
-// hold permission for.
-// applyFeatureGating runs only after applyPagePermissions resolves — see Dashboard.js's own comment
-// on this sequencing (prevents permission-gating's unconditional `hidden` assignment from undoing a
-// feature-based hide on an element carrying both attributes, depending on which fetch wins the race).
+
 applyPagePermissions().then(() => applyFeatureGating());
 
-// Same Cr/L/rounding logic as the shared formatMoney, just without the leading ₹ — scoped to this
-// page only per explicit request, other pages calling formatMoney directly still show ₹.
+
 function money(value, opts) {
     return formatMoney(value, opts).replace("₹", "");
 }
 
-// Per explicit request: the CSV/Excel download's own money columns show the full, un-abbreviated
-// digit count instead of this page's on-screen Cr/L abbreviation — on-screen money() itself is
-// untouched, this is a separate wrapper used only inside downloadReportsCsv/
-// downloadSecondarySiteReportCsv below.
+
 function moneyFull(value, opts) {
     return formatMoneyFull(value, opts).replace("₹", "");
 }
 
-// ==================== Filter Header: Brand pill / Channel pill (shared by every section below) ====================
-// Now components/BrandFilter/BrandFilter.js and components/ChannelFilter/ChannelFilter.js, imported
-// above. "4. Reports" is the one exception (always "all", no Brand/Channel pill of its own, per
-// explicit request — only the Date Filter reaches it, see wirePage below).
+
 const BRAND_STORAGE_KEY = "secondary-sales-selected-brand";
 const CHANNEL_STORAGE_KEY = "secondary-sales-selected-channel";
 
-// Status pill options — local twin of BrandFilter.js's loadBrandPillOptions/renderBrandPill (not
-// exported from the shared StatusFilter.js component, which every other page using it still drives
-// off hardcoded All/Active/Inactive HTML buttons), same "each page owns its copy" convention
-// PrimarySalesPage.js's own loadStatusPillOptions/renderStatusPill already follows. Same
-// fetch-then-render-then-"Not Available" shape as loadBrandPillOptions/renderBrandPill.
+
 async function loadStatusPillOptions(apiUrl) {
     try {
         const res = await fetch(apiUrl);
@@ -81,11 +42,7 @@ async function loadStatusPillOptions(apiUrl) {
     }
 }
 
-// Renders into #dashboardFyOverviewStatusToggle itself (that id IS the .site-status-filter-pill
-// container, same as Primary Sales' own copy) — data-status is lowercased (matching
-// OperationalStatusFilter's case-insensitive vocabulary) so Page.initStatusFilter's
-// querySelectorAll(".site-status-filter-item") below finds real buttons once this replaces the
-// placeholder.
+
 function renderStatusPill(toggleId, statuses) {
     const toggle = document.getElementById(toggleId);
     if (!toggle) {
@@ -101,15 +58,7 @@ function renderStatusPill(toggleId, statuses) {
         .join("");
 }
 
-// ==================== Overview range label (cosmetic — no real data behind it yet) ====================
-// FIXED: this used to borrow PrimarySalesPage.js's own formatRangeLabel wholesale, including its
-// "current-month" branch that clips the end date to today and shows progress WITHIN that final
-// month alone (e.g. picking Feb-Sep 2026 rendered "01-Feb-2026 to 01-Sep-2026 (1 of 30 days)" —
-// "30" being September's own day count, not the real ~213-day span). That branch exists on the
-// Insights card for a real pacing reason (see that file's own comment) that doesn't apply here —
-// this label has no real data behind it, it's just describing whatever range the user picked, so
-// per explicit request it now always shows the plain, real day count of the selected [from, to]
-// range, exactly as selected (no clipping to today).
+
 const RANGE_LABEL_MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
 function formatRangeDate(date) {
@@ -125,9 +74,7 @@ function daysBetweenInclusive(from, to) {
     return Math.round((to.getTime() - from.getTime()) / 86400000) + 1;
 }
 
-// `from`/`to` are the ISO date strings initSalesDateFilter's onFilterChange reports (or null/null
-// when cleared, which falls back to the current calendar month-to-date, same default every other
-// section on this page uses).
+
 function updateOverviewRangeLabel(from, to) {
     const el = document.getElementById("taOverviewRangeLabel");
     if (!el) {
@@ -140,17 +87,9 @@ function updateOverviewRangeLabel(from, to) {
     el.textContent = `${formatRangeDate(periodFrom)} to ${formatRangeDate(periodTo)} (${days} day${days === 1 ? "" : "s"})`;
 }
 
-// ==================== Overview table (real Brand columns x real Channel sub-columns) ====================
-// GET /api/secondary-sales/overview (SecondarySalesOverviewService) returns every real, distinct
-// Site_Master Brand/Channel right now, plus each (brand, channel) cell's own figures — see that
-// service's own header comment for the join/period rules behind them. "Total" (both each brand's own
-// sub-column and the right-most grand-total group) is synthesized here, never a real Site_Master
-// value, so it's always appended last rather than looked up from the response.
 
-// Known brands keep the fixed identity colors used everywhere else on this page (BRAND_LABEL above
-// uses the same abh/kylie keys); any further real brand rotates through the same --achi-brand-1..4
-// categorical palette the Reports section's own Achi. bars use (see assignBrandColorSlots below), so
-// a new brand appearing in Site_Master never needs a code change here.
+
+
 const SECONDARY_OVERVIEW_BRAND_COLORS = { abh: "#7C3AED", kylie: "#DB2777" };
 const SECONDARY_OVERVIEW_FALLBACK_COLOR_VARS = ["--achi-brand-1", "--achi-brand-2", "--achi-brand-3", "--achi-brand-4"];
 
@@ -171,14 +110,7 @@ function resolveSecondaryOverviewBrandColors(brands) {
     return colorByBrand;
 }
 
-// Shared by every Overview header cell (Brand group, Channel sub-column, and the "Metric" corner) —
-// per explicit request, same icon-on-top/name-below-it-in-small-size layout the Reports section's
-// own row icons already use (.brand-tree-row-icon-wrap/-label: icon, then the level name small
-// underneath it, then the row's own real name off to the side) — here the "level name" is the
-// literal Site_Master/section COLUMN name ("Brand"/"Channel"/"Metric") under the icon, and the row's
-// own real value (a Brand's own value like "ABH", a sub-column's own real Channel value — "Metric"
-// has none, so `value` is null there) sits beside that icon+label unit. Only the icon itself takes
-// the brand's own color (via an inline style, when given).
+
 function overviewHeaderCell(columnLabel, icon, value, iconColor) {
     const colorStyle = iconColor ? ` style="color:${iconColor}"` : "";
     const valueHtml = value == null ? "" : `<span class="secondary-overview-header-value">${value}</span>`;
@@ -191,10 +123,7 @@ function overviewHeaderCell(columnLabel, icon, value, iconColor) {
     </span>`;
 }
 
-// One entry per tbody row, in display order — `format` matches each field's own null semantics (see
-// OverviewCell's own doc): Month Target shows "—" when null (no real target row at all, never a
-// fabricated 0), Actual Sales is never null, the 3 percentage fields show "—" when their own
-// denominator was null/zero.
+
 const SECONDARY_OVERVIEW_METRIC_ROWS = [
     { label: "Month Target", key: "monthTarget", format: (v) => money(v, { nullDash: true }) },
     { label: "Actual Sales", key: "actualSales", format: (v) => money(v) },
@@ -203,10 +132,7 @@ const SECONDARY_OVERVIEW_METRIC_ROWS = [
     { label: "SOB", key: "sobPct", format: (v) => (v === null || v === undefined ? "—" : `${Number(v).toFixed(1)}%`) },
 ];
 
-// `brands`/`channels` are real Site_Master values only (see OverviewResponse's own doc) — "Total" is
-// always appended here as one extra column group + one extra sub-column per group, never looked up
-// from the response itself. Renders a "Not Available" message instead of a table when either list is
-// empty (Site_Master has no real Brand/Channel data right now).
+
 function renderSecondaryOverviewTable(brands, channels, cells) {
     const wrap = document.getElementById("secondaryOverviewTableWrap");
     if (!wrap) {
@@ -249,11 +175,7 @@ function renderSecondaryOverviewTable(brands, channels, cells) {
                 classes.push("secondary-overview-brand-grandtotal", "secondary-overview-grandtotal-col");
             }
             const iconColor = isGrandTotal ? null : colorByBrand[group];
-            // Per explicit request: each real brand's own header background now uses that same
-            // brand's own identity color (ABH purple/Kylie pink, same colorByBrand already used for
-            // its icon + body-row tint below) instead of one flat shared tint — so Kylie's header
-            // reads as visually distinct from ABH's, not just from the Channel row/body. Grand Total
-            // keeps its own fixed green (.secondary-overview-grandtotal-col), no inline override.
+
             const style = isGrandTotal ? "" : ` style="background-color:${hexToRgba(iconColor, 0.14)}"`;
             return `<th colspan="${subColumns.length}" class="${classes.join(" ")}"${style}>${overviewHeaderCell("Brand", "bi-shop", group, iconColor)}</th>`;
         })
@@ -279,12 +201,7 @@ function renderSecondaryOverviewTable(brands, channels, cells) {
                             const cell = cellByKey.get(`${group}|${sub}`);
                             const value = cell ? cell[metric.key] : null;
                             const classes = groupSubClasses(group, sub, subIndex, isGrandTotal);
-                            // Per explicit request: every "Total" sub-column (real brand or the grand
-                            // Total group) shares one consistent background — skip the per-brand inline
-                            // tint here so .secondary-overview-col-total's own class-based background
-                            // shows through instead of a brand-colored one, same as the grand Total
-                            // group's own Total column already did (it never gets this inline tint at
-                            // all, see `tint` above).
+
                             const style = (tint && sub !== "Total") ? ` style="background-color:${tint}"` : "";
                             return `<td class="${classes.join(" ")}"${style}>${metric.format(value)}</td>`;
                         })
@@ -309,10 +226,7 @@ function renderSecondaryOverviewTable(brands, channels, cells) {
 
 let overviewRequestSeq = 0;
 
-// Fetches GET /api/secondary-sales/overview for [from, to] (null/null -> the service's own
-// current-month-to-date default) and re-renders the table. Guards against an earlier, slower
-// request's response landing after a later one (same requestSeq/requestId pattern every other
-// section on this page already uses — see e.g. loadBrandTree/loadFlatTab above).
+
 async function loadOverview(from, to, brand = "all", channel = "all", status = "all") {
     const requestId = ++overviewRequestSeq;
     const section = document.getElementById("secondaryOverviewSection");
@@ -331,7 +245,7 @@ async function loadOverview(from, to, brand = "all", channel = "all", status = "
             data = await res.json();
         }
     } catch {
-        // fall through with the empty default above
+
     }
     if (requestId !== overviewRequestSeq) {
         return;
@@ -340,18 +254,9 @@ async function loadOverview(from, to, brand = "all", channel = "all", status = "
     renderSecondaryOverviewTable(data.brands || [], data.channels || [], data.cells || []);
 }
 
-// ==================== Sales Date Filter (Daily Sales Trends' own instance) ====================
-// Now components/SalesDateFilter/SalesDateFilter.js's initSalesDateFilter, imported above.
 
-// ==================== 2. Daily Sales Trends ====================
-// ECharts options need a resolved color, not a CSS var() reference — read the custom property off
-// :root at render time (falls back to its known light-mode variables.css value if the var isn't
-// defined yet). FIXED: these used to be resolved once at load and never again, so switching back to
-// day mode left the chart's colors stuck on dark-mode values until a full page reload (same
-// pre-existing limitation PrimarySalesPage.js's own copy used to have — see its own comment).
-// `let` (not `const`) + resolveDailyTrendColors() lets the "theme-changed" listener below (see
-// QuickAccessPanel.js's theme toggle, which dispatches it) re-resolve these and repaint with the
-// chart's last-loaded data.
+
+
 let THEME_ROOT_STYLE = getComputedStyle(document.documentElement);
 let AXIS_COLOR, GRID_LINE_COLOR, LINE_COLOR, TARGET_COLOR, POS_LABEL_COLOR, NEG_LABEL_COLOR, NA_LABEL_COLOR, LAST_YEAR_COLOR;
 function resolveDailyTrendColors() {
@@ -363,8 +268,7 @@ function resolveDailyTrendColors() {
     POS_LABEL_COLOR = (THEME_ROOT_STYLE.getPropertyValue("--color-success").trim()) || "#16803C";
     NEG_LABEL_COLOR = (THEME_ROOT_STYLE.getPropertyValue("--color-danger").trim()) || "#DC2626";
     NA_LABEL_COLOR = (THEME_ROOT_STYLE.getPropertyValue("--color-text-secondary").trim()) || "#9CA3AF";
-    // "Last Year" overlay line — a distinct warm accent so it doesn't get confused with the green
-    // Sales line or the neutral dashed Target line.
+
     LAST_YEAR_COLOR = (THEME_ROOT_STYLE.getPropertyValue("--color-warning").trim()) || "#D97706";
 }
 resolveDailyTrendColors();
@@ -381,27 +285,22 @@ function hexToRgba(hex, alpha) {
 const GRANULARITY_LABEL = { day: "Daily", month: "Monthly", year: "Yearly" };
 const PERIOD_LABEL = { day: "Date", month: "Month", year: "Year" };
 const BRAND_LABEL = { all: "All Brands", abh: "ABH", kylie: "Kylie" };
-// Real, individually-comparable brands for Compare mode — same ABH/Kylie identity colors used
-// throughout the app (see BrandFilter.java's header comment on the short-code vocabulary).
+
 const COMPARE_BRANDS = [
     { key: "abh", label: "ABH", color: "#7C3AED" },
     { key: "kylie", label: "Kylie", color: "#DB2777" },
 ];
 
-// Single-line (non-Compare) trend color — state.brand is always "all" now that the brand pill row
-// is removed (2026-09-11), so this always resolves to the section's own default (theme
-// --color-success, see LINE_COLOR). Left in place since a non-"all" state.brand would still recolor
-// the line to that brand's own COMPARE_BRANDS identity color.
+
 function resolveTrendLineColor(brand) {
     const compareBrand = COMPARE_BRANDS.find((b) => b.key === brand);
     return compareBrand ? compareBrand.color : LINE_COLOR;
 }
 
-// Financial year runs Apr-Mar; recomputed off today's date every call so the default range rolls
-// forward on its own once the next FY starts, instead of staying pinned to a hardcoded year.
+
 function currentFinancialYearMonthRange() {
     const now = new Date();
-    const month = now.getMonth() + 1; // 1-12
+    const month = now.getMonth() + 1;
     const fyStartYear = month >= 4 ? now.getFullYear() : now.getFullYear() - 1;
     return { from: `${fyStartYear}-04-01`, to: `${fyStartYear + 1}-03-31` };
 }
@@ -423,16 +322,11 @@ function initDailyTrendGraph(options = {}) {
     }
 
     const chart = (chartDom && typeof window.echarts !== "undefined") ? window.echarts.init(chartDom) : null;
-    // #dailyTrendSectionContainer (an ancestor) ships `hidden` by default (see
-    // data-permission="page:secondary-sales.daily-trends" in the HTML) until applyPagePermissions
-    // confirms the session holds it — a chart initialized while its container is display:none draws
-    // at 0x0, so it needs an explicit remeasure once revealed.
+
     if (chart) {
         document.addEventListener("permissions-applied", () => chart.resize());
     }
-    // brand/channel are no longer driven by a pill of this section's own (removed per explicit
-    // request, see the HTML's own header comment) — both are now set externally via setBrand/
-    // setChannel, driven by the Filter Header's shared Brand/Channel pills instead.
+
     const state = { chartType: "line", brand: "all", channel: "all", status: "all", from: null, to: null, granularity: "day", compare: false, showLastYear: false, showTarget: true };
     let currentData = null;
     let currentCompareData = null;
@@ -471,8 +365,7 @@ function initDailyTrendGraph(options = {}) {
         return ((cur - cmp) / cmp) * 100;
     }
 
-    // Per explicit request: the ▲/▼ arrow glyph is removed — just the explicit +/− sign in front of
-    // the number now.
+
     function formatGrowth(value) {
         if (value === null || value === undefined) {
             return '<span style="color:#9CA3AF;">— N/A</span>';
@@ -483,9 +376,7 @@ function initDailyTrendGraph(options = {}) {
         return `<span style="color:${color};font-weight:600;">${sign}${Math.abs(value).toFixed(1)}%</span>`;
     }
 
-    // Same up/down color convention as formatGrowth, but for a raw Sales - Target amount plus its
-    // own % of Target alongside it (Compare tooltip's own "Sales Variance" rows, per row and Total)
-    // — per explicit request, both the number and the percentage together, not just one or the other.
+
     function formatVariance(value, pct) {
         if (value === null || value === undefined) {
             return '<span style="color:#9CA3AF;">— N/A</span>';
@@ -531,9 +422,7 @@ function initDailyTrendGraph(options = {}) {
         return `${formatFullDate(period.from)} – ${formatFullDate(period.to)}`;
     }
 
-    // Right-aligned summary line under the chart — per explicit request, spells out every Filter
-    // Header input this chart is currently reading (selected date range, Brand, Channel, and whether
-    // Compare is on) all at once, not just whichever one mode happens to hide the others.
+
     function updateSelectionSummary() {
         if (!selectionSummary) {
             return;
@@ -572,12 +461,7 @@ function initDailyTrendGraph(options = {}) {
         const periodValue = formatPeriod((currentData.dates || [])[idx], state.granularity) || first.name;
 
         if (state.compare && currentCompareData) {
-            // Per explicit request: each compared brand shows its own Sales/Target/Sales Variance
-            // (Sales - Target, both the raw number AND its % of Target together — see formatVariance)
-            // — brandData.target comes from the same /trend-range response the single-brand tooltip
-            // below already reads target from (now that SecondarySalesDailyTrendService's own
-            // brand-vocabulary bug is fixed, this is real per-brand Target data, not zeros). A final
-            // combined Total row sums every compared brand's own Sales/Target/Variance together.
+
             let totalSales = 0;
             let totalTarget = 0;
             const rows = currentCompareData.map((brandData) => {
@@ -587,9 +471,7 @@ function initDailyTrendGraph(options = {}) {
                 totalTarget += targetVal;
                 const variance = salesVal - targetVal;
                 const variancePct = growthPct(salesVal, targetVal);
-                // Last Year row — only when the Vs Last Year toggle is on, matching whatever this
-                // same brandData.lastYear (already returned by /trend-range for every compare item,
-                // see load()'s COMPARE_BRANDS fetch) is drawing as its own dotted overlay line below.
+
                 const lastYearRow = state.showLastYear
                     ? (() => {
                         const lastYearVal = Number((brandData.lastYear || [])[idx] ?? 0);
@@ -660,13 +542,7 @@ function initDailyTrendGraph(options = {}) {
         let legendData;
 
         if (state.compare && currentCompareData && currentCompareData.length) {
-            // Per explicit request: each Compare-mode brand line also gets its own colored area fill
-            // down to the chart's bottom axis (ECharts' own default areaStyle baseline — no `origin`
-            // override needed), same translucent-gradient look the single-brand series below already
-            // uses, just keyed off that brand's own COMPARE_BRANDS color instead of LINE_COLOR. Low
-            // opacity (0.32 -> 0.02, matching the single-brand gradient) keeps both fills visible
-            // wherever a higher brand's fill overlaps a lower brand's, instead of one occluding the
-            // other — the higher line's fill is simply taller, exactly as the requirement describes.
+
             series = currentCompareData.map((brandData) => ({
                 name: brandData.label,
                 type: state.chartType,
@@ -687,10 +563,7 @@ function initDailyTrendGraph(options = {}) {
                 z: 2,
             }));
             legendData = currentCompareData.map((brandData) => brandData.label);
-            // Target overlay in Compare mode — one dashed line per compared brand, reusing that
-            // brand's own COMPARE_BRANDS identity color (each brandData already carries `target` since
-            // /trend-range returns it on every fetch, compare or not) — same frontend as Primary Sales'
-            // own copy (state.showTarget, default on).
+
             if (state.showTarget) {
                 currentCompareData.forEach((brandData) => {
                     series.push({
@@ -708,9 +581,7 @@ function initDailyTrendGraph(options = {}) {
                 });
                 legendData = legendData.concat(currentCompareData.map((brandData) => `${brandData.label} (Target)`));
             }
-            // "Vs Last Year" overlay in Compare mode — one dotted line per compared brand, reusing
-            // that brand's own COMPARE_BRANDS identity color (each brandData already carries
-            // `lastYear` since /trend-range returns it on every fetch, compare or not).
+
             if (state.showLastYear) {
                 currentCompareData.forEach((brandData) => {
                     series.push({
@@ -775,9 +646,7 @@ function initDailyTrendGraph(options = {}) {
             }
 
             series = [salesSeries];
-            // Target line — gated on state.showTarget (the #dailyTrendTargetToggle button, default on)
-            // instead of the old hardcoded `!isBar` gate, so it can also be shown in Bar Graph mode,
-            // same frontend as Primary Sales' own copy.
+
             if (state.showTarget) {
                 series.push({
                     name: "Target",
@@ -792,12 +661,7 @@ function initDailyTrendGraph(options = {}) {
                     z: 3,
                 });
             }
-            // "Vs Last Year" overlay — same-period Sales from a year ago (currentData.lastYear,
-            // already fetched every load() regardless of this toggle since tooltipFormatter has
-            // relied on it for the vs-Last-Year % all along); only drawn on-canvas once the user opts
-            // in via #dailyTrendVsLastYearToggle (state.showLastYear). Drawn as a thin dotted "line"
-            // even in Bar Graph mode — echarts happily mixes a line series onto a bar chart's category
-            // axis, and a second bar-per-category would crowd out the growth-% labels above each bar.
+
             if (state.showLastYear) {
                 series.push({
                     name: "Last Year",
@@ -911,7 +775,7 @@ function initDailyTrendGraph(options = {}) {
             updateSelectionSummary();
             renderChart();
         } catch (error) {
-            // Leave the chart as-is on a transient failure rather than blanking the section.
+
         }
     }
 
@@ -934,8 +798,7 @@ function initDailyTrendGraph(options = {}) {
             state.showTarget = !state.showTarget;
             targetToggle.classList.toggle("active", state.showTarget);
             targetToggle.setAttribute("aria-pressed", String(state.showTarget));
-            // currentData/currentCompareData already carry `target` from every load() — toggling this
-            // just changes what renderChart() draws, no re-fetch needed.
+
             renderChart();
         });
     }
@@ -954,9 +817,7 @@ function initDailyTrendGraph(options = {}) {
             state.showLastYear = !state.showLastYear;
             vsLastYearToggle.classList.toggle("active", state.showLastYear);
             vsLastYearToggle.setAttribute("aria-pressed", String(state.showLastYear));
-            // currentData/currentCompareData already carry `lastYear` from every load() (the
-            // tooltip's always used it) — toggling this just changes what renderChart() draws, no
-            // re-fetch needed.
+
             renderChart();
         });
     }
@@ -965,10 +826,7 @@ function initDailyTrendGraph(options = {}) {
         window.addEventListener("resize", () => {
             chart.resize();
         });
-        // FIXED: switching back to day mode used to leave this chart's axis/line/target colors
-        // stuck on their dark-mode values until a full page reload — see resolveDailyTrendColors'
-        // own comment. Re-resolving the colors then re-running renderChart() (which reads off
-        // currentData/currentCompareData, no re-fetch needed) repaints it immediately instead.
+
         window.addEventListener("theme-changed", () => {
             resolveDailyTrendColors();
             renderChart();
@@ -981,17 +839,10 @@ function initDailyTrendGraph(options = {}) {
             if (from && to) {
                 state.from = from;
                 state.to = to;
-                // REFINED per explicit request ("if only current month is selected then show that
-                // month date wise... exam in aug to aug, sept to sept, etc"): a single specific
-                // calendar month (from and to both fall in the same "yyyy-MM") now buckets by
-                // individual date within that one month instead of always defaulting to day
-                // granularity regardless of span — a wider range still buckets month-wise. Same
-                // frontend as Primary Sales' own copy (that page's meta never carries a usable
-                // rangeType either, since both pages' date filters build [from, to] directly).
+
                 state.granularity = from.slice(0, 7) === to.slice(0, 7) ? "day" : "month";
             } else {
-                // Filter closed/cleared — default to the current financial year (Apr-Mar) by month,
-                // instead of an unbounded day-level view. Auto-rolls to the next FY once it starts.
+
                 const fy = currentFinancialYearMonthRange();
                 state.from = fy.from;
                 state.to = fy.to;
@@ -1014,17 +865,7 @@ function initDailyTrendGraph(options = {}) {
     };
 }
 
-// ==================== 3. Reports ====================
-// Both tabs' MNT (Month Target) and Actual Sales (MTD Sales) are real, joined back to
-// dbo.Site_Master (see SecondarySalesReportsService's own header comment) — Secondary_Sales has a
-// direct Site_Code column (no Ship_to indirection Primary_Sales needed) and Secondary_Sales_Target
-// has a real per-site unique key (unlike Primary_Sales_Target's known data-quality bug), so both
-// joins here are simpler than PrimarySalesReportsService's own combo-matching workaround. Achi% is
-// computed here client-side from those two real figures, same "sales ÷ target" convention used
-// elsewhere. Per explicit request this section drops Vs LM entirely (Primary's version keeps it) —
-// see reportsColumns/REPORTS_TABLE_COLGROUP below: 5 columns (Name, MNT, Actual Sales, Achi%, Vs LY),
-// not Primary's 8 (no Proj./Proj vs Tgt pair either — that needs Secondary_Sales_Projection, out of
-// scope for this section).
+
 
 function reportsTrendClass(value) {
     if (value === null || value === undefined) {
@@ -1044,10 +885,7 @@ function reportsColumns(firstLabel) {
     return [firstLabel, "MNT", "Actual Sales", "Achi%", "Vs LY"];
 }
 
-// One icon per Reports column header — per explicit request, icon then text, side by side (unlike
-// Overview's own header cell layout, icon+value on top with the caption below); the first column's
-// icon matches whichever real Site_Master dimension that tab is (Brand/Channel/Sub-Channel/Partner —
-// same icons BRAND_TREE_LEVEL_ICONS already uses for those levels elsewhere on this page).
+
 const REPORTS_COLUMN_ICONS = {
     "Brand": "bi-shop",
     "Channel": "bi-diagram-2-fill",
@@ -1059,11 +897,7 @@ const REPORTS_COLUMN_ICONS = {
     "Vs LY": "bi-arrow-left-right",
 };
 
-// Column header icons default to a muted gray label meant for a plain-bordered header —
-// .product-snapshot-table th here is filled solid with --color-primary and white text instead, so
-// both the icon and label need to stay legible against that dark background (see
-// #reportsSectionTableWrap's own .secondary-overview-header-icon/-label + .site-master-header-cell
-// rules in SecondarySalesPage.css).
+
 function reportsIconHeaderCell(icon, label) {
     return `<span class="site-master-header-cell">
         <i class="bi ${icon} secondary-overview-header-icon" aria-hidden="true"></i>
@@ -1075,8 +909,7 @@ function reportsHeaderCell(label) {
     return reportsIconHeaderCell(REPORTS_COLUMN_ICONS[label] || "bi-list-columns", label);
 }
 
-// 5-column widths (dropped Vs LM per explicit request; no Proj./Proj vs Tgt pair either, unlike
-// Primary's 8-column version) — first column a bit wider for the name/tree indentation.
+
 const REPORTS_TABLE_COLGROUP = `<colgroup>
     <col style="width:25%"><col style="width:19%"><col style="width:19%">
     <col style="width:19%"><col style="width:18%">
@@ -1088,9 +921,7 @@ function reportsAchiPct(sales, target) {
     return t > 0 ? (s / t) * 100 : null;
 }
 
-// `brandSlot` (0-3, or undefined) colors the fill via .channel-report-achi-fill[data-brand-slot] in
-// the stylesheet — omitted for rows that don't belong to one single Brand (the Total row, and every
-// row in the brand-less Channel tab), which fall back to a neutral color instead.
+
 function renderReportsAchiCell(sales, target, brandSlot) {
     const pct = reportsAchiPct(sales, target);
     const barWidth = pct == null ? 0 : Math.min(Math.max(pct, 0), 100);
@@ -1105,15 +936,7 @@ function renderReportsAchiCell(sales, target, brandSlot) {
         </span>`;
 }
 
-// `rows` is a flat list of {name, monthTarget, mtdSales, vsLastMonthPct, vsLastYearPct} objects
-// (Sub-Channel/Channel/Partner tabs, real per SecondarySalesReportsService.get*Summaries) — every
-// column is real. `firstLabel` doubles as the BRAND_TREE_LEVEL_LABELS lookup key so every flat tab
-// shows the exact same icon-on-top/label-underneath row icon the "All Report" hierarchy tree uses
-// for that same level, instead of one generic icon shared by all three tabs.
-// Per-tab row-tint class for renderReportsTable's own <table> — per explicit request, each flat
-// tab's data rows get one solid color (Sub-Channel/Channel/Partner), same tint family
-// renderBrandHierarchyTable's own data-level rule uses (see .brand-hierarchy-table tbody
-// tr[data-level] in the stylesheet) — Channel=success, Sub-Channel=info, Partner=warning.
+
 const FLAT_REPORT_TABLE_CLASS = {
     "Sub-Channel": "report-flat-table--subchannel",
     "Channel": "report-flat-table--channel",
@@ -1122,11 +945,7 @@ const FLAT_REPORT_TABLE_CLASS = {
 
 function renderReportsTable(wrap, firstLabel, rows) {
     const level = BRAND_TREE_LEVEL_LABELS.indexOf(firstLabel);
-    // getFlatSummary (backend) always appends its own trailing {name: "Total", ...} row, even when
-    // site_master itself has zero rows for the current brand filter — so a plain !rows.length check
-    // would never actually trigger. countFlatRows excludes that row, so this only fires when
-    // site_master genuinely has nothing (per explicit request — not when Secondary_Sales/
-    // Secondary_Sales_Target are merely empty but site_master still has real rows to list).
+
     const bodyRows = !countFlatRows(rows)
         ? `<tr><td colspan="${reportsColumns(firstLabel).length}" class="product-snapshot-table-empty">
             <div class="reports-empty-state">
@@ -1168,12 +987,7 @@ function renderReportsTable(wrap, firstLabel, rows) {
         </table>`;
 }
 
-// Turns the backend's nested {name, monthTarget, mtdSales, states:[...]} tree into a flat
-// id/parent/level row list an expand/collapse table can render as one flat <table> with per-row
-// indentation. Each row carries `brand`: its own name at level 0, or its level-0 ancestor's name at
-// every level below that (so a Sub_Channel/Partner row's Achi. bar can be colored by the Brand it
-// rolls up to). The bottom Total row (level 0, name "Total") gets brand: null since it spans every
-// Brand, not just one.
+
 function flattenBrandTree(tree) {
     const rows = [];
     function walk(node, id, level, parent, brand) {
@@ -1192,9 +1006,7 @@ function brandTreeHasChildren(rowId, rows) {
     return rows.some((row) => row.parent === rowId);
 }
 
-// A row's full ancestor path (["Brand", "Channel", "Sub-Channel", "Partner"]) by walking `parent`
-// back up `rows` — needed here because a flat CSV loses the on-screen table's indentation. Flat-tab
-// rows have no `parent`/`level` at all (single level) and never reach this — see downloadReportsCsv.
+
 function reportsRowPathArray(row, rows) {
     const path = [row.name];
     let current = row;
@@ -1208,12 +1020,10 @@ function reportsRowPathArray(row, rows) {
     return path;
 }
 
-// Brand -> Channel -> Sub-Channel -> Partner — one CSV column per hierarchy level, per explicit
-// request (replaces the previous single combined "Name" column).
+
 const REPORTS_LEVEL_COLUMNS = ["Brand", "Channel", "Sub-Channel", "Partner"];
 
-// Client-side CSV export for the Reports section's download popup — `sections` is one or two
-// {label, rows} pairs.
+
 function downloadReportsCsv(sections) {
     const nonEmpty = sections.filter((s) => s.rows && s.rows.length);
     if (!nonEmpty.length) {
@@ -1224,10 +1034,7 @@ function downloadReportsCsv(sections) {
     nonEmpty.forEach(({ label, rows }) => {
         rows.forEach((row) => {
             const achiPct = reportsAchiPct(row.mtdSales, row.monthTarget);
-            // "All Report" rows are real 4-level tree nodes (level 0-3) — split their own ancestor
-            // path across all 4 columns. The flat Sub-Channel/Channel/Partner tabs have no level at
-            // all (a single flat list), so each of those rows' one name goes only into its own
-            // tab's matching column, the rest blank.
+
             let levelCells;
             if (row.level != null) {
                 const path = reportsRowPathArray(row, rows);
@@ -1248,8 +1055,7 @@ function downloadReportsCsv(sections) {
     downloadCsv(lines, `reports-${new Date().toISOString().slice(0, 10)}.csv`);
 }
 
-// Total row count per hierarchy level (Brand/Channel/Sub-Channel/Partner) for the header's count
-// strip — the bottom Total row (level 0, name "Total") is excluded, it isn't a real Brand.
+
 function computeHierarchyCounts(rows) {
     const counts = { brand: 0, channel: 0, subChannel: 0, partner: 0 };
     (rows ?? []).forEach((row) => {
@@ -1279,12 +1085,7 @@ function renderReportsCounts(el, counts) {
         <span class="reports-section-count"><span class="reports-section-count-label">Partner:</span>${counts.partner}</span>`;
 }
 
-// Sub-Channel/Channel/Partner tabs each only carry their own flat dimension's rows — no info about
-// the other 3 dimensions to compute real counts for — so per explicit request, only that one tab's
-// own distinct-value count is shown here (Brand/Sub-Channel/Partner counts are simply not shown while
-// a flat tab is active, rather than displaying a fabricated/stale 0 for dimensions that tab's own
-// data can't actually answer). "All Report" keeps showing all 4 (renderReportsCounts above), since
-// its brand-hierarchy tree is the one endpoint with real data for every level.
+
 function renderSingleReportsCount(el, label, count) {
     if (!el) {
         return;
@@ -1292,20 +1093,16 @@ function renderSingleReportsCount(el, label, count) {
     el.innerHTML = `<span class="reports-section-count"><span class="reports-section-count-label">${label}:</span>${count}</span>`;
 }
 
-// getFlatSummary (backend) always appends its own trailing {name: "Total", ...} row — not a real
-// distinct value, excluded the same way computeHierarchyCounts excludes the brand tree's own Total.
+
 function countFlatRows(rows) {
     return (rows ?? []).filter((row) => row.name !== "Total").length;
 }
 
-// One icon per hierarchy level (0=Brand, 1=Channel, 2=Sub Channel, 3=Partner) so the tree reads at a
-// glance without having to check indentation alone.
+
 const BRAND_TREE_LEVEL_ICONS = ["bi-shop", "bi-diagram-2-fill", "bi-diagram-3-fill", "bi-people-fill"];
 const BRAND_TREE_LEVEL_LABELS = ["Brand", "Channel", "Sub-Channel", "Partner"];
 
-// Achi. bar color slots (0-3, matching --achi-brand-1..4 in the stylesheet) — one per Brand, in fixed
-// first-seen order, so every Sub_Channel/Partner row under a Brand shares that Brand's color rather
-// than being colored by its own level/category.
+
 const REPORT_BRAND_COLOR_SLOTS = 4;
 
 function assignBrandColorSlots(rows) {
@@ -1318,13 +1115,9 @@ function assignBrandColorSlots(rows) {
     return slotByBrand;
 }
 
-// Every node starts collapsed and can be expanded/collapsed independently of its siblings.
+
 function renderBrandHierarchyTable(wrap, rows) {
-    // getBrandHierarchy (backend) always appends its own trailing {name: "Total", level: 0, ...}
-    // brand node, even when site_master itself has zero rows for the current brand filter — so a
-    // plain !rows.length check would never actually trigger. Excluding that node here means this
-    // only fires when site_master genuinely has nothing (per explicit request — not when
-    // Secondary_Sales/Secondary_Sales_Target are merely empty but site_master still has real rows).
+
     const hasRealRows = rows.some((row) => !(row.level === 0 && row.name === "Total"));
     if (!hasRealRows) {
         wrap.innerHTML = `
@@ -1417,11 +1210,7 @@ function renderBrandHierarchyTable(wrap, rows) {
     updateVisibility();
 }
 
-// Every flat (single-level) Reports tab besides "All Report" — per explicit request, one tab per
-// Site_Master dimension (Sub-Channel/Channel/Partner; the standalone Brand tab was removed per
-// explicit request — Brand-level rows are still visible via the "All Report" hierarchy tree), each backed by its own
-// SecondarySalesReportsService#get*Summaries endpoint (all sharing the same flat-row shape as the
-// original Channel tab — see that service's own getFlatSummary comment).
+
 const FLAT_REPORT_TABS = {
     subchannel: { label: "Sub-Channel", endpoint: "/api/secondary-sales/reports/subchannels" },
     channel: { label: "Channel", endpoint: "/api/secondary-sales/reports/channels" },
@@ -1444,12 +1233,10 @@ function initReportsSection() {
     let activeTab = "all";
     let brandTreeRows = null;
     let brandTreeRequestSeq = 0;
-    // One cached row-list + request-sequence guard per flat tab (see FLAT_REPORT_TABS) — same
-    // "ignore anything but the latest request" pattern brandTreeRequestSeq already uses.
+
     const flatRows = { subchannel: null, channel: null, partner: null };
     const flatRequestSeq = { subchannel: 0, channel: 0, partner: 0 };
-    // Driven by "1. Overview"'s own date Filter (see setDateRange below and this page's wirePage) —
-    // null/null means the backend's own current-month-to-date default, same as before this existed.
+
     let currentFrom = null;
     let currentTo = null;
 
@@ -1487,9 +1274,7 @@ function initReportsSection() {
         renderSingleReportsCount(countsEl, config.label, countFlatRows(flatRows[activeTab]));
     }
 
-    // This section has no Brand-filter pill of its own (removed per explicit request). It DOES now
-    // follow "1. Overview"'s own date Filter (see currentFrom/currentTo and setDateRange below) —
-    // omitted (backend's own current-month-to-date default) until that filter is actually used.
+
     function withBrand(url) {
         const params = { brand: "all" };
         if (currentFrom) params.from = currentFrom;
@@ -1558,8 +1343,7 @@ function initReportsSection() {
         });
     });
 
-    // Download button opens a small popup with a scope select — "Active Tab" or "Both Tabs" — and
-    // its own confirm button.
+
     const downloadBtn = document.getElementById("reportsSectionDownloadBtn");
     const downloadPopup = document.getElementById("reportsSectionDownloadPopup");
     const downloadScope = document.getElementById("reportsSectionDownloadScope");
@@ -1588,10 +1372,7 @@ function initReportsSection() {
         downloadPopupHandle.close();
     });
 
-    // Called from wirePage's own "1. Overview" onFilterChange. Clears every cached tab (both the
-    // brand tree and each flat tab) so renderActiveTab's null-check re-fetches the active one fresh
-    // under the new window — the other, currently-inactive tabs just lazily re-fetch next time their
-    // tab button is clicked, same as a first-ever visit to them would.
+
     function setDateRange(from, to) {
         currentFrom = from;
         currentTo = to;
@@ -1606,18 +1387,10 @@ function initReportsSection() {
     return { setDateRange };
 }
 
-// Assigned once initSecondarySiteReport() runs below (after this IIFE) — declared here so "1.
-// Overview"'s own date Filter (wired inside this IIFE) can also drive "5. Site_Master
-// Secondary_Sale Report" with the same [from, to] window, per explicit request that all these
-// sections (Overview/Product Snapshot/Reports/Site_Master Secondary_Sale Report) share one common
-// filter. Safe despite the textual ordering: onFilterChange only ever runs later, from a user
-// click, by which point initSecondarySiteReport() has already assigned this.
+
 let secondarySiteReportSection = null;
 
-// Assigned once initSecondaryProductSnapshot() runs (see this file's own "3. Product Snapshot"
-// block, placed after this wirePage IIFE) — declared here for the exact same "1. Overview" Filter
-// wiring reason secondarySiteReportSection above is: onFilterChange only ever fires later, from a
-// user click or this IIFE's own initial /overview load, by which point that block has already run.
+
 let secondaryProductSnapshot = null;
 
 (async function wirePage() {
@@ -1630,23 +1403,13 @@ renderBrandPill("dashboardFyOverviewBrandToggle", brandPillOptions);
 renderChannelPill("dashboardFyOverviewChannelToggle", channelPillOptions);
 renderStatusPill("dashboardFyOverviewStatusToggle", statusPillOptions);
 
-// 3. Reports — created before "1. Overview"'s own filter below so its onFilterChange can drive it
-// via the setDateRange it returns (see initReportsSection's own comment for how it plumbs
-// [from, to] into its already from/to-capable backend endpoint). Has no Brand/Channel pill of its
-// own (always "all", same as before) — per explicit request only the Date Filter reaches it, so
-// it's the one section here NOT wired into initBrandHeader/initChannelHeader below.
+
 const reportsSection = initReportsSection();
 
-// 2. Daily Sales Trends — created here (ahead of the Filter Header's own pills/Filter below) so its
-// setBrand/setChannel/setDateRange exist before those callbacks reference them. Used to have its own
-// independent Brand pill + date filter bar; both were removed per explicit request, so it's now
-// driven entirely by the Filter Header's shared controls instead.
+
 const dailyTrend = initDailyTrendGraph({ apiBase: "/api/secondary-sales" });
 
-// 1. Overview has no setBrand/setDateRange object of its own (loadOverview is a bare function) —
-// this little bit of local state combines whatever the Filter Header's Brand/Channel pills and Date
-// Filter each last reported into one /overview request, same convention every other section here
-// follows via its own setBrand/setChannel/setDateRange.
+
 let overviewFrom = null;
 let overviewTo = null;
 let overviewBrand = "all";
@@ -1656,11 +1419,7 @@ function reloadOverview() {
     loadOverview(overviewFrom, overviewTo, overviewBrand, overviewChannel, overviewStatus);
 }
 
-// 1. Overview's own date Filter — every change updates the range label, re-fetches
-// /api/secondary-sales/overview for the new [from, to] window, AND (per explicit request) drives
-// "2. Daily Sales Trends", "3. Product Snapshot", "4. Reports", AND "5. Site_Master Secondary_Sale
-// Report" with that same window too, as one common filter for all these sections, instead of any of
-// them staying stuck on the server's own current-month-to-date default forever.
+
 initSalesDateFilter({
     idPrefix: "overviewDateFilter",
     yearsApiUrl: "/api/secondary-sales/comparison2/years",
@@ -1678,8 +1437,7 @@ initSalesDateFilter({
 });
 reloadOverview();
 
-// The Brand pill is SHARED/global (Filter Header) — every section on this page except Reports
-// reacts to it, real Site_Master.Brand values only (Sales_Type = 'Secondary Sales').
+
 initBrandHeader({
     headerId: "dashboardFyOverviewBrandToggle",
     storageKey: BRAND_STORAGE_KEY,
@@ -1692,8 +1450,7 @@ initBrandHeader({
     },
 });
 
-// The Channel pill is SHARED/global too — same sections as the Brand pill above, same "all" or a
-// real Site_Master.Channel value convention.
+
 initChannelHeader({
     headerId: "dashboardFyOverviewChannelToggle",
     storageKey: CHANNEL_STORAGE_KEY,
@@ -1706,12 +1463,7 @@ initChannelHeader({
     },
 });
 
-// The Status pill is SHARED/global too — same sections as the Brand/Channel pills above, same
-// "all"/"active"/"inactive"/"upcoming" convention. initStatusFilter (unlike initBrandHeader/
-// initChannelHeader) doesn't fire its callback once on init with a restored/default value — there's
-// nothing to restore here (no persist/localStorage support in that shared component), so "all"
-// (every section's own default state) is already correct without an initial fire — same convention
-// Primary Sales' own copy follows.
+
 initStatusFilter("dashboardFyOverviewStatusToggle", (status) => {
     overviewStatus = status;
     reloadOverview();
@@ -1721,18 +1473,7 @@ initStatusFilter("dashboardFyOverviewStatusToggle", (status) => {
 });
 })();
 
-// ==================== 3. Product Snapshot ====================
-// Exact reuse of the Dashboard Page's own "3. Product Snapshot" section (Dashboard.js), per explicit
-// request — same UI/backend/data logic, pointed at this page's own GET /api/secondary-sales/
-// product-level (SecondarySalesProductLevelService, a scoped copy of PrimarySalesProductLevelService
-// reading ONLY Secondary_Sales — never Primary_Sales) instead of Dashboard's combined endpoint.
-// Wrapped in its own { } block (same convention Dashboard.js/PrimarySalesPage.js already use for this
-// exact section) because this section's helper names (trendClass, renderDelta, ...) are copied
-// byte-for-byte from Dashboard's own section and would otherwise collide with any identically-named
-// helper this file adds elsewhere in the future. No Brand pill of its own (same convention as
-// Dashboard/Primary) — always loads "all" brands. No date Filter UI of its own either — responds to
-// "1. Overview"'s own Filter above (see secondaryProductSnapshot/setDateRange, wired into that
-// Filter's onFilterChange).
+
 {
 function trendClass(value) {
     if (value === null || value === undefined) {
@@ -2324,30 +2065,11 @@ function initSecondaryProductSnapshot() {
     return { load: refresh, setDateRange, setBrand, setChannel, setStatus };
 }
 
-// No Brand pill/date Filter of its own (removed per explicit request) — initSecondaryProductSnapshot()
-// already runs its own refresh() with sensible defaults (brand "all", current month) as soon as it's
-// constructed, so this section keeps showing real data with no filter UI to drive it directly.
-// Assigned into the module-level secondaryProductSnapshot handle (declared up near "1. Overview" own
-// Filter wiring) so THAT Filter can still drive this section's date range instead.
+
 secondaryProductSnapshot = initSecondaryProductSnapshot();
 }
 
-// ==================== 5. Site_Master Secondary_Sale Report ====================
-// Backed by GET /api/secondary-sales/reports/site-master-secondary-sale (SecondarySalesReportsService#
-// getSiteMasterSecondarySaleReport) — same shape/UI as Dashboard.js's own "1. Site_Master Full Report"
-// section (copied here, not imported — this codebase's own convention, see Dashboard.js's/
-// Dashboard.css's own header comments), but scoped to ONLY site_master rows with a real
-// Secondary_Sales (Site_Code, Brand) row, sourced from Secondary_Sales/Secondary_Sales_Target only —
-// no Primary_Sales data at all. CHANGED 2026-09-03: this used to sit after a separate "4. Site Master
-// Report" section (unconditional, every real site_master row, wired to the page's own date Filter) —
-// that section was removed per explicit request, and this one renumbered 5 -> 4 to fill the gap.
-// CHANGED 2026-09-07: now shares "1. Overview"'s own date Filter as one common [from, to] window
-// across all three sections (Overview/Reports/this one), per explicit request — no longer stuck on
-// the server's own current-month-to-date default forever once the user changes it (see
-// secondarySiteReportSection/setDateRange below and its wiring into overviewDateFilter's own
-// onFilterChange above). CHANGED again (this session): renumbered 4 -> 5 to make room for the new "3.
-// Product Snapshot" section above. Reuses this page's own top-level money() (already declared above) instead
-// of redeclaring it.
+
 const SECONDARY_SITE_REPORT_COLGROUP = `<colgroup>
     <col style="width:5%"><col style="width:10%"><col style="width:9%"><col style="width:8%">
     <col style="width:10%"><col style="width:10%"><col style="width:9%"><col style="width:10%">
@@ -2411,8 +2133,7 @@ function renderSecondarySiteReportDelta(value) {
 }
 
 function downloadSecondarySiteReportCsv(rows) {
-    // Same "no real data" check renderSecondarySiteReportTable uses — nothing worth exporting when
-    // it's just the backend's own lone all-zero Total row.
+
     if (!rows.some((row) => row.rank != null)) {
         return;
     }
@@ -2444,10 +2165,7 @@ function downloadSecondarySiteReportCsv(rows) {
 }
 
 function renderSecondarySiteReportTable(wrap, rows) {
-    // The backend always appends its own grand-total row (rank: null) even when zero real
-    // site_master rows matched a Secondary_Sales row — so `rows` itself is never truly empty. Real
-    // "no data" here means no RANKED row at all; showing just that lone all-zero Total row would be
-    // misleading, so it's excluded too and replaced with one centered message spanning every column.
+
     const realRows = rows.filter((row) => row.rank != null);
     const bodyRows = !realRows.length
         ? `<tr><td colspan="${SECONDARY_SITE_REPORT_COLUMNS.length}" class="secondary-site-report-table-empty">
@@ -2503,10 +2221,7 @@ function renderSecondarySiteReportTable(wrap, rows) {
         </table>`;
 }
 
-// Returns { setDateRange } so "1. Overview"'s own date Filter (see secondarySiteReportSection above)
-// can re-fetch this section for the same [from, to] window it drives "3. Reports" with — requestSeq
-// guards against an in-flight fetch from a stale filter change clobbering a newer one's result, same
-// pattern initReportsSection's own loadFlatTab uses.
+
 function initSecondarySiteReport() {
     const card = document.getElementById("secondarySiteReportCard");
     const wrap = document.getElementById("secondarySiteReportTableWrap");
@@ -2523,9 +2238,7 @@ function initSecondarySiteReport() {
     let currentStatus = "all";
     downloadBtn?.addEventListener("click", () => downloadSecondarySiteReportCsv(siteReportRows));
 
-    // Driven by the Filter Header's shared Brand/Channel/Status pills + Date Filter (see wirePage
-    // below) — all five pieces of state combine into one request, same convention every other
-    // Filter-Header-driven section on this page follows.
+
     function load() {
         const requestId = ++requestSeq;
         const params = new URLSearchParams({ brand: currentBrand, channel: currentChannel, status: currentStatus });

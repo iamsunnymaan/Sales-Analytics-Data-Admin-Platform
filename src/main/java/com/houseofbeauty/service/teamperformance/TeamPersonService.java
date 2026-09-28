@@ -25,21 +25,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-// Backs the Team Insights page's own "Person Details" drill-down — shown when a user clicks a
-// name (RM/AM/CM/SM) anywhere in "Team Report"'s tables (TeamPerformancePage.js). Three pieces,
-// each its own endpoint (see TeamPerformanceController): the site-code list + count card, the FY
-// overview card (exact same Month x Primary/Secondary Target/Sales/Achi./Vs Last Year shape as
-// Dashboard's own "1. Overview" — see PersonFyOverviewResponse's own header comment), and the Daily
-// Sales graph (same shape as SiteDetailTrendService's own Primary+Secondary combined trend, just
-// scoped to a whole person's site set via a site_master JOIN instead of one (Site_Code, Brand)).
-//
-// Every query here is scoped to exactly one RM/AM/CM/SM person via a site_master JOIN filtered by
-// TeamSiteRepository's whitelisted level column, NOT narrowed by the page's own Primary/Secondary
-// sales-type pill, since a single person can legitimately have sites of both types assigned to
-// them; this drill-down always shows their full picture across both. `status` ("all"/"active"/
-// "inactive"/"upcoming", via OperationalStatusFilter) wires in the Filter Header's own Status
-// toggle pill (TeamPerformancePage.html's #teamPerformanceStatusFilterToggle), per explicit
-// request — replaces what used to be a hardcoded Operational_Status = 'Active' everywhere below.
 @Service
 public class TeamPersonService {
 
@@ -57,9 +42,6 @@ public class TeamPersonService {
         this.teamSiteRepository = teamSiteRepository;
     }
 
-    // "sm.<col> = ?" for a real name, or "(sm.<col> IS NULL OR sm.<col> = '')" for the synthetic
-    // "Uncategorized" bucket TeamSiteRepository buckets null/blank RM/AM/CM/SM values into — a
-    // literal `= 'Uncategorized'` would never match a real row for that bucket.
     private static void appendPersonFilter(StringBuilder sql, List<Object> params, String levelColumn, String name) {
         if ("Uncategorized".equals(name)) {
             sql.append(" AND (sm.").append(levelColumn).append(" IS NULL OR sm.").append(levelColumn).append(" = '')");
@@ -75,8 +57,6 @@ public class TeamPersonService {
         return new BigDecimal(value.toString());
     }
 
-    // ==================== Person Sites (site-code list + count) ====================
-
     public PersonSitesResponse getPersonSites(String level, String name, String status) {
         String levelColumn = TeamSiteRepository.requireLevelColumn(level);
         List<TeamSiteRow> rows = teamSiteRepository.loadSiteRows(null, status, levelColumn, name);
@@ -86,10 +66,6 @@ public class TeamPersonService {
         return new PersonSitesResponse(name, level.toLowerCase(Locale.ROOT), sites.size(), sites);
     }
 
-    // ==================== Person FY Overview ====================
-
-    // "2026-27" -> 2026 (the FY's own start calendar year) — same fyKey shape
-    // TeamPerformancePage.js's own fyKeyFor/fyKeyToDateRange already use.
     private static int fyStartYear(String fyKey) {
         try {
             return Integer.parseInt(fyKey.split("-")[0]);
@@ -119,8 +95,6 @@ public class TeamPersonService {
         return totals;
     }
 
-    // Secondary_Sales_Target is genuinely per (Site_Code, Brand) — a plain JOIN+SUM double-counts
-    // nothing, unlike Primary's own combo-matched target below.
     private Map<YearMonth, BigDecimal> secondaryMonthlyTarget(String levelColumn, String name, String status,
                                                                 YearMonth fromMonth, YearMonth toMonth) {
         List<Object> params = new ArrayList<>();
@@ -141,18 +115,6 @@ public class TeamPersonService {
         return totals;
     }
 
-    // Primary_Sales_Target carries a (Brand, Channel, Partner) combo, not a per-site grain (same
-    // real schema quirk TeamPerformanceReportService's own header comment explains) — EXISTS (not a
-    // JOIN) means a combo shared by several of this person's own sites is still only counted once
-    // per month, the same dedup rule aggregateSites enforces there. Channel/Partner compared
-    // case-insensitively (LOWER(LTRIM(RTRIM(...)))) — BUG FOUND AND FIXED 2026-09-21: this used to be
-    // a bare `=`, and live data has the same logical Partner spelled with different casing across
-    // tables (e.g. Secondary_Sales_Target's "Nykaa-Offline" vs Site_Master/Primary_Sales_Target's own
-    // "Nykaa-offline" — the exact bug that undercounted "3. Partner Wise Target Vs Achievement" on the
-    // Dashboard page), so an exact-case EXISTS here could just as easily miss a real combo and quietly
-    // drop that person's own Target. Brand normalized too even though BrandFilter's controlled
-    // vocabulary is currently 100% consistent (live-verified) — cheap insurance, same "case doesn't
-    // matter, spelling still must" rule applied everywhere this pattern occurs.
     private Map<YearMonth, BigDecimal> primaryMonthlyTarget(String levelColumn, String name, String status,
                                                               YearMonth fromMonth, YearMonth toMonth) {
         List<Object> params = new ArrayList<>();
@@ -212,8 +174,6 @@ public class TeamPersonService {
         return new PersonFyOverviewResponse(name, level.toLowerCase(Locale.ROOT), fyKey, months,
                 pTarget, pSales, pLastYear, sTarget, sSales, sLastYear);
     }
-
-    // ==================== Person Daily Sales Trend ====================
 
     private void validateSpan(LocalDate from, LocalDate to, String granularity) {
         switch (granularity) {

@@ -1,10 +1,3 @@
-/* Team Performance page — "Filter Header" + "Team Report" sections (see TeamPerformancePage.html/
-   .js), styled to match every other page's own section-container/header/content conventions
-   (PrimarySalesPage.css's own "5. Site_Master Primary_Sale Report" is the exact reference the Team
-   Report table below copies). */
-
-/* Same numbered/plain-subtitle convention as SecondarySalesPage.css's own .secondary-overview-subtitle
-   for a consistent look across pages. */
 .team-performance-subtitle {
     font-size: 0.75rem;
     font-weight: 600;
@@ -14,8 +7,6 @@
     margin: 0 0 0.6rem;
 }
 
-/* No box look (border/radius/background/padding) — purely structural, same as every other page's
-   own .section-container/.section-header/.section-content. */
 .section-container {
 }
 
@@ -27,9 +18,6 @@
     padding: 0.65rem 0.75rem;
 }
 
-/* Tighter header-text-to-card gap for "Filter Header" + "Team Report" specifically, per explicit
-   request — every other section on this page (Person Details/Daily Sales) keeps the base
-   .team-performance-subtitle/.section-content spacing above untouched. */
 #teamPerformanceFilterHeaderSectionContainer .section-content,
 #teamPerformanceReportSectionContainer .section-content {
     padding-top: 0.3rem;
@@ -39,10 +27,6 @@
     margin-bottom: 0.3rem;
 }
 
-/* "Filter Header" title row — same "title left, range label right" layout PrimarySalesPage.css's
-   own .ta-overview-header-row uses, copied here per this codebase's per-page-own-copy convention.
-   .team-performance-subtitle's own margin-bottom is zeroed here (this row's own gap replaces it) so
-   the title and range label sit on one baseline instead of the title dropping below the label. */
 .team-performance-header-row {
     display: flex;
     align-items: center;
@@ -55,18 +39,11 @@
     margin: 0;
 }
 
-/* Shrunk to match the Filter Header title row's own reduced scale (was sized for sitting inline
-   next to the Filter button inside the card) — same reasoning/values PrimarySalesPage.css's own
-   #dashboardFyOverviewFilterHeaderSectionContainer .ta-overview-range-label override uses. */
 #teamPerformanceFilterHeaderSectionContainer .ta-overview-range-label {
     font-size: 0.58rem;
     padding: 0.2rem 0.45rem;
 }
 
-/* Sticks to the top of the scrollable .app-main once the user scrolls past it, so the Date Filter
-   controls stay reachable without scrolling back up — same convention PrimarySalesPage.css's
-   own #dashboardFyOverviewFilterHeaderSectionContainer sticky rule uses (see that file's own header
-   comment for the full explanation of the negative top offset math). */
 #teamPerformanceFilterHeaderSectionContainer {
     position: sticky;
     top: -1.5rem;
@@ -86,14 +63,6 @@
     }
 }
 
-/* ==================== Filter Header (Date Filter) ====================
-   Copied from Dashboard.css/SiteStatusPage.css's own "Filter Header"/date-filter rules per this
-   codebase's per-page-own-copy convention (not centralized, see e.g. SecondarySalesPage.css's own
-   header comment) — background/border/radius for .dashboard-fy-overview-filter-header-card itself
-   comes from the shared list in Shared/css/card.css, already carrying that class. No Brand/Channel/
-   Sales Type pills here (unlike Dashboard's own copy) since this page has no data sections of its
-   own yet for them to scope — just the Date Filter (the FY Year Filter that used to sit here too
-   was removed per explicit request). */
 .dashboard-fy-overview-filter-row {
     display: flex;
     flex-wrap: wrap;
@@ -102,12 +71,6 @@
     padding: 10px;
 }
 
-/* Status toggle pill (All/Active/Inactive/Upcoming) — same look Site Insight page's own Status field
-   uses (SiteStatusPage.css's .site-status-card-field/-filter-field/-card-label/-filter-pill/-filter-
-   item), copied here per this codebase's per-page-own-copy convention, per explicit request. Site
-   Insight's own copy adds flex-basis: 100%/margin-top to force it onto its own row below a narrow
-   card — not needed here, this field just sits inline as one more item in the wide Filter Header
-   row (.dashboard-fy-overview-filter-row), to the left of .team-performance-header-right. */
 .site-status-card-field {
     display: flex;
     flex-direction: column;
@@ -132,13 +95,6 @@
     font-size: 0.54rem;
 }
 
-/* .site-status-filter-pill/-item's own visual rules now live in
-   components/StatusFilter/StatusFilter.css (see this page's <head> for the <link>). */
-
-/* Hugs the row's right edge — same "margin-left: auto on the wrapper" convention
-   SecondarySalesPage.css's own .secondary-overview-header-right uses. Named "-header-right" from
-   when it also held the Year Filter (removed per explicit request) alongside the Date Filter; now
-   just wraps the Date Filter cluster alone. */
 .team-performance-header-right {
     display: flex;
     align-items: center;
@@ -172,8 +128,6 @@
     color: var(--color-text-secondary);
 }
 
-/* Date Filter — Filter toggle -> By Date/By Month/By Year, same generic markup/behavior every
-   other page's own copy of initSalesDateFilter drives (see TeamPerformancePage.js). */
 .team-performance-date-filter-cluster {
     display: flex;
     flex-wrap: wrap;
@@ -181,12 +135,6 @@
     gap: 0.4rem;
 }
 
-/* Same look as PrimarySalesPage.css's own .ta-overview-range-label (e.g. "01-Sep-2026 to
-   14-Sep-2026 (14 of 30 days)" — see formatRangeLabel in TeamPerformancePage.js), copied here per
-   this codebase's per-page-own-copy convention. Base (larger) size here; sits inside
-   .team-performance-header-row next to "Filter Header" now, where the smaller
-   #teamPerformanceFilterHeaderSectionContainer override above (which wins via ID specificity)
-   actually applies. */
 .ta-overview-range-label {
     font-size: 0.7rem;
     font-weight: 400;
@@ -316,8 +264,6 @@
     color: var(--color-danger);
 }
 
-/* ==================== Team Report ==================== */
-
 .position-header-pill {
     display: inline-flex;
     align-items: center;
@@ -350,11 +296,6 @@
     color: #fff;
 }
 
-/* Sales Type pill (#teamPerformanceSalesTypeToggle) now renders with the shared BrandFilter/
-   ChannelFilter component's own class names instead of a second, page-local copy of this same
-   look under a different name — this page's own .position-header-pill/-item above stays (still
-   used by "Team Report"'s own All/AM/CM/SM tab toggle), these are just its byte-identical twin
-   under the shared name so nothing about the Sales Type pill's own appearance changes. */
 .brand-header-pill {
     display: inline-flex;
     align-items: center;
@@ -387,12 +328,6 @@
     color: #fff;
 }
 
-/* .brand-header-empty: shown instead of the real Primary/Secondary buttons while site_master
-   currently has no usable Sales_Type data (or the DB isn't connected) — see initTeamReportSection's
-   own Sales Type pill fetch in TeamPerformancePage.js, same "Not Available" state convention
-   PrimarySalesPage.css's own .brand-header-empty already uses. Doubles as the pill's "Loading…"
-   placeholder while that fetch is still in flight. Not a button: no hover/active state, not
-   clickable. */
 .brand-header-empty {
     font-style: italic;
     opacity: 0.7;
@@ -404,11 +339,6 @@
     color: var(--color-text-secondary);
 }
 
-/* Sales Type pill specifically (not any other .brand-header-pill use) — sized to exactly match the
-   Status pill right next to it in the Filter Header row (same padding/font-size as
-   components/StatusFilter/StatusFilter.css's own .site-status-filter-pill/-item), instead of
-   .brand-header-item's own larger defaults sized for its original spot inside the Team Report
-   card header. */
 .team-performance-sales-type-pill {
     padding: 0.1rem;
 }
@@ -418,8 +348,6 @@
     font-size: 0.58rem;
 }
 
-/* Shared by "Team Report" section's own header (kept name-compatible with PrimarySalesPage.css's
-   .reports-section-header/.section-loading-spinner). */
 .reports-section-header {
     display: flex;
     align-items: center;
@@ -450,8 +378,6 @@
     margin-bottom: 0;
 }
 
-/* Compacted down to the page-level .position-header-pill/-item look — this is "Team Report"'s own
-   All Report/AM/CM/SM tab toggle, not a Brand filter (the section has none of its own). */
 .reports-section-header .position-header-pill {
     padding: 0.12rem;
     gap: 0.15rem;
@@ -464,8 +390,6 @@
     font-weight: 600;
 }
 
-/* Node-count strip (RM/AM/CM/SM, or a single tab's own count) — pushed to the header's right edge,
-   opposite the tab toggle. */
 .reports-section-counts {
     display: flex;
     align-items: center;
@@ -504,9 +428,6 @@
     min-width: 0;
 }
 
-/* Shown in the table area itself while a tab's data is in flight (see loadTree/loadFlatTab in
-   TeamPerformancePage.js) — reuses .reports-empty-state's own centered layout, so this only ever
-   replaces it, never overlaps with the real "No data available" message. */
 .reports-loading-icon {
     font-size: 1.7rem;
     color: var(--color-text-secondary);
@@ -514,10 +435,6 @@
     animation: section-loading-spin 0.8s linear infinite;
 }
 
-/* Base look for the download icon button + its popup comes from the shared
-   components/ExcelDownloadButton/ExcelDownloadButton.css (see its own <link> in this page's
-   <head>) — this page keeps only the one rule that genuinely differs from some other pages:
-   styling the button as "active" while its popup is open, not just on :hover. */
 .product-snapshot-download-btn:hover,
 .product-snapshot-download-btn[aria-expanded="true"] {
     color: var(--color-primary);
@@ -626,9 +543,6 @@
     color: var(--color-text-primary);
 }
 
-/* Table scroll area — capped height (header + several data rows), rest reachable by scrolling
-   (scrollbar hidden, still scrollable via wheel/touch/drag), same convention every other Reports
-   table on this app uses. */
 #teamPerformanceReportTableWrap {
     overflow-x: auto;
     overflow-y: auto;
@@ -643,9 +557,6 @@
     height: 0;
 }
 
-/* Clickable RM/AM/CM/SM name — opens "Person Details" below (see attachPersonClickHandler in
-   TeamPerformancePage.js). Total rows never carry data-person-level, so they're excluded
-   automatically by this same attribute selector. */
 #teamPerformanceReportTableWrap .product-snapshot-name-text[data-person-level] {
     cursor: pointer;
 }
@@ -655,7 +566,6 @@
     text-decoration: underline;
 }
 
-/* Center-align every tab's table cells — scoped to Team Report only. */
 #teamPerformanceReportTableWrap .product-snapshot-table th,
 #teamPerformanceReportTableWrap .product-snapshot-table td {
     text-align: center;
@@ -665,10 +575,6 @@
     font-size: 0.68rem;
 }
 
-/* AM/CM/SM flat tabs (non-tree tables) — every data row gets one solid tint instead of the base
-   even/odd zebra stripe, Total row excluded. Same tint family the "All Report" tree's own
-   data-level rule uses further below (AM=success, CM=info, SM=warning) — see
-   FLAT_REPORT_TABLE_CLASS in TeamPerformancePage.js for how each table gets its own class. */
 #teamPerformanceReportTableWrap .report-flat-table--am tbody tr:not(.channel-report-total-row) {
     background-color: color-mix(in srgb, var(--color-success) 6%, var(--color-card-bg));
 }
@@ -681,8 +587,6 @@
     background-color: color-mix(in srgb, var(--color-warning) 6%, var(--color-card-bg));
 }
 
-/* Bottom grand-total row — solid --color-primary background/white text, pinned to the bottom of the
-   scroll area. */
 #teamPerformanceReportTableWrap tr.channel-report-total-row {
     background-color: var(--color-primary);
 }
@@ -729,9 +633,6 @@
     color: var(--color-primary);
 }
 
-/* One icon per "All Report" tree level (RM/AM/CM/SM — see POSITION_TREE_LEVEL_ICONS in
-   TeamPerformancePage.js) so the hierarchy reads at a glance without relying on indentation alone.
-   Total row keeps its own .channel-report-row-icon calculator instead. */
 #teamPerformanceReportTableWrap .brand-tree-row-icon {
     font-size: 0.75rem;
 }
@@ -767,11 +668,6 @@
     white-space: nowrap;
 }
 
-/* Row background per "All Report" tree level, same 4 accent colors as the row icons above, blended
-   at low strength into the theme's own card background. Scoped to .brand-hierarchy-table only — the
-   flat single-level tabs share this table wrapper and their own data-level="0" rows are NOT part of
-   this hierarchy. The bottom Total row (also data-level="0") keeps its own solid background via
-   .channel-report-total-row td, which paints over this regardless of selector order. */
 #teamPerformanceReportTableWrap .brand-hierarchy-table tbody tr[data-level="0"] {
     background-color: color-mix(in srgb, var(--color-primary) 6%, var(--color-card-bg));
 }
@@ -788,11 +684,6 @@
     background-color: color-mix(in srgb, var(--color-warning) 6%, var(--color-card-bg));
 }
 
-/* Achi. column progress bar — 4 fixed categorical slots, one per RM in first-seen order (see
-   assignRmColorSlots in TeamPerformancePage.js), so every AM/CM/SM row shares its own RM's color
-   rather than being colored by its own level. Rows with no single owning RM (the bottom Total row;
-   every row in the RM-less flat tabs) fall back to --achi-fill-neutral. Same slot palette Primary's
-   own copy uses (there per-Brand instead of per-RM). */
 :root {
     --achi-fill-neutral: var(--color-text-secondary);
     --achi-brand-1: #2a78d6;
@@ -883,14 +774,6 @@
     color: var(--color-text-secondary);
 }
 
-/* ==================== Person Details (FY card + Person card) ====================
-   Shown once a name is clicked in "Team Report" above (see attachPersonClickHandler/
-   openPersonDetails in TeamPerformancePage.js). The FY card reuses the exact same
-   .dashboard-fy-overview-* class names/table design Dashboard's own "1. Overview" section uses
-   (index.html / Dashboard.css) — copied here per this codebase's per-page-own-copy convention, not
-   centralized — scoped to one person's site set instead of the whole business, and with no
-   Actual/Current/Projection/YTD row-type distinction (this is a historical FY summary, not a live
-   month-progress tracker) — every month row looks the same, plus one Total row at the bottom. */
 .team-performance-person-layout {
     display: flex;
     flex-wrap: wrap;
@@ -941,19 +824,11 @@
     color: var(--color-text-primary);
 }
 
-/* Groups the loading spinner + FY Filter together so they hug the Person FY card header's right
-   edge as one unit — same .dashboard-fy-overview-header-actions Dashboard's own "1. Overview" card
-   header uses, copied here per this codebase's per-page-own-copy convention. */
 .dashboard-fy-overview-header-actions {
     display: flex;
     align-items: center;
     gap: 0.6rem;
 }
-
-/* FY Filter — scoped to just the Person FY card (per explicit request: this card only, not the
-   whole page). Own visual rules now live in components/FyYearFilter/FyYearFilter.css (see this
-   page's <head> for the <link>); wiring is components/FyYearFilter/FyYearFilter.js's
-   initScopedFyYearFilter, called from TeamPerformancePage.js. */
 
 .dashboard-fy-overview-table-wrap {
     overflow-x: auto;
@@ -1006,9 +881,6 @@
     letter-spacing: 0.03em;
 }
 
-/* Same fixed hex values Dashboard.js's own DAILY_TREND_COMPARE_SALES_TYPES / this page's Daily
-   Sales chart use for Primary/Secondary Sales, kept as fixed hex (not the theme-aware
-   --color-primary/--color-info vars) so these group headers read the same in light and dark mode. */
 .dashboard-fy-overview-group-header.dashboard-fy-overview-group-primary,
 .dashboard-fy-overview-table thead tr:last-child th.dashboard-fy-overview-group-primary {
     background-color: #16A34A;
@@ -1021,12 +893,6 @@
     color: #FFFFFF;
 }
 
-/* Person Details' own FY card only — per explicit request, a person whose assigned sites (Site_
-   Master.Sales_Type) are exclusively Primary or exclusively Secondary shows only that column group,
-   not both; a mixed assignment still shows both (see resolvePersonSalesTypeFlags/
-   applyPersonSalesTypeVisibility in TeamPerformancePage.js, which toggle these classes on
-   #teamPerformancePersonFyCard). Scoped under .team-performance-person-fy-card so Dashboard.js's/
-   SiteStatusPage.js's own same-named group classes elsewhere are never touched. */
 .team-performance-person-fy-card.hide-primary-group .dashboard-fy-overview-group-primary {
     display: none;
 }
@@ -1039,19 +905,11 @@
     border-bottom: 1px solid var(--color-border);
 }
 
-/* Data rows (Actual/Projection months) — same info-tinted surface Dashboard's own "1. Overview" FY
-   table uses (.dashboard-fy-row--actual/-projection there), copied here per this codebase's
-   per-page-own-copy convention. Scoped to these two row classes (not a blanket tbody td rule) so it
-   doesn't win over .dashboard-fy-row--current/-total/-ytd's own distinct highlight colors below. */
 .dashboard-fy-row--actual td,
 .dashboard-fy-row--projection td {
     background-color: color-mix(in srgb, var(--color-info) 6%, var(--color-card-bg));
 }
 
-/* "Current" month — highlighted so it reads as "where we are right now" between the Actual rows
-   above it and the Projection rows below, same as Dashboard's own FY table. Only ever appears when
-   this card's FY Filter has the real current FY selected (see personFyMonthType in
-   TeamPerformancePage.js) — a fully elapsed past FY has every month as "actual" instead. */
 .dashboard-fy-row--current td {
     background-color: color-mix(in srgb, var(--color-warning) 10%, var(--color-card-bg));
     font-weight: 600;
@@ -1061,9 +919,6 @@
     box-shadow: inset 3px 0 0 var(--color-warning);
 }
 
-/* Month cell for the current-month row only — the "See Total" text-button sits inline right after
-   the month label (not stacked below it) so this row's height stays identical to every other row's —
-   same .dashboard-fy-overview-month-cell Dashboard's own FY table uses. */
 .dashboard-fy-overview-month-cell {
     display: inline-flex;
     align-items: baseline;
@@ -1087,9 +942,6 @@
     color: var(--color-primary-hover);
 }
 
-/* Year-to-date subtotal row (Apr -> current month) — revealed by the "See Total" button above,
-   inserted directly after the current-month row. Same solid --color-primary/white-bold look as the
-   full-year Total row below (.dashboard-fy-row--total), same as Dashboard's own FY table. */
 .dashboard-fy-row--ytd td {
     background-color: var(--color-primary);
     font-weight: 700;
@@ -1146,7 +998,6 @@
     font-weight: 500;
     background-color: var(--color-card-bg);
 }
-
 
 .dashboard-achi-cell {
     display: flex;
@@ -1207,16 +1058,11 @@
     color: var(--color-danger);
 }
 
-/* The trailing Last Year figure inside .dashboard-delta (see personYoyVarianceCell in
-   TeamPerformancePage.js) — kept off the positive/negative trend color (that colors the
-   variance/growth part only) since the Last Year amount itself isn't "up" or "down". Same
-   .dashboard-delta-lastyear Dashboard's own FY table uses. */
 .dashboard-delta-lastyear {
     font-weight: 500;
     color: var(--color-text-secondary);
 }
 
-/* Person card — persona identity (level badge + name) plus their assigned site-code chip list. */
 .team-performance-person-card {
     flex: 1 1 16rem;
     min-width: 0;
@@ -1262,13 +1108,6 @@
     margin-bottom: 0.6rem;
 }
 
-/* ==================== Daily Sales (ECharts graph) ====================
-   Same frontend as Primary Sales page's own Daily Trend Graph (PrimarySalesPage.css's own
-   .daily-trend-* rules), redone per explicit request to match it fully — Vs Last Year/Compare
-   toggles, dark rich tooltip, Bar Graph per-bar growth labels. Still no independent brand/date
-   filter bar of its own (Primary's own copy dropped that too, driven by nothing on this page since
-   there's no Brand dimension here) — this graph is scoped to whichever person is selected and
-   driven by the page's shared Filter Header, same as before this redesign. */
 .daily-trend-card {
     padding: 0.5rem;
     box-shadow: var(--shadow-card);
@@ -1300,8 +1139,6 @@
     flex-wrap: wrap;
 }
 
-/* Vs Last Year / Compare toggles — plain ON/OFF switches, same look PrimarySalesPage.css's own
-   .daily-trend-compare-toggle uses. */
 .daily-trend-compare-toggle {
     display: inline-flex;
     align-items: center;
@@ -1421,17 +1258,6 @@
     }
 }
 
-/* ==================== Person Sitemaster Report ==================== */
-/* Renamed from a page-wide "Site Master Report" section, per explicit request — now scoped to just
-   whichever person "Person Details" is currently showing (see setPerson in initTeamSiteReport,
-   TeamPerformancePage.js). Same look Primary Sales page's own "5. Site_Master Primary_Sale Report"
-   (.primary-site-report-*, PrimarySalesPage.css) uses (cream body rows, rounded/clipped card, bold
-   key columns, count-labeled Total row) — copied here per this codebase's per-page-own-copy
-   convention. Base card surface (background/border/radius) comes from Shared/css/card.css's shared
-   list, which .team-performance-site-report-card was added to. Download button reuses this page's
-   own .product-snapshot-download-wrap/-btn/.region-summary-download-btn, loading spinner reuses
-   .section-loading-spinner, empty state reuses .reports-empty-state* — all already defined above,
-   not redefined here. */
 #teamPerformanceSiteReportCard .reports-section-header {
     margin-bottom: 0;
 }
@@ -1489,10 +1315,6 @@
     cursor: default;
 }
 
-/* Fixed light cream background regardless of active theme (same design intent Primary's own
-   .primary-site-report-table uses) — text needs a fixed dark color too, since
-   var(--color-text-primary) would flip to near-white in dark theme against this still-light
-   background. */
 .team-performance-site-report-table td {
     font-size: 0.68rem;
     color: #17221E;
@@ -1523,8 +1345,6 @@
     color: #17221E;
 }
 
-/* Reuses this page's own .product-snapshot-delta (reportsTrendClass/renderReportsDelta in
-   TeamPerformancePage.js) — not a new dedicated delta class. */
 .team-performance-site-report-table tbody tr:not(.team-performance-site-report-total-row) .product-snapshot-delta {
     font-weight: 700;
 }

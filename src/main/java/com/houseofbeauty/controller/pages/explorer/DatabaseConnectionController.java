@@ -20,12 +20,12 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-// Reports the DB connection status and available tables for the Explorer/Upload UI's connection banner.
+
 @RestController
 @RequestMapping("/api/database")
 public class DatabaseConnectionController {
 
-    // Pulled from the JDBC URL rather than a config property, so the UI shows what's actually in use.
+
     private static final Pattern SERVER_PATTERN = Pattern.compile("//([^;]+)");
     private static final Pattern DATABASE_PATTERN = Pattern.compile("(?i)databaseName=([^;]+)");
 
@@ -52,19 +52,7 @@ public class DatabaseConnectionController {
         return tableAccessService.listAvailableTables();
     }
 
-    /**
-     * Backs the Data Upload/Explorer pages' "Available Tables" info panel — icon+name, last
-     * committed-import date, and whether this table's own import rules apply the normal duplicate
-     * check or always insert every row as new (see TableImportRules#alwaysInsertNew).
-     *
-     * <p>{@code lastUpdated}: CHANGED 2026-09-03 — now reads table_last_import first (see
-     * TableAccessService#getLastImportedAt's own comment), a real permanent per-table record, not
-     * subject to any retention window. Falls back to the older import_sessions.committedAt lookup
-     * only when table_last_import has no row for this table yet (either the table has genuinely
-     * never been imported, or it WAS imported before this permanent-tracking table existed/was
-     * picked up — in which case today's still-fresh import_sessions history can still answer it; a
-     * commit any older than that is unrecoverable either way, see ImportSessionCleanupService).
-     */
+    
     @GetMapping("/tables/{tableKey}/summary")
     public TableSummaryResponse getTableSummary(@PathVariable String tableKey) {
         String table = tableAccessService.validateTable(tableKey);
@@ -85,7 +73,7 @@ public class DatabaseConnectionController {
                 isConnected() ? "connected" : "disconnected");
     }
 
-    // A short validity ping rather than a real query — cheap and enough to prove the DB is reachable.
+
     private boolean isConnected() {
         try (Connection connection = dataSource.getConnection()) {
             return connection.isValid(2);

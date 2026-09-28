@@ -31,13 +31,6 @@ import java.util.Set;
 import java.util.stream.Stream;
 import java.util.stream.Collectors;
 
-// Read side of the Monitoring page's table sections + the "Usage Overview" graph. Every list
-// method is most-recent-first, capped at 300 rows (see each repository's own findTop300By...
-// comment) — a read-only audit trail, not something paged through indefinitely. getSessions()
-// (backed "Sessions (Refresh Tokens)") was removed per explicit request, along with the
-// IamLoginRefreshTokenRepository dependency it was the only user of here — it only ever reflected
-// another application's own use of this shared database, house_of_beauty itself never issues one
-// (see that repository's own header comment) — don't re-add it unasked.
 @Service
 public class MonitoringService {
 
@@ -95,10 +88,6 @@ public class MonitoringService {
                 .collect(Collectors.toList());
     }
 
-    // Every row here has a required (non-nullable) User_ID (see IamLoginPasswordResetToken/
-    // IamLoginOtpVerification's own header comments) — unlike the four audit tables above, these
-    // were never designed to outlive the account they belong to, so a plain username lookup (not a
-    // redundant stored column) is correct here.
     public List<PasswordResetTokenResponse> getPasswordResetTokens() {
         List<IamLoginPasswordResetToken> tokens = passwordResetTokenRepository.findTop300ByOrderByCreatedAtDesc();
         Map<Long, String> usernamesById = usernamesById(tokens.stream().map(IamLoginPasswordResetToken::getUserId));
@@ -117,10 +106,6 @@ public class MonitoringService {
                 .collect(Collectors.toList());
     }
 
-    // "Usage Overview" graph data — which hour of day sees more/less login activity, and which
-    // accounts log in most — over the last 30 days of successful logins only (a failed attempt
-    // isn't "usage"). byHour is always all 24 hours, zero-filled, so the chart's x-axis never
-    // silently skips a quiet hour.
     public UsageStatsResponse getUsageStats() {
         LocalDateTime since = LocalDateTime.now().minusDays(30);
         List<IamLoginLoginAudit> recentSuccesses = loginAuditRepository.findBySuccessTrueAndAttemptedAtAfter(since);

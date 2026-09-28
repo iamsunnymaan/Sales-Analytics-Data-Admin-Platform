@@ -20,29 +20,6 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.function.Function;
 
-// Backs the Team Insights page's own "Team Report" section — exact frontend/backend architecture
-// mirror of PrimarySalesReportsService's own "4. Reports" (getBrandHierarchy/getFlatSummary), per
-// explicit request: an "All Report" hierarchy tree (RM -> AM -> CM -> SM, RM the root) plus three
-// flat single-level tabs (AM/CM/SM — RM excluded from the flat tabs since it's already the tree's
-// root, same reasoning Primary's own Brand is excluded from its flat tabs). Unlike Primary's
-// Brand/Channel/Sub_Channel/Partner (four INDEPENDENT dimensions), RM/AM/CM/SM are four hierarchy
-// LAYERS of the same site row — so unlike Primary's tree (where a leaf's own (Brand,Channel,Partner)
-// combo IS its grouping key, letting Target be looked up once per leaf), an SM leaf here can span
-// several different real (Brand,Channel,Partner) combos, and the very same combo can independently
-// reappear under a different SM/CM/AM/RM elsewhere — so every node's own Target here is computed
-// fresh from its own full subtree's site list (aggregateSites), deduping combos scoped to just that
-// subtree, rather than by summing already-rolled-up child values.
-//
-// A site's real Sales/Target live in Primary_Sales(+Target) or Secondary_Sales(+Target) depending on
-// that site's own Sales_Type — same real-classification convention
-// PrimarySalesReportsService/SecondarySalesReportsService's own Site Master Reports use — so this
-// service pulls from BOTH tables instead of being scoped to one, unlike those two, UNLESS the
-// frontend's own Primary/Secondary sales-type pill (default Secondary, see TeamPerformancePage.js)
-// narrows every query down to just one — see TeamSiteRepository.resolveSalesTypeFilter. Site rows
-// themselves come from the shared TeamSiteRepository, scoped by the Filter Header's own Status
-// toggle pill (`status` — "all"/"active"/"inactive"/"upcoming", defaults to "active", this class's
-// own previous hardcoded-Active-only behavior — see TeamSiteRepository's own header comment), not a
-// private query.
 @Service
 public class TeamPerformanceReportService {
 
@@ -54,28 +31,11 @@ public class TeamPerformanceReportService {
         this.teamSiteRepository = teamSiteRepository;
     }
 
-    // Status pill options — backs the Filter Header's own Status pill (GET /api/team-performance/statuses),
-    // fetched the same "real Site_Master round-trip, not a hardcoded return" convention
-    // DashboardOverviewService.getAvailableStatuses/SiteStatusService.getAvailableStatuses already use,
-    // instead of the pill's All/Active/Inactive/Upcoming buttons being hardcoded straight into
-    // TeamPerformancePage.html. The category list itself (Active/Inactive/Upcoming) is the same fixed,
-    // app-wide Site Status vocabulary OperationalStatusFilter classifies against — NOT derived from
-    // Site_Master's own live distinct Operational_Status text (that column is free text with no
-    // canonical enumeration to query). An empty/not-yet-imported Site_Master (count 0) or a genuine
-    // DB-connectivity problem (query throws) both fall back to an empty list here, letting the frontend
-    // show the same "Not Available" state every other pill's own fetch failure already shows.
     public List<String> getAvailableStatuses() {
         Integer count = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM site_master", Integer.class);
         return (count == null || count == 0) ? List.of() : List.of("Active", "Inactive", "Upcoming");
     }
 
-    // Sales Type pill options — backs the Filter Header's own Sales Type pill
-    // (GET /api/team-performance/sales-types), real distinct site_master.Sales_Type values ("Primary
-    // Sales"/"Secondary Sales" today) instead of the pill's Primary/Secondary buttons being hardcoded
-    // straight into TeamPerformancePage.html — same query DashboardOverviewService's own
-    // getAvailableSalesTypes/SiteStatusService's own getAvailableSalesTypes use. Naturally falls back
-    // to an empty list (frontend shows "Not Available") when site_master has no usable Sales_Type
-    // data yet, and a genuine DB-connectivity problem surfaces as a thrown exception the same way.
     public List<String> getAvailableSalesTypes() {
         String sql = "SELECT DISTINCT Sales_Type FROM site_master WHERE Sales_Type IS NOT NULL AND LTRIM(RTRIM(Sales_Type)) <> ''";
         java.util.TreeSet<String> types = new java.util.TreeSet<>(String.CASE_INSENSITIVE_ORDER);
@@ -105,7 +65,6 @@ public class TeamPerformanceReportService {
         return value == null || value.isBlank() ? "Uncategorized" : value;
     }
 
-    // Real (Bill_to, Brand)-keyed Primary_Sales sum for [from, to].
     private Map<String, BigDecimal> primarySalesBySite(LocalDate from, LocalDate to) {
         String sql = "SELECT Bill_to, Brand, SUM(Sales) AS total FROM Primary_Sales " +
                 "WHERE Sales_Date BETWEEN ? AND ? GROUP BY Bill_to, Brand";
@@ -116,7 +75,6 @@ public class TeamPerformanceReportService {
         return result;
     }
 
-    // Real (Site_Code, Brand)-keyed Secondary_Sales sum for [from, to].
     private Map<String, BigDecimal> secondarySalesBySite(LocalDate from, LocalDate to) {
         String sql = "SELECT Site_Code, Brand, SUM(Sales) AS total FROM Secondary_Sales " +
                 "WHERE Sales_Date BETWEEN ? AND ? GROUP BY Site_Code, Brand";
@@ -127,8 +85,6 @@ public class TeamPerformanceReportService {
         return result;
     }
 
-    // Real (Site_Code, Brand)-keyed Secondary_Sales_Target sum for [fromMonth, toMonth] — genuinely
-    // per-site grain, no combo-match needed (unlike Primary_Sales_Target below).
     private Map<String, BigDecimal> secondaryTargetBySite(YearMonth fromMonth, YearMonth toMonth) {
         String sql = "SELECT Site_Code, Brand, SUM(Sales_Target) AS total FROM Secondary_Sales_Target " +
                 "WHERE Month BETWEEN ? AND ? GROUP BY Site_Code, Brand";
@@ -139,10 +95,6 @@ public class TeamPerformanceReportService {
         return result;
     }
 
-    // Real (Brand, Channel, Partner)-combo Primary_Sales_Target sum for [fromMonth, toMonth] — NOT
-    // per-Site_Code (Primary_Sales_Target carries a full Partner x Channel x Brand cross-product per
-    // site/month, not one real per-site row — see PrimarySalesReportsService's own header comment for
-    // the live-verified detail), so this is combo-matched and dedup'd per node below instead.
     private Map<String, BigDecimal> primaryTargetsByCombo(YearMonth fromMonth, YearMonth toMonth) {
         String sql = "SELECT Brand, Channel, Partner, SUM(Sales_Target) AS total FROM Primary_Sales_Target " +
                 "WHERE Month BETWEEN ? AND ? GROUP BY Brand, Channel, Partner";
@@ -168,16 +120,11 @@ public class TeamPerformanceReportService {
         return sum == null ? addend : sum.add(addend);
     }
 
-    // lastMonth*/lastYear* are the exact same [salesFrom, salesTo] window shifted back a calendar
-    // month/year, same convention PrimarySalesReportsService's own Period uses for its "4. Reports"
-    // Vs LM/Vs LY.
     private record Period(LocalDate salesFrom, LocalDate salesTo, YearMonth fromMonth, YearMonth toMonth,
                            LocalDate lastMonthFrom, LocalDate lastMonthTo,
                            LocalDate lastYearFrom, LocalDate lastYearTo) {
     }
 
-    // `from`/`to` default to the current calendar month-to-date when either is omitted, same
-    // convention used across the rest of this app's date-scoped endpoints.
     private Period resolvePeriod(LocalDate from, LocalDate to) {
         LocalDate periodFrom = from;
         LocalDate periodTo = to;
@@ -196,8 +143,6 @@ public class TeamPerformanceReportService {
                 periodFrom.minusYears(1), salesTo.minusYears(1));
     }
 
-    // Every (Sales/Target/Vs LM/Vs LY-feeding) map this service needs, bundled once per request so
-    // aggregateSites/getPositionHierarchy/getFlatPositionSummary don't each re-fetch them.
     private record DataSet(Map<String, BigDecimal> primarySales, Map<String, BigDecimal> secondarySales,
                             Map<String, BigDecimal> primaryLastMonthSales, Map<String, BigDecimal> secondaryLastMonthSales,
                             Map<String, BigDecimal> primaryLastYearSales, Map<String, BigDecimal> secondaryLastYearSales,
@@ -220,10 +165,6 @@ public class TeamPerformanceReportService {
                             BigDecimal target) {
     }
 
-    // Computes one node's own Sites/Sales/Vs LM/Vs LY/Target fresh from its own full member site
-    // list — NOT by summing already-computed child nodes — so Target's (Brand, Channel, Partner)
-    // combo dedup is always scoped correctly to exactly this node's own subtree (see this class's own
-    // header comment for why that matters here, unlike Primary's simpler tree).
     private static NodeAgg aggregateSites(List<TeamSiteRow> sites, DataSet data) {
         BigDecimal sales = BigDecimal.ZERO;
         BigDecimal lastMonthSales = BigDecimal.ZERO;
@@ -274,12 +215,6 @@ public class TeamPerformanceReportService {
                 GrowthMath.growthPct(agg.sales(), agg.lastYearSales()), children);
     }
 
-    // "All Report" tab: real RM -> AM -> CM -> SM tree (SM is the leaf) — exact structural mirror of
-    // PrimarySalesReportsService#getBrandHierarchy's Brand -> Channel -> Sub_Channel -> Partner tree,
-    // just one hierarchy dimension deep instead of four independent ones. Every node's own
-    // Sites/Target/Sales/Vs LM/Vs LY is computed fresh from its own full subtree (see aggregateSites)
-    // rather than added up from pre-computed children, so a (Brand, Channel, Partner) combo shared
-    // across two different branches of the SAME node's subtree is never double-counted.
     public List<Map<String, Object>> getPositionHierarchy(LocalDate from, LocalDate to, String salesType, String status) {
         Period period = resolvePeriod(from, to);
         DataSet data = loadDataSet(period);
@@ -325,10 +260,6 @@ public class TeamPerformanceReportService {
         return rmNodes;
     }
 
-    // Shared by every flat (single-level) Reports tab (AM/CM/SM) — one row per distinct real
-    // RM/AM/CM/SM value `dimensionKey` returns, ignoring the other 3 levels entirely (unlike the
-    // tree, this flattens straight across every site regardless of who else is in its chain) — exact
-    // mirror of PrimarySalesReportsService#getFlatSummary.
     private List<Map<String, Object>> getFlatPositionSummary(LocalDate from, LocalDate to, String salesType, String status,
                                                                Function<TeamSiteRow, String> dimensionKey) {
         Period period = resolvePeriod(from, to);
@@ -351,41 +282,18 @@ public class TeamPerformanceReportService {
         return rows;
     }
 
-    // "AM" tab — flat one-row-per-AM summary. Per Primary's own convention (its Brand tab is
-    // similarly excluded), RM is NOT wired into the frontend's tab toggle — RM-level rows are already
-    // visible via the "All Report" hierarchy tree's own top level.
     public List<Map<String, Object>> getAmSummaries(LocalDate from, LocalDate to, String salesType, String status) {
         return getFlatPositionSummary(from, to, salesType, status, TeamSiteRow::am);
     }
 
-    // "CM" tab — flat one-row-per-CM summary.
     public List<Map<String, Object>> getCmSummaries(LocalDate from, LocalDate to, String salesType, String status) {
         return getFlatPositionSummary(from, to, salesType, status, TeamSiteRow::cm);
     }
 
-    // "SM" tab — flat one-row-per-SM summary (the "All Report" tree's own leaf level, flattened
-    // directly instead of nested under RM/AM/CM).
     public List<Map<String, Object>> getSmSummaries(LocalDate from, LocalDate to, String salesType, String status) {
         return getFlatPositionSummary(from, to, salesType, status, TeamSiteRow::sm);
     }
 
-    // ==================== Person Sitemaster Report ====================
-    // "Person Details"' own site-level leaderboard — shown only once a name is clicked in "Team
-    // Report" above (see TeamPerformancePage.js's openPersonDetails), scoped to just that RM/AM/CM/SM
-    // person's own assigned sites (levelColumn+name, same real site_master column filter
-    // TeamSiteRepository.loadSiteRows already uses for the person drill-down elsewhere — an RM sees
-    // every site under their whole subtree, an SM sees just their own). Same shape/columns/
-    // leaderboard convention as PrimarySalesReportsService#getSiteMasterPrimarySaleReport ("5.
-    // Site_Master Primary_Sale Report" — Rank/Site_Code/Brand/Store_Name/City/State/Region/Target/
-    // Sales/Achi/Vs LY, ranked by Sales descending, one final grand-total row), but unlike that page
-    // (scoped to ONE sales type), this lists every one of the person's own active sites regardless of
-    // Sales_Type — City/State/Region aren't in the shared TeamSiteRow/TeamSiteRepository (no other
-    // section here needs them), so this uses its own private TeamSiteReportInfo/loadSiteReportInfo
-    // instead of touching that shared shape. Each site's own real Sales_Type decides whether its
-    // Sales/Target come from Primary_Sales(+Target, combo-matched via targetComboKey — see this
-    // class's own header comment for why) or Secondary_Sales(+Target, genuinely per-(Site_Code,
-    // Brand)) — same per-site branching aggregateSites already uses for "Team Report" above, just
-    // applied per individual site row here instead of summed into a subtree.
     private record TeamSiteReportInfo(String siteCode, String brand, String storeName, String city, String state,
                                        String region, String salesType, String channel, String partner) {
     }
@@ -410,10 +318,6 @@ public class TeamPerformanceReportService {
         return rows;
     }
 
-    // `level` ("rm"/"am"/"cm"/"sm") is validated + mapped to its real site_master column via
-    // TeamSiteRepository.requireLevelColumn (same whitelist every other person-scoped endpoint uses —
-    // levelColumn is concatenated directly into SQL, so an unvalidated value would be a SQL injection
-    // hole).
     public List<Map<String, Object>> getSiteMasterReport(LocalDate from, LocalDate to, String level, String name, String status) {
         String levelColumn = TeamSiteRepository.requireLevelColumn(level);
         Period period = resolvePeriod(from, to);
@@ -476,10 +380,6 @@ public class TeamPerformanceReportService {
             node.put("vsLastYearPct", GrowthMath.growthPct(row.sales(), row.lastYearSales()));
             result.add(node);
 
-            // Primary's own Target is combo-matched (Brand, Channel, Partner), not per-site — dedup so
-            // the grand total doesn't double-count a combo shared by several sites (same seenCombos
-            // pattern getComboMatchedTargetSum/getSiteMasterPrimarySaleReport use). Secondary's own
-            // Target is genuinely per-(Site_Code,Brand) already, no dedup needed.
             if (row.isPrimary()) {
                 String comboKey = targetComboKey(site.brand(), site.channel(), site.partner());
                 if (seenPrimaryCombos.add(comboKey)) {

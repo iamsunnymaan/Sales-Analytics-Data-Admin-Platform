@@ -1,7 +1,3 @@
-/* Standalone entry-screen layout — deliberately does NOT reuse app-shell/app.css (no sidebar on
-   this page). Single centered card on a plain app-background page, with a couple of soft blurred
-   color blobs behind it for depth. */
-
 html, body {
     height: 100%;
     margin: 0;
@@ -24,8 +20,6 @@ body {
     background-image: radial-gradient(60% 60% at 50% 40%, color-mix(in srgb, var(--color-primary) 12%, transparent) 0%, transparent 70%);
 }
 
-/* Colored blobs behind the glass card — the blur+saturate on .login-card only reads as "glass"
-   when there's something with color/contrast underneath it to distort. */
 .login-blob {
     position: absolute;
     border-radius: 50%;
@@ -51,13 +45,6 @@ body {
     background: var(--color-info);
 }
 
-/* ---------------------------------------------------------------------- */
-/* Card                                                                    */
-/* ---------------------------------------------------------------------- */
-
-/* Glassmorphism: translucent card background + backdrop blur/saturate so the blobs behind it
-   show through softly. color-mix against --color-card-bg (rather than a hardcoded white/black)
-   keeps the tint correct in both light and dark mode. */
 .login-card {
     position: relative;
     z-index: 1;
@@ -82,7 +69,6 @@ body {
     border-bottom: 1px solid color-mix(in srgb, var(--color-border) 70%, transparent);
 }
 
-/* Icon + "House of Beauty" sit on one row, centered in the header. */
 .login-brand-row {
     display: flex;
     align-items: center;
@@ -129,12 +115,6 @@ body {
     color: var(--color-text-secondary);
 }
 
-/* ---------------------------------------------------------------------- */
-/* Mode toggle (Password / OTP)                                            */
-/* ---------------------------------------------------------------------- */
-
-/* Two-option sliding pill. The slider is a separate absolutely-positioned element
-   underneath the buttons so it can animate with a transform instead of repainting. */
 .login-mode-toggle {
     position: relative;
     display: flex;
@@ -184,9 +164,6 @@ body {
     color: #FFFFFF;
 }
 
-/* Server-side error banner (bad credentials, locked/inactive account, network failure) — separate
-   from the per-field .login-field-error rows below since it comes back from the API, not client
-   validation, and isn't tied to one specific input. */
 .login-form-error {
     margin-bottom: 0.65rem;
     padding: 0.45rem 0.6rem;
@@ -198,10 +175,6 @@ body {
     font-weight: 500;
     line-height: 1.4;
 }
-
-/* ---------------------------------------------------------------------- */
-/* Form fields                                                             */
-/* ---------------------------------------------------------------------- */
 
 .login-field {
     margin-bottom: 0.65rem;
@@ -293,7 +266,6 @@ body {
     display: block;
 }
 
-/* "Forgot password?" — sits right under the password field's own error line, right-aligned. */
 .login-forgot-link {
     display: block;
     margin-top: 0.35rem;
@@ -310,10 +282,6 @@ body {
 .login-forgot-link:hover {
     text-decoration: underline;
 }
-
-/* ---------------------------------------------------------------------- */
-/* Forgot-password panel                                                   */
-/* ---------------------------------------------------------------------- */
 
 .login-forgot-intro {
     margin-bottom: 0.8rem;
@@ -358,7 +326,6 @@ body {
     color: var(--color-primary);
 }
 
-/* ResetPasswordPage's post-success "Go to Login" — reuses .login-submit-btn's look on an <a>. */
 .login-done-link {
     text-decoration: none;
 }
@@ -369,7 +336,6 @@ body {
     color: var(--color-success);
 }
 
-/* OTP row: input grows, Send OTP button stays a fixed, comfortable width beside it. */
 .login-otp-row {
     display: flex;
     align-items: center;
@@ -406,10 +372,6 @@ body {
     cursor: default;
 }
 
-/* ---------------------------------------------------------------------- */
-/* Actions                                                                 */
-/* ---------------------------------------------------------------------- */
-
 .login-submit-btn {
     width: 100%;
     height: 34px;
@@ -441,15 +403,6 @@ body {
     cursor: default;
 }
 
-/* ---------------------------------------------------------------------- */
-/* Responsive                                                              */
-/* ---------------------------------------------------------------------- */
-/* Base styles above target laptop/desktop (mouse-precision, compact). Each breakpoint below
-   layers on top of it (and the previous one) as the viewport shrinks, matching the rest of the
-   app's max-width breakpoints (app.css uses 1024/640) plus an extra one for very small phones. */
-
-/* Tablet — card gets a little more breathing room and inputs/buttons grow toward touch-friendly
-   sizes, but still comfortably smaller than the mobile targets below. */
 @media (max-width: 1024px) {
     .login-card {
         max-width: 340px;
@@ -480,8 +433,6 @@ body {
     }
 }
 
-/* Mobile — full touch-target sizing (~42px) and a wider card since it's no longer competing with
-   surrounding desktop chrome. */
 @media (max-width: 640px) {
     .login-shell {
         padding: 1.5rem 1rem;
@@ -527,8 +478,6 @@ body {
     }
 }
 
-/* Very small phones — trim the card's own padding back down and stack the OTP input above its
-   Send OTP button instead of squeezing both onto one row. */
 @media (max-width: 380px) {
     .login-card {
         padding: 1.25rem 1rem 1rem;

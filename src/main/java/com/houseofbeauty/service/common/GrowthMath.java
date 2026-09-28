@@ -3,8 +3,6 @@ package com.houseofbeauty.service.common;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
-// Shared current-vs-previous growth-% math. growthPct is null when previous is 0 and current
-// isn't — growth is undefined/infinite in that case, not zero.
 public final class GrowthMath {
 
     private GrowthMath() {

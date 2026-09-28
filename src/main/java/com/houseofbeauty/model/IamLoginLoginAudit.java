@@ -12,10 +12,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
-// JPA mapping for IAM_Login_Login_Audit — one row per login attempt (password or OTP),
-// success or failure, written by AuthService. User_ID is nullable because a failed attempt
-// against a username that doesn't exist still needs to be logged (brute-force visibility) with no
-// real user to attach it to.
+
 @Entity
 @Table(name = "IAM_Login_Login_Audit")
 @Data

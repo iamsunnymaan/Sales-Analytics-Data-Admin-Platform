@@ -1,25 +1,3 @@
-// Two related date-range filter widgets, previously copy-pasted across pages under one conceptual
-// "SalesDateFilter" name. Kept as two separate exports here (not force-unified) since they're a
-// real, deliberate divergence:
-//
-// initSalesDateFilter — the full "Filter" toggle offering three range-type pickers (By Date/By
-// Month/By Year). Was copy-pasted near-identically in SecondarySalesPage.js, Dashboard.js,
-// TeamPerformancePage.js, SiteStatusPage.js, and a dead (never-called) copy in PrimarySalesPage.js.
-//
-// initInsightsDateFilter — PrimarySalesPage-only: a single "Filter" toggle offering just one
-// From/To MONTH range (no By Date/By Year sub-modes), plus two extra meta flags
-// (includesCurrentMonth/startsInCurrentMonth) that Primary's own Insights-card pacing logic needs
-// and the other widget never computes.
-//
-// Neither widget knows what it's filtering — every page wires its own onFilterChange to whatever
-// sections it should drive; that fan-out logic stays page-side. `idPrefix` lets more than one
-// independent instance run on the same page without their dynamically-rendered inputs colliding on
-// id (defaults to "salesDateFilter").
-//
-// yearsApiUrl is deliberately NOT given a default value here — every real call site already passes
-// its own explicit value (a hardcoded endpoint for Dashboard/SecondarySalesPage, a dynamically-built
-// per-site endpoint for SiteStatusPage) or omits it entirely (TeamPerformancePage, which has no
-// per-page "years" concept) — the `if (yearsApiUrl)` guard below is what makes omitting it safe.
 import { hasFeatureSync } from "/Shared/js/feature-guard.js";
 
 export function initSalesDateFilter(options = {}) {
@@ -44,8 +22,8 @@ export function initSalesDateFilter(options = {}) {
 
     const thisYear = new Date().getFullYear();
     let years = [thisYear];
-    let mode = null; // null | "filter" — starts closed, user opens it
-    let rangeType = "month"; // "date" | "month" | "year"
+    let mode = null;
+    let rangeType = "month";
 
     function pad2(n) {
         return String(n).padStart(2, "0");
@@ -199,16 +177,7 @@ export function initSalesDateFilter(options = {}) {
     renderBody();
 }
 
-// PrimarySalesPage's own Overview Insights card date filter — a single "Filter" toggle offering a
-// From/To MONTH range only (no By Date/By Year sub-modes; that card only ever supports whole-month
-// spans). Default (closed / no selection) leaves the Insights card on its usual
-// current-month-to-date window. Once opened, the resulting window always starts on the 1st of the
-// From month; its end is always the To month's real last day. Reports the window via
-// onFilterChange(column, from, to, meta) with two independent flags the Insights card uses:
-//   - meta.includesCurrentMonth: the selected END month is the current month or later.
-//   - meta.startsInCurrentMonth: the selected START month IS the current month (i.e. the whole
-//     range never reaches back before it) — drives whether the Projection row shows the real
-//     dbo.Top_Projection total or relabels to "Actual Sales" for a historical range.
+
 export function initInsightsDateFilter(options = {}) {
     const {
         column = "salesDate",
@@ -228,7 +197,7 @@ export function initInsightsDateFilter(options = {}) {
     }
 
     const thisYear = new Date().getFullYear();
-    let mode = null; // null | "filter" — starts closed, user opens it
+    let mode = null;
 
     function pad2(n) {
         return String(n).padStart(2, "0");
@@ -271,8 +240,7 @@ export function initInsightsDateFilter(options = {}) {
             const startsInCurrentMonth = (startY * 12 + (startM - 1)) >= currentOrdinal;
 
             const from = `${startY}-${pad2(startM)}-01`;
-            // Always the END month's real last day, even when includesCurrentMonth — the backend
-            // already clamps any future `to` back to today itself for the actual sales figures.
+
             const to = `${endY}-${pad2(endM)}-${pad2(lastDayOfMonth(endY, endM))}`;
             onFilterChange(column, from, to, { mode: "filter", includesCurrentMonth, startsInCurrentMonth });
         };
